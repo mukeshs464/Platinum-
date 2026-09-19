@@ -13,12 +13,18 @@ import {
 import { MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 import ScrollAnimation from './ScrollAnimation';
 
-// INITIAL MOCK CLIENTS DATA (from PDF Pages 3, 4, 5, 6)
+// =========================================================
+// 1. INITIAL MOCK DATA (Aligned with Screenshots & PDF)
+// =========================================================
+
+// Clients Data (10 primary from Screenshot media_1789749223921.png + remaining for 48 total)
 const INITIAL_CLIENTS = [
   {
     id: 1,
     name: 'TechNova Solutions',
     industry: 'IT Services',
+    avatarChar: 'T',
+    avatarColor: '#0066FF',
     contactPerson: 'Sarah Johnson',
     email: 'sarah@technova.com',
     phone: '+91 98765 43210',
@@ -30,79 +36,87 @@ const INITIAL_CLIENTS = [
     users: 24,
     startDate: '12 Dec 2024',
     endDate: '12 Dec 2025',
-    daysLeft: '95 days left',
+    daysLeftNumber: 95,
+    daysLeftText: '95 days left',
     notes: 'Key client in IT Services sector. Interested in upgrading to Platinum plan next year.',
-    color: '#0056FF',
-    docs: '2,480',
-    conversations: '18,220',
+    docs: '1,920',
+    conversations: '12,450',
   },
   {
     id: 2,
     name: 'AutoDrive Ltd',
     industry: 'Automotive',
+    avatarChar: 'A',
+    avatarColor: '#06B6D4',
     contactPerson: 'Michael Chen',
-    email: 'mchen@autodrive.com',
+    email: 'michael@autodrive.com',
     phone: '+91 98123 45678',
     designation: 'VP of Engineering',
     companySize: '201 - 500 employees',
     website: 'https://www.autodrive.com',
     plan: 'Silver',
     status: 'Active',
-    users: 16,
+    users: 18,
     startDate: '20 Nov 2024',
     endDate: '20 Nov 2025',
-    daysLeft: '73 days left',
+    daysLeftNumber: 73,
+    daysLeftText: '73 days left',
     notes: 'Requires high throughput for technical SOP indexing and diagnostics.',
-    color: '#7C3AED',
-    docs: '1,720',
-    conversations: '12,450',
+    docs: '1,540',
+    conversations: '10,230',
   },
   {
     id: 3,
     name: 'HealthPlus',
     industry: 'Healthcare',
+    avatarChar: 'H',
+    avatarColor: '#EF4444',
     contactPerson: 'Dr. Emily Carter',
-    email: 'carter@healthplus.org',
+    email: 'emily@healthplus.com',
     phone: '+91 98456 78901',
     designation: 'Head of Clinical IT',
     companySize: '500+ employees',
     website: 'https://www.healthplus.org',
     plan: 'Platinum',
     status: 'Active',
-    users: 38,
+    users: 36,
     startDate: '16 Jan 2025',
-    endDate: '16 Jan 2026',
-    daysLeft: '130 days left',
+    endDate: '15 Jan 2026',
+    daysLeftNumber: 138,
+    daysLeftText: '138 days left',
     notes: 'HIPAA and BAA isolation required across all clinical hospital networks.',
-    color: '#10B981',
-    docs: '1,540',
-    conversations: '10,110',
+    docs: '2,480',
+    conversations: '18,230',
   },
   {
     id: 4,
     name: 'EduSmart Learning',
     industry: 'Education',
+    avatarChar: 'E',
+    avatarColor: '#10B981',
     contactPerson: 'Robert Williams',
-    email: 'rwilliams@edusmart.com',
+    email: 'robert@edusmart.com',
     phone: '+91 98234 56789',
     designation: 'Academic Dean',
     companySize: '51 - 200 employees',
     website: 'https://www.edusmart.com',
     plan: 'Gold',
-    status: 'Active',
+    status: 'Expiring Soon',
     users: 22,
     startDate: '30 Sep 2024',
     endDate: '30 Sep 2025',
-    daysLeft: '22 days left',
+    daysLeftNumber: 22,
+    daysLeftText: '22 days left',
     notes: 'Renewal discussion in progress for student admission policy AI.',
-    color: '#EAB308',
     docs: '980',
-    conversations: '7,300',
+    conversations: '7,560',
   },
   {
     id: 5,
     name: 'RetailCorp',
     industry: 'Retail',
+    avatarChar: 'R',
+    avatarColor: '#2563EB',
     contactPerson: 'Priya Mehta',
     email: 'priya@retailcorp.com',
     phone: '+91 98901 23456',
@@ -111,54 +125,58 @@ const INITIAL_CLIENTS = [
     website: 'https://www.retailcorp.com',
     plan: 'Silver',
     status: 'Active',
-    users: 14,
+    users: 16,
     startDate: '10 Feb 2025',
     endDate: '10 Feb 2026',
-    daysLeft: '155 days left',
+    daysLeftNumber: 157,
+    daysLeftText: '157 days left',
     notes: 'Retail store operations and inventory policy assistance.',
-    color: '#0284C7',
-    docs: '890',
-    conversations: '5,780',
+    docs: '860',
+    conversations: '6,780',
   },
   {
     id: 6,
     name: 'GreenEnergy Co',
-    industry: 'Clean Energy',
+    industry: 'Energy',
+    avatarChar: 'G',
+    avatarColor: '#059669',
     contactPerson: 'Daniel Brooks',
-    email: 'brooks@greenenergy.com',
+    email: 'daniel@greenenergy.com',
     phone: '+91 98345 67890',
     designation: 'Operations Director',
     companySize: '51 - 200 employees',
     website: 'https://www.greenenergy.com',
-    plan: 'Platinum',
+    plan: 'Gold',
     status: 'Active',
-    users: 19,
+    users: 15,
     startDate: '18 Mar 2025',
     endDate: '18 Mar 2026',
-    daysLeft: '191 days left',
+    daysLeftNumber: 193,
+    daysLeftText: '193 days left',
     notes: 'Solar and wind turbine field maintenance documentation.',
-    color: '#059669',
     docs: '650',
     conversations: '4,890',
   },
   {
     id: 7,
     name: 'FinSecure Bank',
-    industry: 'Financial Services',
+    industry: 'Finance',
+    avatarChar: 'F',
+    avatarColor: '#7C3AED',
     contactPerson: 'James Wilson',
-    email: 'wilson@finsecure.com',
+    email: 'james@finsecure.com',
     phone: '+91 98678 90123',
     designation: 'Chief Compliance Officer',
     companySize: '500+ employees',
     website: 'https://www.finsecure.com',
-    plan: 'Gold',
+    plan: 'Platinum',
     status: 'Active',
     users: 28,
     startDate: '05 Nov 2024',
     endDate: '05 Nov 2025',
-    daysLeft: '58 days left',
+    daysLeftNumber: 58,
+    daysLeftText: '58 days left',
     notes: 'Strict cryptographic tenant vector isolation and audit logs.',
-    color: '#4F46E5',
     docs: '1,120',
     conversations: '9,450',
   },
@@ -166,52 +184,58 @@ const INITIAL_CLIENTS = [
     id: 8,
     name: 'LogiTrans Global',
     industry: 'Logistics',
+    avatarChar: 'L',
+    avatarColor: '#EA580C',
     contactPerson: 'Aisha Khan',
-    email: 'akhan@logitrans.com',
-    phone: '+91 98789 01234',
-    designation: 'Global Logistics Manager',
+    email: 'aisha@logitrans.com',
+    phone: '+91 98567 89012',
+    designation: 'Logistics Manager',
     companySize: '201 - 500 employees',
     website: 'https://www.logitrans.com',
     plan: 'Silver',
-    status: 'Active',
-    users: 12,
+    status: 'Inactive',
+    users: 9,
     startDate: '14 Aug 2024',
     endDate: '14 Aug 2025',
-    daysLeft: 'Expired',
-    notes: 'Cross-border customs and supply chain SOP assistant.',
-    color: '#D97706',
-    docs: '740',
-    conversations: '5,120',
+    daysLeftNumber: 0,
+    daysLeftText: 'Expired',
+    notes: 'Fleet distribution guidelines and international customs docs.',
+    docs: '430',
+    conversations: '3,120',
   },
   {
     id: 9,
-    name: 'CloudNest',
-    industry: 'Cloud & Hosting',
+    name: 'CloudNext',
+    industry: 'Cloud Services',
+    avatarChar: 'C',
+    avatarColor: '#334155',
     contactPerson: 'Kevin Martin',
-    email: 'kevin@cloudnest.io',
-    phone: '+91 98890 12345',
-    designation: 'CTO',
-    companySize: '11 - 50 employees',
-    website: 'https://www.cloudnest.io',
+    email: 'kevin@cloudnext.com',
+    phone: '+91 98789 01234',
+    designation: 'Cloud Architect',
+    companySize: '51 - 200 employees',
+    website: 'https://www.cloudnext.com',
     plan: 'Gold',
     status: 'Active',
     users: 12,
     startDate: '22 Dec 2024',
     endDate: '22 Dec 2025',
-    daysLeft: '105 days left',
-    notes: 'Cloud infrastructure runbook and incident response.',
-    color: '#2563EB',
-    docs: '530',
-    conversations: '3,800',
+    daysLeftNumber: 105,
+    daysLeftText: '105 days left',
+    notes: 'Multi-cloud DevOps runbooks and cluster management automation.',
+    docs: '780',
+    conversations: '5,640',
   },
   {
     id: 10,
     name: 'InnoTech Systems',
     industry: 'Technology',
+    avatarChar: 'I',
+    avatarColor: '#4F46E5',
     contactPerson: 'Neha Gupta',
-    email: 'ngupta@innotech.com',
-    phone: '+91 98901 34567',
-    designation: 'HR Lead',
+    email: 'neha@innotech.com',
+    phone: '+91 98890 12345',
+    designation: 'Head of People Operations',
     companySize: '51 - 200 employees',
     website: 'https://www.innotech.com',
     plan: 'Silver',
@@ -219,29 +243,30 @@ const INITIAL_CLIENTS = [
     users: 14,
     startDate: '28 Jan 2025',
     endDate: '28 Jan 2026',
-    daysLeft: '142 days left',
-    notes: 'HR policy and onboarding handbook AI assistant.',
-    color: '#9333EA',
-    docs: '610',
-    conversations: '4,210',
+    daysLeftNumber: 176,
+    daysLeftText: '176 days left',
+    notes: 'HR policy knowledge base, employee travel rules, and leave workflows.',
+    docs: '920',
+    conversations: '6,100',
   },
 ];
 
-// INITIAL MOCK PLANS DATA (from PDF Pages 7, 8)
+// Plans Data (Matching PDF Page 7 & 8)
 const INITIAL_PLANS = [
   {
     id: 'gold',
     name: 'Gold',
     badge: null,
     desc: 'Essential features for growing businesses.',
-    detailedDesc: 'Perfect for startups and small teams beginning their knowledge management journey.',
+    detailedDesc: 'Great starting tier for growing businesses aiming to integrate automated AI support across their core customer support and operations.',
     price: '₹8,999',
+    rawPrice: '8999',
     billingCycle: 'Monthly',
     validity: '12 Months',
     currency: 'INR (₹)',
     queries: 'Up to 1,000 queries/month',
     maxUsers: 5,
-    storage: '500 MB',
+    storage: '10 MB',
     features: [
       'Up to 1,000 queries/month',
       'Standard LLM model',
@@ -249,24 +274,25 @@ const INITIAL_PLANS = [
       'Basic analytics',
     ],
     status: 'Active',
-    clients: 18,
+    clients: 19,
     displayOrder: 1,
-    color: '#EAB308',
-    bgColor: '#FEF9C3',
+    color: '#D97706',
+    bgColor: '#FFFBEB',
   },
   {
     id: 'silver',
     name: 'Silver',
     badge: null,
     desc: 'Advanced capabilities for established teams.',
-    detailedDesc: 'Designed for scaling departments needing priority support and deeper vector search.',
+    detailedDesc: 'Tailored for teams requiring higher query capacities, priority support, detailed operational analytics, and custom knowledge base ingestion.',
     price: '₹19,999',
+    rawPrice: '19999',
     billingCycle: 'Monthly',
     validity: '12 Months',
     currency: 'INR (₹)',
     queries: 'Up to 5,000 queries/month',
-    maxUsers: 15,
-    storage: '2,000 MB',
+    maxUsers: 20,
+    storage: '25 MB',
     features: [
       'Up to 5,000 queries/month',
       'Advanced LLM model',
@@ -277,22 +303,23 @@ const INITIAL_PLANS = [
     status: 'Active',
     clients: 15,
     displayOrder: 2,
-    color: '#94A3B8',
-    bgColor: '#F1F5F9',
+    color: '#8B5CF6',
+    bgColor: '#F5F3FF',
   },
   {
     id: 'platinum',
     name: 'Platinum',
     badge: 'Most Popular',
     desc: 'Full-featured AI platform for large organizations.',
-    detailedDesc: 'Our enterprise-grade tier with dedicated account management, multi-tenant isolation, and 24/7 SLA.',
+    detailedDesc: 'Our enterprise-grade tier with dedicated account management, multi-tenant isolation, 24/7 SLA, and high-frequency document indexing.',
     price: '₹49,999',
+    rawPrice: '49999',
     billingCycle: 'Monthly',
     validity: '12 Months',
     currency: 'INR (₹)',
     queries: 'Up to 20,000 queries/month',
     maxUsers: 50,
-    storage: '10,000 MB',
+    storage: '100 MB',
     features: [
       'Up to 20,000 queries/month',
       'Latest LLM model',
@@ -304,16 +331,17 @@ const INITIAL_PLANS = [
     status: 'Active',
     clients: 12,
     displayOrder: 3,
-    color: '#0056FF',
-    bgColor: '#EFF6FF',
+    color: '#06B6D4',
+    bgColor: '#ECFEFF',
   },
   {
     id: 'enterprise',
-    name: 'Enterprise',
+    name: 'Enterprise / Custom',
     badge: null,
     desc: 'Tailored solution for enterprise needs.',
-    detailedDesc: 'Custom private VPC, dedicated inference endpoints, and bespoke integrations.',
+    detailedDesc: 'Custom private VPC, dedicated inference endpoints, bespoke integrations, on-premise deployments, and dedicated support team.',
     price: 'Custom',
+    rawPrice: 'Custom',
     billingCycle: 'Custom',
     validity: 'Multi-year',
     currency: 'INR (₹)',
@@ -328,256 +356,414 @@ const INITIAL_PLANS = [
       'Custom features',
     ],
     status: 'Active',
-    clients: 3,
+    clients: 2,
     displayOrder: 4,
-    color: '#10B981',
-    bgColor: '#ECFDF5',
+    color: '#64748B',
+    bgColor: '#F1F5F9',
   },
 ];
 
-// INITIAL ROLES FOR MASTER SETTINGS (from PDF Page 16, 17)
+// Master Settings: Role Management Initial Data (PDF Page 16)
 const INITIAL_ROLES = [
   {
     id: 1,
     name: 'Admin',
-    desc: 'Platform administration and management access.',
+    desc: 'Platform administration and management access',
     status: 'Active',
-    createdOn: 'Aug 1, 2025',
     permissions: ['Dashboard', 'Clients', 'Plans', 'Subscriptions', 'LLM Data Import', 'Reports', 'Master Settings'],
   },
   {
     id: 2,
     name: 'Client Admin',
-    desc: 'Administration access for client organization.',
+    desc: 'Administration access for client organization',
     status: 'Active',
-    createdOn: 'Aug 2, 2025',
-    permissions: ['Dashboard', 'Profile', 'Subscriptions', 'Users', 'Integration', 'Data Upload', 'Master Settings'],
+    permissions: ['Dashboard', 'Clients', 'Reports'],
   },
   {
     id: 3,
     name: 'Client User',
-    desc: 'Standard user access for client organization.',
+    desc: 'Standard user access for client organization',
     status: 'Active',
-    createdOn: 'Aug 3, 2025',
-    permissions: ['Dashboard', 'Data Upload'],
+    permissions: ['Dashboard', 'Reports'],
+  },
+  {
+    id: 4,
+    name: 'Support Engineer',
+    desc: 'Technical troubleshooting and operational audit log access',
+    status: 'Active',
+    permissions: ['Dashboard', 'Subscriptions', 'LLM Data Import', 'Reports'],
   },
 ];
 
+// Master Settings: System Configurations Initial Data (PDF Page 16 bottom)
+const INITIAL_CONFIGS = [
+  {
+    id: 1,
+    name: 'Session Timeout Duration',
+    desc: 'Inactivity threshold before administrator re-authentication is enforced.',
+    value: '60 Minutes',
+    status: 'Active',
+  },
+  {
+    id: 2,
+    name: 'Max Document Upload Limit',
+    desc: 'Maximum single file size acceptable for knowledge vector ingestion.',
+    value: '100 MB / File',
+    status: 'Active',
+  },
+  {
+    id: 3,
+    name: 'Default Pagination Size',
+    desc: 'Default record count displayed across table views before pagination.',
+    value: '10 Records / Page',
+    status: 'Active',
+  },
+  {
+    id: 4,
+    name: 'API Ingestion Rate Limit',
+    desc: 'Maximum document indexing batches permissible per tenant minute.',
+    value: '500 Requests / Min',
+    status: 'Active',
+  },
+  {
+    id: 5,
+    name: 'Vector Embedding Dimension',
+    desc: 'Default embedding vector dimensions model size for similarity searches.',
+    value: '1536 Dimensions',
+    status: 'Active',
+  },
+  {
+    id: 6,
+    name: 'Audit Trail Retention',
+    desc: 'Platform operational activity logs retention duration.',
+    value: '365 Days',
+    status: 'Active',
+  },
+];
+
+// Subscriptions Initial Data
+const INITIAL_SUBSCRIPTIONS = [
+  {
+    id: 'SUB-001',
+    client: 'TechNova Solutions',
+    plan: 'Gold',
+    startDate: '12 Dec 2024',
+    endDate: '12 Dec 2025',
+    daysLeft: '95 days left',
+    status: 'Active',
+    users: 24,
+    amount: '₹8,999',
+    billingCycle: 'Monthly',
+    color: '#10B981',
+  },
+  {
+    id: 'SUB-002',
+    client: 'AutoDrive Ltd',
+    plan: 'Silver',
+    startDate: '20 Nov 2024',
+    endDate: '20 Nov 2025',
+    daysLeft: '73 days left',
+    status: 'Active',
+    users: 18,
+    amount: '₹19,999',
+    billingCycle: 'Monthly',
+    color: '#10B981',
+  },
+  {
+    id: 'SUB-003',
+    client: 'HealthPlus',
+    plan: 'Platinum',
+    startDate: '16 Jan 2025',
+    endDate: '20 Oct 2025',
+    daysLeft: '42 days left',
+    status: 'Active',
+    users: 36,
+    amount: '₹49,999',
+    billingCycle: 'Monthly',
+    color: '#10B981',
+  },
+  {
+    id: 'SUB-004',
+    client: 'EduSmart Learning',
+    plan: 'Gold',
+    startDate: '30 Sep 2024',
+    endDate: '30 Sep 2025',
+    daysLeft: '22 days left',
+    status: 'Expiring Soon',
+    users: 22,
+    amount: '₹8,999',
+    billingCycle: 'Monthly',
+    color: '#F59E0B',
+  },
+  {
+    id: 'SUB-005',
+    client: 'RetailCorp',
+    plan: 'Silver',
+    startDate: '10 Feb 2025',
+    endDate: '10 Feb 2026',
+    daysLeft: '157 days left',
+    status: 'Active',
+    users: 16,
+    amount: '₹19,999',
+    billingCycle: 'Monthly',
+    color: '#10B981',
+  },
+];
+
+// LLM Data Imports
+const INITIAL_IMPORTS = [
+  {
+    id: 'IMP-20250908-001',
+    client: 'TechNova Solutions',
+    source: 'Client Upload',
+    files: 5,
+    fileTypes: 'PDF, DOCX',
+    date: '08 Sep 2026 • 10:15 AM',
+    status: 'Completed',
+    chunks: 420,
+    size: '14.2 MB',
+    color: '#10B981',
+    details: '5 technical product manuals and customer onboarding handbooks indexed with embeddings.',
+  },
+  {
+    id: 'IMP-20250906-002',
+    client: 'AutoDrive Ltd',
+    source: 'Client Upload',
+    files: 3,
+    fileTypes: 'PDF, XLSX',
+    date: '06 Sep 2026 • 04:30 PM',
+    status: 'Completed',
+    chunks: 210,
+    size: '8.7 MB',
+    color: '#10B981',
+    details: 'Vehicle diagnostic trouble codes (DTC) and warranty service troubleshooting manuals.',
+  },
+  {
+    id: 'IMP-20250907-015',
+    client: 'HealthPlus',
+    source: 'API Sync',
+    files: 8,
+    fileTypes: 'PDF, JSON',
+    date: '05 Sep 2026 • 11:20 AM',
+    status: 'Processing',
+    chunks: 1840,
+    size: '42.6 MB',
+    color: '#F59E0B',
+    details: 'Clinical protocol guidelines and patient EHR privacy handling runbooks.',
+  },
+  {
+    id: 'IMP-20250905-011',
+    client: 'EduSmart Learning',
+    source: 'Client Upload',
+    files: 12,
+    fileTypes: 'DOCX, PDF',
+    date: '05 Sep 2026 • 02:15 PM',
+    status: 'Completed',
+    chunks: 890,
+    size: '26.4 MB',
+    color: '#10B981',
+    details: 'Undergraduate student handbook, academic grading rubric, and campus policies.',
+  },
+  {
+    id: 'IMP-20250904-009',
+    client: 'RetailCorp',
+    source: 'API Sync',
+    files: 4,
+    fileTypes: 'CSV, JSON',
+    date: '04 Sep 2026 • 09:40 AM',
+    status: 'Failed',
+    chunks: 0,
+    size: '3.1 MB',
+    color: '#EF4444',
+    details: 'Schema validation error: Missing required inventory category key in CSV header row.',
+  },
+];
+
+// Client Growth Data Sets for Interactive Dropdown
+const GROWTH_DATA_MAP = {
+  'Last 6 Months': [
+    { month: 'Mar', value: 16.0, label: '16 clients' },
+    { month: 'Apr', value: 22.0, label: '22 clients' },
+    { month: 'May', value: 28.0, label: '28 clients' },
+    { month: 'Jun', value: 33.5, label: '34 clients' },
+    { month: 'Jul', value: 40.0, label: '40 clients' },
+    { month: 'Aug', value: 48.0, label: '48 clients' },
+  ],
+  'Last 3 Months': [
+    { month: 'Jun', value: 33.5, label: '34 clients' },
+    { month: 'Jul', value: 40.0, label: '40 clients' },
+    { month: 'Aug', value: 48.0, label: '48 clients' },
+  ],
+  'Year to Date': [
+    { month: 'Jan', value: 8.0, label: '8 clients' },
+    { month: 'Feb', value: 12.0, label: '12 clients' },
+    { month: 'Mar', value: 16.0, label: '16 clients' },
+    { month: 'Apr', value: 22.0, label: '22 clients' },
+    { month: 'May', value: 28.0, label: '28 clients' },
+    { month: 'Jun', value: 33.5, label: '34 clients' },
+    { month: 'Jul', value: 40.0, label: '40 clients' },
+    { month: 'Aug', value: 48.0, label: '48 clients' },
+  ],
+};
+
 export default function AdminPortalView({ onBackToLanding }) {
   const { width } = useWindowDimensions();
-  const isMobile = width < 900;
+  const isMobile = width < 980;
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  // VIEW STATE: 'login' | 'portal'
-  const [viewState, setViewState] = useState('login');
+  // View state: 'login' | 'portal'
+  const [viewState, setViewState] = useState('portal');
   const [email, setEmail] = useState('admin@platinumsoftware.com');
   const [password, setPassword] = useState('••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [forgotPasswordAlert, setForgotPasswordAlert] = useState(false);
 
-  // ACTIVE NAVIGATION TAB:
-  // 'Dashboard' | 'Clients' | 'Plans' | 'Subscriptions' | 'LLM Data Import' | 'Reports' | 'Master Settings'
+  // Active navigation tab
   const [activeNav, setActiveNav] = useState('Dashboard');
 
-  // MASTER SETTINGS ACTIVE TAB:
-  // 'General Settings' | 'Role Management' | 'Master Data' | 'System Configuration' | 'Appearance & Branding'
-  const [settingsTab, setSettingsTab] = useState('General Settings');
+  // Search & Notifications State
+  const [globalSearch, setGlobalSearch] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
 
-  // DATA STATES
+  // Growth Chart State
+  const [selectedGrowthFilter, setSelectedGrowthFilter] = useState('Last 6 Months');
+  const [showGrowthDropdown, setShowGrowthDropdown] = useState(false);
+  const [hoveredDataPoint, setHoveredDataPoint] = useState(null);
+
+  // ==========================================
+  // CLIENTS MODULE STATE
+  // ==========================================
   const [clients, setClients] = useState(INITIAL_CLIENTS);
-  const [plans, setPlans] = useState(INITIAL_PLANS);
-  const [roles, setRoles] = useState(INITIAL_ROLES);
-
-  // CLIENTS FILTER & SEARCH
   const [clientSearch, setClientSearch] = useState('');
-  const [selectedIndustry, setSelectedIndustry] = useState('All');
-  const [selectedPlanFilter, setSelectedPlanFilter] = useState('All');
-  const [selectedStatusFilter, setSelectedStatusFilter] = useState('All');
+  const [clientIndustryFilter, setClientIndustryFilter] = useState('All Industries');
+  const [clientPlanFilter, setClientPlanFilter] = useState('All Plans');
+  const [clientStatusFilter, setClientStatusFilter] = useState('All Statuses');
 
-  // PLANS FILTER & SEARCH
-  const [planSearch, setPlanSearch] = useState('');
-  const [planStatusFilter, setPlanStatusFilter] = useState('All');
-  const [planViewMode, setPlanViewMode] = useState('table'); // 'table' | 'grid'
-
-  // MODALS
+  // Client Modals
+  const [selectedClientModal, setSelectedClientModal] = useState(null);
   const [showAddClientModal, setShowAddClientModal] = useState(false);
-  const [showEditClientModal, setShowEditClientModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [showViewClientModal, setShowViewClientModal] = useState(false);
+  const [editingClientModal, setEditingClientModal] = useState(null);
+  const [clientActionMessage, setClientActionMessage] = useState(null);
 
+  // Client Form State
+  const [clientFormName, setClientFormName] = useState('');
+  const [clientFormIndustry, setClientFormIndustry] = useState('IT Services');
+  const [clientFormSize, setClientFormSize] = useState('51 - 200 employees');
+  const [clientFormWebsite, setClientFormWebsite] = useState('');
+  const [clientFormContact, setClientFormContact] = useState('');
+  const [clientFormDesignation, setClientFormDesignation] = useState('');
+  const [clientFormEmail, setClientFormEmail] = useState('');
+  const [clientFormPhone, setClientFormPhone] = useState('');
+  const [clientFormPlan, setClientFormPlan] = useState('Gold');
+  const [clientFormStartDate, setClientFormStartDate] = useState('18 Sep 2025');
+  const [clientFormEndDate, setClientFormEndDate] = useState('18 Sep 2026');
+  const [clientFormStatus, setClientFormStatus] = useState('Active');
+  const [clientFormNotes, setClientFormNotes] = useState('');
+
+  // ==========================================
+  // PLANS MODULE STATE
+  // ==========================================
+  const [plans, setPlans] = useState(INITIAL_PLANS);
+  const [planSearch, setPlanSearch] = useState('');
+  const [planStatusFilter, setPlanStatusFilter] = useState('All Statuses');
+
+  // Plan Modals
+  const [selectedPlanModal, setSelectedPlanModal] = useState(null);
   const [showAddPlanModal, setShowAddPlanModal] = useState(false);
-  const [showEditPlanModal, setShowEditPlanModal] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [editingPlanModal, setEditingPlanModal] = useState(null);
+  const [planActionMessage, setPlanActionMessage] = useState(null);
 
+  // Plan Form State
+  const [planFormName, setPlanFormName] = useState('');
+  const [planFormType, setPlanFormType] = useState('Subscription');
+  const [planFormShortDesc, setPlanFormShortDesc] = useState('');
+  const [planFormDetailedDesc, setPlanFormDetailedDesc] = useState('');
+  const [planFormPrice, setPlanFormPrice] = useState('₹9,999');
+  const [planFormBilling, setPlanFormBilling] = useState('Monthly');
+  const [planFormValidity, setPlanFormValidity] = useState('12');
+  const [planFormCurrency, setPlanFormCurrency] = useState('INR (₹)');
+  const [planFormMaxQueries, setPlanFormMaxQueries] = useState('2,500');
+  const [planFormKeyFeatures, setPlanFormKeyFeatures] = useState('Up to 2,500 queries/month\nStandard LLM model\nEmail support\nBasic analytics');
+  const [planFormMaxUsers, setPlanFormMaxUsers] = useState('10');
+  const [planFormStorage, setPlanFormStorage] = useState('20 MB');
+  const [planFormStatus, setPlanFormStatus] = useState('Active');
+  const [planFormDisplayOrder, setPlanFormDisplayOrder] = useState('5');
+
+  // ==========================================
+  // MASTER SETTINGS MODULE STATE
+  // ==========================================
+  const [settingsTab, setSettingsTab] = useState('Role Management');
+  const [roles, setRoles] = useState(INITIAL_ROLES);
+  const [roleSearch, setRoleSearch] = useState('');
+  const [roleStatusFilter, setRoleStatusFilter] = useState('All Status');
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
+  const [editingRoleModal, setEditingRoleModal] = useState(null);
+  const [roleActionMessage, setRoleActionMessage] = useState(null);
 
-  // FORM STATES (Add Client)
-  const [newClientForm, setNewClientForm] = useState({
-    name: '',
-    industry: 'IT Services',
-    companySize: '51 - 200 employees',
-    website: 'https://',
-    contactPerson: '',
-    designation: '',
-    email: '',
-    phone: '',
-    plan: 'Gold',
-    startDate: '17/09/2026',
-    endDate: '17/09/2027',
-    status: 'Active',
-    notes: '',
-  });
+  // Role Form
+  const [roleFormName, setRoleFormName] = useState('');
+  const [roleFormDesc, setRoleFormDesc] = useState('');
+  const [roleFormStatus, setRoleFormStatus] = useState('Active');
+  const [roleFormPermissions, setRoleFormPermissions] = useState(['Dashboard', 'Reports']);
 
-  // FORM STATES (Add Plan)
-  const [newPlanForm, setNewPlanForm] = useState({
-    name: '',
-    planType: 'Standard Tier',
-    shortDesc: '',
-    detailedDesc: '',
-    price: '₹',
-    billingCycle: 'Monthly',
-    validity: '12',
-    currency: 'INR (₹)',
-    maxQueries: '5,000',
-    keyFeatures: 'Up to 5,000 queries/month\nAdvanced LLM model\nPriority support\nBasic analytics',
-    maxUsers: '10',
-    storageLimit: '2,000',
-    status: 'Active',
-    displayOrder: '5',
-  });
+  // System Configurations
+  const [configs, setConfigs] = useState(INITIAL_CONFIGS);
+  const [configSearch, setConfigSearch] = useState('');
+  const [showAddConfigModal, setShowAddConfigModal] = useState(false);
+  const [configFormName, setConfigFormName] = useState('');
+  const [configFormDesc, setConfigFormDesc] = useState('');
+  const [configFormValue, setConfigFormValue] = useState('');
 
-  // FORM STATES (Add Role)
-  const [newRoleForm, setNewRoleForm] = useState({
-    name: '',
-    desc: '',
-    status: 'Active',
-    permissions: ['Dashboard', 'Clients'],
-  });
-
-  // GENERAL SETTINGS STATES (from PDF Page 15)
+  // General Settings Form
   const [platformName, setPlatformName] = useState('Platinum Software');
   const [platformDesc, setPlatformDesc] = useState('AI Chatbot Platform for Businesses');
-  const [platformUrl, setPlatformUrl] = useState('https://app.platinum.ai');
+  const [platformUrl, setPlatformUrl] = useState('https://admin.platinumai.com');
   const [supportEmail, setSupportEmail] = useState('support@platinumsoftware.com');
   const [defaultLang, setDefaultLang] = useState('English');
   const [timeZone, setTimeZone] = useState('Asia/Kolkata (IST)');
   const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
-  const [timeFormat, setTimeFormat] = useState('12-Hour (AM/PM)');
-  const [showNameInTitle, setShowNameInTitle] = useState(true);
-  const [showLiveDateTime, setShowLiveDateTime] = useState(true);
-  const [enableSupportLink, setEnableSupportLink] = useState(true);
-  const [settingsSavedToast, setSettingsSavedToast] = useState(false);
+  const [timeFormat, setTimeFormat] = useState('12 Hour (AM/PM)');
+  const [prefTitleInBrowser, setPrefTitleInBrowser] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [prefLogging, setPrefLogging] = useState(true);
+  const [settingsSavedAlert, setSettingsSavedAlert] = useState(false);
 
-  // APPEARANCE & BRANDING STATES (from PDF Page 17)
-  const [primaryColor, setPrimaryColor] = useState('#0056FF');
-  const [tagline, setTagline] = useState('AI Chatbot Platform');
-  const [footerText, setFooterText] = useState('© 2026 Platinum Software. All rights reserved.');
+  // Appearance & Branding Form
+  const [brandingTagline, setBrandingTagline] = useState('AI Chatbot Platform');
+  const [brandingFooter, setBrandingFooter] = useState('© 2025 Platinum Software. All rights reserved.');
+  const [primaryColor, setPrimaryColor] = useState('#0066FF');
+  const [brandingSavedAlert, setBrandingSavedAlert] = useState(false);
 
-  // HELPERS
-  const handleSaveSettings = () => {
-    setSettingsSavedToast(true);
-    setTimeout(() => setSettingsSavedToast(false), 3000);
+  // Other modules state
+  const [subscriptions, setSubscriptions] = useState(INITIAL_SUBSCRIPTIONS);
+  const [subSearch, setSubSearch] = useState('');
+  const [subStatusFilter, setSubStatusFilter] = useState('All');
+  const [showAddSubModal, setShowAddSubModal] = useState(false);
+
+  const [imports, setImports] = useState(INITIAL_IMPORTS);
+  const [importSearch, setImportSearch] = useState('');
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [selectedImportModal, setSelectedImportModal] = useState(null);
+
+  // Current growth dataset
+  const currentGrowthData = GROWTH_DATA_MAP[selectedGrowthFilter] || GROWTH_DATA_MAP['Last 6 Months'];
+
+  const notifyAction = (setter, msg) => {
+    setter(msg);
+    setTimeout(() => setter(null), 3000);
   };
 
-  const handleCreateClient = () => {
-    if (!newClientForm.name) return;
-    const created = {
-      id: clients.length + 1,
-      name: newClientForm.name,
-      industry: newClientForm.industry,
-      contactPerson: newClientForm.contactPerson || 'Authorized Rep',
-      email: newClientForm.email || 'contact@company.com',
-      phone: newClientForm.phone || '+91 90000 00000',
-      designation: newClientForm.designation || 'Manager',
-      companySize: newClientForm.companySize,
-      website: newClientForm.website,
-      plan: newClientForm.plan,
-      status: newClientForm.status,
-      users: 10,
-      startDate: newClientForm.startDate,
-      endDate: newClientForm.endDate,
-      daysLeft: '365 days left',
-      notes: newClientForm.notes || 'Newly registered client organization.',
-      color: '#0056FF',
-      docs: '120',
-      conversations: '450',
-    };
-    setClients([created, ...clients]);
-    setShowAddClientModal(false);
-  };
-
-  const handleCreatePlan = () => {
-    if (!newPlanForm.name) return;
-    const featuresList = newPlanForm.keyFeatures.split('\n').filter((f) => f.trim().length > 0);
-    const created = {
-      id: newPlanForm.name.toLowerCase().replace(/\s+/g, '-'),
-      name: newPlanForm.name,
-      badge: null,
-      desc: newPlanForm.shortDesc || 'Customized subscription plan.',
-      detailedDesc: newPlanForm.detailedDesc,
-      price: newPlanForm.price,
-      billingCycle: newPlanForm.billingCycle,
-      validity: `${newPlanForm.validity} Months`,
-      currency: newPlanForm.currency,
-      queries: `Up to ${newPlanForm.maxQueries} queries/month`,
-      maxUsers: newPlanForm.maxUsers,
-      storage: `${newPlanForm.storageLimit} MB`,
-      features: featuresList.length ? featuresList : ['Standard AI Model Access'],
-      status: newPlanForm.status,
-      clients: 0,
-      displayOrder: parseInt(newPlanForm.displayOrder) || plans.length + 1,
-      color: '#0056FF',
-      bgColor: '#EFF6FF',
-    };
-    setPlans([...plans, created]);
-    setShowAddPlanModal(false);
-  };
-
-  const handleCreateRole = () => {
-    if (!newRoleForm.name) return;
-    const created = {
-      id: roles.length + 1,
-      name: newRoleForm.name,
-      desc: newRoleForm.desc || 'Custom access role.',
-      status: newRoleForm.status,
-      createdOn: 'Sep 17, 2026',
-      permissions: newRoleForm.permissions,
-    };
-    setRoles([...roles, created]);
-    setShowAddRoleModal(false);
-  };
-
-  // Filtered Clients
-  const filteredClients = clients.filter((c) => {
-    const matchSearch =
-      c.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
-      c.industry.toLowerCase().includes(clientSearch.toLowerCase()) ||
-      c.contactPerson.toLowerCase().includes(clientSearch.toLowerCase());
-    const matchIndustry = selectedIndustry === 'All' || c.industry === selectedIndustry;
-    const matchPlan = selectedPlanFilter === 'All' || c.plan === selectedPlanFilter;
-    const matchStatus = selectedStatusFilter === 'All' || c.status === selectedStatusFilter;
-    return matchSearch && matchIndustry && matchPlan && matchStatus;
-  });
-
-  // Filtered Plans
-  const filteredPlans = plans.filter((p) => {
-    const matchSearch =
-      p.name.toLowerCase().includes(planSearch.toLowerCase()) ||
-      p.desc.toLowerCase().includes(planSearch.toLowerCase());
-    const matchStatus = planStatusFilter === 'All' || p.status === planStatusFilter;
-    return matchSearch && matchStatus;
-  });
-
-  // ==========================================
-  // VIEW 1: ADMINISTRATOR LOGIN SCREEN (Page 2)
-  // ==========================================
+  // =========================================================
+  // LOGIN SCREEN (Matching PDF Page 2)
+  // =========================================================
   if (viewState === 'login') {
     return (
       <View style={styles.loginContainer}>
         <ScrollAnimation scrollY={scrollY} />
         <View style={styles.topBackNav}>
           <TouchableOpacity style={styles.backBtn} onPress={onBackToLanding}>
-            <Feather name="arrow-left" size={16} color="#0056FF" style={{ marginRight: 6 }} />
+            <Feather name="arrow-left" size={16} color="#0066FF" style={{ marginRight: 6 }} />
             <Text style={styles.backBtnText}>Back to Landing Page</Text>
           </TouchableOpacity>
         </View>
@@ -612,14 +798,31 @@ export default function AdminPortalView({ onBackToLanding }) {
 
           <View style={styles.loginRightPane}>
             <View style={styles.loginRightHeader}>
-              <MaterialCommunityIcons name="hexagon-multiple" size={32} color="#0056FF" />
-              <Text style={styles.rightHeaderTitle}>PLATINUM SOFTWARE</Text>
-              <Text style={styles.rightHeaderSub}>AI Chatbot Platform</Text>
+              <View style={styles.loginTopSecurityTag}>
+                <Feather name="shield" size={12} color="#10B981" style={{ marginRight: 4 }} />
+                <Text style={styles.loginTopSecurityTagText}>Secure | Reliable | Scalable</Text>
+              </View>
+              <View style={styles.loginLogoIconRow}>
+                <MaterialCommunityIcons name="hexagon-multiple" size={32} color="#0066FF" />
+                <View style={{ marginLeft: 8 }}>
+                  <Text style={styles.rightHeaderTitle}>PLATINUM SOFTWARE</Text>
+                  <Text style={styles.rightHeaderSub}>AI Chatbot Platform</Text>
+                </View>
+              </View>
             </View>
 
             <View style={styles.loginFormBox}>
               <Text style={styles.loginFormHeading}>Administrator Login</Text>
               <Text style={styles.loginFormSub}>Sign in to access the Platinum Software Admin Portal.</Text>
+
+              {forgotPasswordAlert && (
+                <View style={styles.forgotAlertBox}>
+                  <Feather name="info" size={15} color="#0066FF" style={{ marginRight: 6 }} />
+                  <Text style={styles.forgotAlertText}>
+                    Password recovery link has been dispatched to {email}. Check your inbox.
+                  </Text>
+                </View>
+              )}
 
               <View style={styles.formGroup}>
                 <Text style={styles.formLabel}>Email Address</Text>
@@ -631,6 +834,7 @@ export default function AdminPortalView({ onBackToLanding }) {
                     onChangeText={setEmail}
                     placeholder="Enter your official email"
                     placeholderTextColor="#94A3B8"
+                    autoCapitalize="none"
                   />
                 </View>
               </View>
@@ -662,12 +866,12 @@ export default function AdminPortalView({ onBackToLanding }) {
                   <MaterialCommunityIcons
                     name={rememberMe ? 'checkbox-marked' : 'checkbox-blank-outline'}
                     size={18}
-                    color={rememberMe ? '#0056FF' : '#94A3B8'}
+                    color={rememberMe ? '#0066FF' : '#94A3B8'}
                   />
                   <Text style={styles.rememberText}>Remember me</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => setForgotPasswordAlert(true)}>
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
@@ -681,16 +885,16 @@ export default function AdminPortalView({ onBackToLanding }) {
                 <Feather name="arrow-right" size={16} color="#FFFFFF" style={{ marginLeft: 8 }} />
               </TouchableOpacity>
 
-              <View style={styles.securityWarningBox}>
-                <Feather name="shield" size={16} color="#0056FF" style={{ marginRight: 8 }} />
-                <Text style={styles.securityWarningText}>
+              <View style={styles.adminPortalWarningBanner}>
+                <MaterialCommunityIcons name="shield-lock-outline" size={18} color="#0284C7" style={{ marginRight: 8, marginTop: 1 }} />
+                <Text style={styles.adminPortalWarningText}>
                   This portal is for authorized Platinum Software administrators only. Unauthorized access is prohibited.
                 </Text>
               </View>
             </View>
 
             <Text style={styles.portalFooterCopy}>
-              © 2026 Platinum Software. All rights reserved. • Privacy Policy • Terms of Service
+              © 2025 Platinum Software. All rights reserved. | Privacy Policy | Terms of Service | Contact Us
             </Text>
           </View>
         </View>
@@ -698,682 +902,950 @@ export default function AdminPortalView({ onBackToLanding }) {
     );
   }
 
-  // ==========================================
-  // VIEW 2: FULL ADMINISTRATOR MANAGEMENT PORTAL
-  // ==========================================
+  // =========================================================
+  // ADMIN PORTAL MAIN SHELL (Sidebar + Topbar + Content Area)
+  // =========================================================
   return (
-    <View style={styles.dashContainer}>
-      {/* Top Admin Navbar (PDF Template) */}
-      <View style={styles.dashTopNav}>
-        <View style={styles.dashLogoBox}>
-          <MaterialCommunityIcons name="hexagon-multiple" size={24} color="#0056FF" />
-          <View style={{ marginLeft: 8 }}>
-            <Text style={styles.dashLogoText}>PLATINUM SOFTWARE</Text>
-            <Text style={styles.dashLogoSubText}>AI Chatbot Platform</Text>
-          </View>
-        </View>
-
-        <View style={styles.dashSearchBar}>
-          <Feather name="search" size={15} color="#94A3B8" style={{ marginRight: 8 }} />
-          <TextInput
-            placeholder="Search clients, plans, reports..."
-            placeholderTextColor="#94A3B8"
-            style={styles.dashSearchInput}
-          />
-        </View>
-
-        <View style={styles.dashNavRight}>
-          {showLiveDateTime && (
-            <View style={styles.dateTimeBadge}>
-              <Feather name="calendar" size={13} color="#64748B" style={{ marginRight: 6 }} />
-              <Text style={styles.dateTimeText}>Monday, 8 September 2025  10:24 AM</Text>
+    <View style={styles.portalContainer}>
+      {/* 1. LEFT SIDEBAR */}
+      {!isMobile && (
+        <View style={styles.sidebar}>
+          <View style={styles.sidebarLogoRow}>
+            <View style={styles.sidebarLogoIconBox}>
+              <MaterialCommunityIcons name="hexagon-multiple" size={24} color="#00D2FF" />
             </View>
-          )}
-
-          <TouchableOpacity style={styles.dashNavIconBtn}>
-            <Feather name="bell" size={17} color="#475569" />
-            <View style={styles.notificationDot} />
-          </TouchableOpacity>
-
-          <View style={styles.adminUserBadge}>
-            <View style={styles.adminAvatar}>
-              <Text style={styles.adminAvatarText}>A</Text>
+            <View style={{ marginLeft: 10 }}>
+              <Text style={styles.sidebarBrandTitle}>PLATINUM SOFTWARE</Text>
+              <Text style={styles.sidebarBrandSub}>AI Chatbot Platform</Text>
             </View>
-            <View style={{ marginLeft: 8 }}>
-              <Text style={styles.adminName}>Admin</Text>
-              <Text style={styles.adminRole}>Platform Administrator</Text>
-            </View>
-            <Feather name="chevron-down" size={14} color="#94A3B8" style={{ marginLeft: 6 }} />
           </View>
 
-          <TouchableOpacity
-            style={styles.dashExitBtn}
-            onPress={() => setViewState('login')}
-            accessibilityLabel="Log out"
-          >
-            <Feather name="log-out" size={16} color="#EF4444" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Main Body Layout: Sidebar + Workspace Content */}
-      <View style={styles.dashBody}>
-        {/* Left Sidebar (Matches PDF Navigation) */}
-        {!isMobile && (
-          <View style={styles.sidebar}>
+          <View style={styles.sidebarMenuList}>
             {[
-              { name: 'Dashboard', icon: 'view-dashboard-outline' },
-              { name: 'Clients', icon: 'account-group-outline' },
-              { name: 'Plans', icon: 'card-bulleted-outline' },
-              { name: 'Subscriptions', icon: 'receipt-text-outline' },
-              { name: 'LLM Data Import', icon: 'cloud-sync-outline' },
-              { name: 'Reports', icon: 'chart-box-outline' },
-              { name: 'Master Settings', icon: 'cog-outline' },
+              { id: 'Dashboard', label: 'Dashboard', icon: 'home-outline' },
+              { id: 'Clients', label: 'Clients', icon: 'account-group-outline' },
+              { id: 'Plans', label: 'Plans', icon: 'card-bulleted-outline' },
+              { id: 'Subscriptions', label: 'Subscriptions', icon: 'receipt-text-outline' },
+              { id: 'LLM Data Import', label: 'LLM Data Import', icon: 'cloud-sync-outline' },
+              { id: 'Reports', label: 'Reports', icon: 'chart-box-outline' },
+              { id: 'Master Settings', label: 'Master Settings', icon: 'cog-outline' },
             ].map((item) => {
-              const isActive = activeNav === item.name;
+              const isActive = activeNav === item.id;
               return (
                 <TouchableOpacity
-                  key={item.name}
-                  style={[styles.sidebarItem, isActive && styles.sidebarItemActive]}
-                  onPress={() => setActiveNav(item.name)}
-                  activeOpacity={0.8}
+                  key={item.id}
+                  style={[styles.sidebarNavItem, isActive && styles.sidebarNavItemActive]}
+                  onPress={() => setActiveNav(item.id)}
+                  activeOpacity={0.85}
                 >
                   <MaterialCommunityIcons
                     name={item.icon}
-                    size={19}
-                    color={isActive ? '#0056FF' : '#64748B'}
-                    style={{ marginRight: 12 }}
+                    size={20}
+                    color={isActive ? '#FFFFFF' : '#8F9BB3'}
+                    style={{ marginRight: 14 }}
                   />
-                  <Text style={[styles.sidebarItemText, isActive && styles.sidebarItemTextActive]}>
-                    {item.name}
+                  <Text style={[styles.sidebarNavText, isActive && styles.sidebarNavTextActive]}>
+                    {item.label}
                   </Text>
-                  {isActive && <View style={styles.sidebarActivePill} />}
                 </TouchableOpacity>
               );
             })}
+          </View>
 
-            <View style={{ flex: 1 }} />
+          <View style={{ flex: 1 }} />
 
-            <View style={styles.sidebarNeedHelpBox}>
-              <Feather name="help-circle" size={16} color="#0056FF" style={{ marginBottom: 6 }} />
-              <Text style={styles.sidebarNeedHelpTitle}>Need help?</Text>
-              <Text style={styles.sidebarNeedHelpSub}>Contact support</Text>
+          <TouchableOpacity
+            style={styles.needHelpCard}
+            onPress={() => alert('Platinum Support: support@platinumsoftware.com')}
+            activeOpacity={0.8}
+          >
+            <View style={styles.needHelpLeft}>
+              <View style={styles.headphoneIconBox}>
+                <MaterialCommunityIcons name="headphones" size={18} color="#0066FF" />
+              </View>
+              <View style={{ marginLeft: 10 }}>
+                <Text style={styles.needHelpTitle}>Need Help?</Text>
+                <Text style={styles.needHelpSub}>Contact Support</Text>
+              </View>
             </View>
+            <Feather name="arrow-right" size={16} color="#0066FF" />
+          </TouchableOpacity>
+        </View>
+      )}
 
-            <TouchableOpacity style={styles.sidebarBackToWeb} onPress={onBackToLanding}>
-              <Feather name="globe" size={16} color="#0056FF" style={{ marginRight: 8 }} />
-              <Text style={styles.sidebarBackToWebText}>Return to Website</Text>
+      {/* 2. MAIN AREA */}
+      <View style={styles.mainArea}>
+        {/* Topbar */}
+        <View style={styles.topNavbar}>
+          <View style={styles.topSearchBox}>
+            <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 10 }} />
+            <TextInput
+              placeholder="Search clients, plans, reports..."
+              placeholderTextColor="#94A3B8"
+              value={globalSearch}
+              onChangeText={setGlobalSearch}
+              style={styles.topSearchInput}
+            />
+          </View>
+
+          <View style={styles.topNavRight}>
+            <TouchableOpacity
+              style={styles.bellBtn}
+              onPress={() => setShowNotifications(!showNotifications)}
+            >
+              <Feather name="bell" size={19} color="#475569" />
+              <View style={styles.bellBadge}>
+                <Text style={styles.bellBadgeText}>3</Text>
+              </View>
             </TouchableOpacity>
 
-            <Text style={styles.sidebarVersionText}>© 2026 Platinum Software  v1.0.0</Text>
+            <View style={styles.adminUserChip}>
+              <View style={styles.adminAvatarCircle}>
+                <Text style={styles.adminAvatarLetter}>A</Text>
+              </View>
+              <View style={{ marginLeft: 8, marginRight: 6 }}>
+                <Text style={styles.adminUserName}>Admin</Text>
+                <Text style={styles.adminOrgName}>Platinum Software</Text>
+              </View>
+              <Feather name="chevron-down" size={14} color="#64748B" />
+            </View>
+
+            <TouchableOpacity
+              style={styles.exitIconBtn}
+              onPress={() => setViewState('login')}
+              accessibilityLabel="Sign out"
+            >
+              <Feather name="log-out" size={16} color="#EF4444" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {showNotifications && (
+          <View style={styles.notificationDropdown}>
+            <View style={styles.notificationHeader}>
+              <Text style={styles.notificationHeaderTitle}>System Notifications (3)</Text>
+              <TouchableOpacity onPress={() => setShowNotifications(false)}>
+                <Feather name="x" size={14} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+            <NotificationItem text="New client 'EduSmart Learning' added" time="2 hours ago" dotColor="#0066FF" />
+            <NotificationItem text="Subscription for 'HealthPlus' renewed" time="5 hours ago" dotColor="#10B981" />
+            <NotificationItem text="LLM data import completed for 'AutoDrive Ltd'" time="1 day ago" dotColor="#7C3AED" />
           </View>
         )}
 
-        {/* Dynamic Main Content Container */}
-        <ScrollView style={styles.mainContent} contentContainerStyle={{ padding: 24, paddingBottom: 60 }}>
-          {/* Breadcrumb Header Bar */}
-          <View style={styles.breadcrumbHeaderRow}>
-            <View>
-              <View style={styles.breadcrumbRow}>
-                <Text style={styles.breadcrumbMuted}>Dashboard</Text>
-                {activeNav !== 'Dashboard' && (
-                  <>
-                    <Feather name="chevron-right" size={13} color="#94A3B8" style={{ marginHorizontal: 4 }} />
-                    <Text style={styles.breadcrumbActive}>{activeNav}</Text>
-                  </>
-                )}
-                {activeNav === 'Master Settings' && (
-                  <>
-                    <Feather name="chevron-right" size={13} color="#94A3B8" style={{ marginHorizontal: 4 }} />
-                    <Text style={styles.breadcrumbActive}>{settingsTab}</Text>
-                  </>
-                )}
-              </View>
-              <Text style={styles.screenMainHeading}>
-                {activeNav === 'Dashboard' && 'Welcome back, Admin! 👋'}
-                {activeNav === 'Clients' && 'Client Management'}
-                {activeNav === 'Plans' && 'Plans Management'}
-                {activeNav === 'Subscriptions' && 'Subscriptions Management'}
-                {activeNav === 'LLM Data Import' && 'LLM Data Import'}
-                {activeNav === 'Reports' && 'Reports & Analytics'}
-                {activeNav === 'Master Settings' && 'Master Settings'}
-              </Text>
-              <Text style={styles.screenMainSub}>
-                {activeNav === 'Dashboard' && "Here's an overview of your AI chatbot platform."}
-                {activeNav === 'Clients' && 'Manage and monitor all client organizations using the Platinum Software AI platform.'}
-                {activeNav === 'Plans' && 'Create and manage subscription plans for your clients.'}
-                {activeNav === 'Subscriptions' && 'Monitor and manage client subscription lifecycles.'}
-                {activeNav === 'LLM Data Import' && 'Operational control and monitoring screen for AI knowledge ingestion.'}
-                {activeNav === 'Reports' && 'Cross-tenant performance analytics and operational usage logs.'}
-                {activeNav === 'Master Settings' && 'Manage platform-level configuration, master lists, and RBAC permissions.'}
-              </Text>
+        <ScrollView style={styles.scrollBody} contentContainerStyle={{ padding: 24, paddingBottom: 60 }}>
+          {clientActionMessage && (
+            <View style={styles.actionSuccessToast}>
+              <Feather name="check-circle" size={16} color="#059669" style={{ marginRight: 8 }} />
+              <Text style={styles.actionSuccessToastText}>{clientActionMessage}</Text>
             </View>
+          )}
 
-            {/* Quick Actions in Header */}
-            {activeNav === 'Clients' && (
-              <TouchableOpacity style={styles.topActionBtn} onPress={() => setShowAddClientModal(true)}>
-                <Feather name="plus" size={16} color="#FFFFFF" style={{ marginRight: 6 }} />
-                <Text style={styles.topActionBtnText}>Add Client</Text>
-              </TouchableOpacity>
-            )}
+          {planActionMessage && (
+            <View style={styles.actionSuccessToast}>
+              <Feather name="check-circle" size={16} color="#059669" style={{ marginRight: 8 }} />
+              <Text style={styles.actionSuccessToastText}>{planActionMessage}</Text>
+            </View>
+          )}
 
-            {activeNav === 'Plans' && (
-              <TouchableOpacity style={styles.topActionBtn} onPress={() => setShowAddPlanModal(true)}>
-                <Feather name="plus" size={16} color="#FFFFFF" style={{ marginRight: 6 }} />
-                <Text style={styles.topActionBtnText}>Add Plan</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Toast Notification */}
-          {settingsSavedToast && (
-            <View style={styles.toastCard}>
-              <Feather name="check-circle" size={16} color="#10B981" style={{ marginRight: 8 }} />
-              <Text style={styles.toastText}>Changes saved successfully to platform master configuration!</Text>
+          {roleActionMessage && (
+            <View style={styles.actionSuccessToast}>
+              <Feather name="check-circle" size={16} color="#059669" style={{ marginRight: 8 }} />
+              <Text style={styles.actionSuccessToastText}>{roleActionMessage}</Text>
             </View>
           )}
 
           {/* ========================================================= */}
-          {/* 1. DASHBOARD VIEW (Exact Template from PDF Page 3)         */}
+          {/* DASHBOARD TAB (Exact Matching Layout of Uploaded Image)   */}
           {/* ========================================================= */}
           {activeNav === 'Dashboard' && (
-            <View style={styles.sectionContainer}>
-              {/* 4 KPI Cards */}
+            <>
+              <View style={styles.greetingHeaderRow}>
+                <View>
+                  <Text style={styles.greetingTitle}>Welcome back, Admin! 👋</Text>
+                  <Text style={styles.greetingSubtitle}>Here's an overview of your AI chatbot platform.</Text>
+                </View>
+                <View style={styles.headerDateBadge}>
+                  <Text style={styles.headerDateText}>Monday, 8 September 2025  |  10:24 AM</Text>
+                </View>
+              </View>
+
+              {/* 1. OVERVIEW / 4 KPI CARDS */}
               <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <KPICard
-                  icon="account-group"
-                  title="Total Clients"
-                  value="48"
-                  trend="+ 12%"
-                  sub="+5 new this month"
-                  color="#0056FF"
-                  bgColor="#EFF6FF"
-                />
-                <KPICard
-                  icon="account-check"
-                  title="Active Clients"
-                  value="42"
-                  trend="+ 8%"
-                  sub="87.5% of total"
-                  color="#10B981"
-                  bgColor="#ECFDF5"
-                />
-                <KPICard
-                  icon="receipt"
-                  title="Total Subscriptions"
-                  value="52"
-                  trend="+ 15%"
-                  sub="across all clients"
-                  color="#7C3AED"
-                  bgColor="#F5F3FF"
-                />
-                <KPICard
-                  icon="file-document-multiple"
-                  title="Total Documents"
-                  value="12,480"
-                  trend="+ 22%"
-                  sub="Uploaded by clients"
-                  color="#0284C7"
-                  bgColor="#F0F9FF"
-                />
-              </View>
-
-              {/* Middle Row: Client Growth | Subscriptions by Plan | Recent Activity */}
-              <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
-                {/* 1. Client Growth Chart */}
-                <View style={[styles.gridCard, { flex: 1.1 }]}>
-                  <View style={styles.gridCardHeader}>
-                    <Text style={styles.gridCardTitle}>Client Growth</Text>
-                    <View style={styles.filterDropdownPill}>
-                      <Text style={styles.filterDropdownPillText}>Last 6 Months</Text>
-                      <Feather name="chevron-down" size={13} color="#64748B" style={{ marginLeft: 4 }} />
-                    </View>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EBF3FF' }]}>
+                    <MaterialCommunityIcons name="office-building" size={24} color="#0066FF" />
                   </View>
-
-                  <View style={styles.areaChartContainer}>
-                    <View style={styles.chartYAxis}>
-                      <Text style={styles.axisLabel}>50</Text>
-                      <Text style={styles.axisLabel}>40</Text>
-                      <Text style={styles.axisLabel}>30</Text>
-                      <Text style={styles.axisLabel}>20</Text>
-                      <Text style={styles.axisLabel}>10</Text>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Clients</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>48</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>12%</Text>
+                      </View>
                     </View>
-                    <View style={styles.chartBarsGroup}>
-                      {[
-                        { month: 'Apr', value: 24, active: false },
-                        { month: 'May', value: 28, active: false },
-                        { month: 'Jun', value: 34, active: false },
-                        { month: 'Jul', value: 40, active: false },
-                        { month: 'Aug', value: 48, active: true },
-                      ].map((item, idx) => (
-                        <View key={item.month} style={styles.chartBarCol}>
-                          <View
-                            style={[
-                              styles.chartBarFill,
-                              item.active ? styles.chartBarFillActive : styles.chartBarFillNormal,
-                              { height: `${(item.value / 50) * 100}%` },
-                            ]}
-                          >
-                            <Text style={styles.chartBarValue}>{item.value}</Text>
-                          </View>
-                          <Text style={[styles.chartBarMonth, item.active && { color: '#0056FF', fontWeight: '700' }]}>
-                            {item.month}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
+                    <Text style={styles.kpiCardSubtext}>+5 new this month</Text>
                   </View>
                 </View>
 
-                {/* 2. Subscriptions by Plan (Donut Chart) */}
-                <View style={[styles.gridCard, { flex: 1.0 }]}>
-                  <View style={styles.gridCardHeader}>
-                    <Text style={styles.gridCardTitle}>Subscriptions by Plan</Text>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                    <MaterialCommunityIcons name="account-group" size={24} color="#10B981" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Active Clients</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>42</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>8%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>87.5% of total</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#F3E8FF' }]}>
+                    <MaterialCommunityIcons name="database" size={24} color="#8B5CF6" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Subscriptions</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>52</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>15%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>across all plans</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#E0F2FE' }]}>
+                    <MaterialCommunityIcons name="file-document-outline" size={24} color="#0284C7" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Documents</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>12,480</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>22%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>uploaded by clients</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* 2. MIDDLE ROW: Client Growth | Subscriptions by Plan | Recent Activity */}
+              <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
+                {/* 2.1 Client Growth Area Chart Card */}
+                <View style={[styles.contentCard, { flex: 1.15 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Client Growth</Text>
+                    <View style={{ position: 'relative' }}>
+                      <TouchableOpacity
+                        style={styles.timeFilterPill}
+                        onPress={() => setShowGrowthDropdown(!showGrowthDropdown)}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={styles.timeFilterPillText}>{selectedGrowthFilter}</Text>
+                        <Feather name="chevron-down" size={13} color="#64748B" style={{ marginLeft: 4 }} />
+                      </TouchableOpacity>
+
+                      {showGrowthDropdown && (
+                        <View style={styles.timeFilterDropdownMenu}>
+                          {['Last 3 Months', 'Last 6 Months', 'Year to Date'].map((opt) => (
+                            <TouchableOpacity
+                              key={opt}
+                              style={styles.dropdownMenuItem}
+                              onPress={() => {
+                                setSelectedGrowthFilter(opt);
+                                setShowGrowthDropdown(false);
+                              }}
+                            >
+                              <Text
+                                style={[
+                                  styles.dropdownMenuItemText,
+                                  selectedGrowthFilter === opt && { color: '#0066FF', fontWeight: '700' },
+                                ]}
+                              >
+                                {opt}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
                   </View>
 
-                  <View style={styles.donutLayout}>
-                    <View style={styles.donutCenterCircle}>
-                      <Text style={styles.donutCenterValue}>52</Text>
-                      <Text style={styles.donutCenterLabel}>Total</Text>
+                  {(() => {
+                    const points = currentGrowthData.map((d, index) => {
+                      const x = 50 + (index / (currentGrowthData.length - 1)) * (496 - 50);
+                      const y = 184 - (d.value / 50) * (184 - 24);
+                      return { ...d, x, y };
+                    });
+                    const linePathD = points.reduce((acc, pt, idx) => acc + (idx === 0 ? 'M ' : ' L ') + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1), '');
+                    const areaPathD = linePathD + ' L ' + points[points.length - 1].x.toFixed(1) + ' 184 L ' + points[0].x.toFixed(1) + ' 184 Z';
+
+                    return (
+                      <View style={{ width: '100%', marginTop: 6 }}>
+                        <svg viewBox="0 0 524 220" style={{ width: '100%', height: 210, overflow: 'visible' }}>
+                          <defs>
+                            <linearGradient id="exactClientGrowthGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#0066FF" stopOpacity="0.38" />
+                              <stop offset="100%" stopColor="#0066FF" stopOpacity="0.02" />
+                            </linearGradient>
+                          </defs>
+
+                          <line x1="34" y1="24" x2="506" y2="24" stroke="#EEF2F6" strokeWidth="1.2" />
+                          <line x1="34" y1="56" x2="506" y2="56" stroke="#EEF2F6" strokeWidth="1.2" />
+                          <line x1="34" y1="88" x2="506" y2="88" stroke="#EEF2F6" strokeWidth="1.2" />
+                          <line x1="34" y1="120" x2="506" y2="120" stroke="#EEF2F6" strokeWidth="1.2" />
+                          <line x1="34" y1="152" x2="506" y2="152" stroke="#EEF2F6" strokeWidth="1.2" />
+                          <line x1="34" y1="184" x2="506" y2="184" stroke="#EEF2F6" strokeWidth="1.2" />
+
+                          <text x="24" y="28" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="end" fontFamily="sans-serif">50</text>
+                          <text x="24" y="60" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="end" fontFamily="sans-serif">40</text>
+                          <text x="24" y="92" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="end" fontFamily="sans-serif">30</text>
+                          <text x="24" y="124" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="end" fontFamily="sans-serif">20</text>
+                          <text x="24" y="156" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="end" fontFamily="sans-serif">10</text>
+                          <text x="24" y="188" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="end" fontFamily="sans-serif">0</text>
+
+                          <path d={areaPathD} fill="url(#exactClientGrowthGrad)" />
+                          <path d={linePathD} fill="none" stroke="#0066FF" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+
+                          {points.map((pt, idx) => (
+                            <g
+                              key={idx}
+                              style={{ cursor: 'pointer' }}
+                              onMouseEnter={() => setHoveredDataPoint(idx)}
+                              onMouseLeave={() => setHoveredDataPoint(null)}
+                            >
+                              <circle
+                                cx={pt.x}
+                                cy={pt.y}
+                                r={hoveredDataPoint === idx ? 6.5 : 5}
+                                fill="#0066FF"
+                                stroke="#FFFFFF"
+                                strokeWidth={hoveredDataPoint === idx ? 3 : 2.5}
+                              />
+                              {hoveredDataPoint === idx && (
+                                <g>
+                                  <rect x={pt.x - 40} y={pt.y - 34} width="80" height="24" rx="6" fill="#0F172A" />
+                                  <text x={pt.x} y={pt.y - 18} fill="#FFFFFF" fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="sans-serif">
+                                    {pt.label}
+                                  </text>
+                                </g>
+                              )}
+                            </g>
+                          ))}
+
+                          {points.map((pt, idx) => (
+                            <text key={idx} x={pt.x} y="210" fill="#64748B" fontSize="12" fontWeight="500" textAnchor="middle" fontFamily="sans-serif">
+                              {pt.month}
+                            </text>
+                          ))}
+                        </svg>
+                      </View>
+                    );
+                  })()}
+                </View>
+
+                {/* 2.2 Subscriptions by Plan (Exact Donut Chart) */}
+                <View style={[styles.contentCard, { flex: 0.95 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Subscriptions by Plan</Text>
+                  </View>
+
+                  <View style={styles.donutVisualLayout}>
+                    <View style={styles.donutRingOuter}>
+                      <View style={styles.donutRingHole}>
+                        <Text style={styles.donutCenterBigNum}>52</Text>
+                        <Text style={styles.donutCenterSub}>Total</Text>
+                      </View>
                     </View>
+
                     <View style={styles.donutLegendCol}>
-                      <DonutLegendItem color="#EAB308" label="Gold" count="24 (46%)" />
-                      <DonutLegendItem color="#94A3B8" label="Silver" count="14 (27%)" />
-                      <DonutLegendItem color="#0056FF" label="Platinum" count="10 (19%)" />
-                      <DonutLegendItem color="#64748B" label="Others" count="4 (8%)" />
+                      <View style={styles.donutLegendRow}>
+                        <View style={[styles.legendColorDot, { backgroundColor: '#0066FF' }]} />
+                        <Text style={styles.legendPlanName}>Gold</Text>
+                        <Text style={styles.legendPlanMetric}>24 (46%)</Text>
+                      </View>
+                      <View style={styles.donutLegendRow}>
+                        <View style={[styles.legendColorDot, { backgroundColor: '#8B5CF6' }]} />
+                        <Text style={styles.legendPlanName}>Silver</Text>
+                        <Text style={styles.legendPlanMetric}>14 (27%)</Text>
+                      </View>
+                      <View style={styles.donutLegendRow}>
+                        <View style={[styles.legendColorDot, { backgroundColor: '#06B6D4' }]} />
+                        <Text style={styles.legendPlanName}>Platinum</Text>
+                        <Text style={styles.legendPlanMetric}>10 (19%)</Text>
+                      </View>
+                      <View style={styles.donutLegendRow}>
+                        <View style={[styles.legendColorDot, { backgroundColor: '#64748B' }]} />
+                        <Text style={styles.legendPlanName}>Others</Text>
+                        <Text style={styles.legendPlanMetric}>4 (8%)</Text>
+                      </View>
                     </View>
                   </View>
                 </View>
 
-                {/* 3. Recent Activity */}
-                <View style={[styles.gridCard, { flex: 1.1 }]}>
-                  <View style={styles.gridCardHeader}>
-                    <Text style={styles.gridCardTitle}>Recent Activity</Text>
+                {/* 2.3 Recent Activity */}
+                <View style={[styles.contentCard, { flex: 1.0 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Recent Activity</Text>
                     <TouchableOpacity onPress={() => setActiveNav('Reports')}>
-                      <Text style={styles.viewAllLinkText}>View All →</Text>
+                      <Text style={styles.viewAllActionLink}>View All →</Text>
                     </TouchableOpacity>
                   </View>
 
-                  <View style={styles.timelineList}>
-                    <TimelineRow
-                      icon="account-plus"
-                      color="#0056FF"
-                      text="New client 'EduSmart Learning' added"
-                      time="2 hours ago"
-                    />
-                    <TimelineRow
-                      icon="refresh"
-                      color="#10B981"
-                      text="Subscription for 'HealthPlus' renewed"
-                      time="5 hours ago"
-                    />
-                    <TimelineRow
-                      icon="cloud-check"
-                      color="#7C3AED"
-                      text="LLM data import completed for 'AutoDrive Ltd'"
-                      time="1 day ago"
-                    />
-                    <TimelineRow
-                      icon="star-check"
-                      color="#EAB308"
-                      text="Plan 'Platinum' assigned to 'FinSecure Bank'"
-                      time="1 day ago"
-                    />
-                    <TimelineRow
-                      icon="domain-plus"
-                      color="#0284C7"
-                      text="New client 'GreenEnergy Co' added"
-                      time="2 days ago"
-                    />
+                  <View style={styles.activityFeedList}>
+                    <ActivityFeedItem icon="account-plus-outline" iconColor="#10B981" iconBg="#ECFDF5" title='New client "EduSmart Learning" added' time="2 hours ago" />
+                    <ActivityFeedItem icon="refresh" iconColor="#0066FF" iconBg="#EFF6FF" title='Subscription for "HealthPlus" renewed' time="5 hours ago" />
+                    <ActivityFeedItem icon="file-document-outline" iconColor="#EF4444" iconBg="#FEF2F2" title='LLM data import completed for "AutoDrive Ltd"' time="1 day ago" />
+                    <ActivityFeedItem icon="star-outline" iconColor="#F59E0B" iconBg="#FFFBEB" title='Plan "Platinum" assigned to "FinSecure Bank"' time="1 day ago" />
+                    <ActivityFeedItem icon="account-plus-outline" iconColor="#10B981" iconBg="#ECFDF5" title='New client "GreenEnergy Co" added' time="2 days ago" />
                   </View>
                 </View>
               </View>
 
-              {/* Lower Row: Top Clients by Usage & Subscription Expiry */}
+              {/* 3. LOWER ROW: Top Clients by Usage & Subscription Expiry */}
               <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
-                {/* Top Clients by Usage Table */}
-                <View style={[styles.gridCard, { flex: 1.1 }]}>
-                  <View style={styles.gridCardHeader}>
-                    <Text style={styles.gridCardTitle}>Top Clients by Usage</Text>
+                {/* 3.1 Top Clients by Usage Table */}
+                <View style={[styles.contentCard, { flex: 1.1 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Top Clients by Usage</Text>
                     <TouchableOpacity onPress={() => setActiveNav('Clients')}>
-                      <Text style={styles.viewAllLinkText}>View All →</Text>
+                      <Text style={styles.viewAllActionLink}>View All →</Text>
                     </TouchableOpacity>
                   </View>
 
-                  <View style={styles.tableHeaderRow}>
-                    <Text style={[styles.thText, { width: 30 }]}>#</Text>
-                    <Text style={[styles.thText, { flex: 1.6 }]}>Company Name</Text>
-                    <Text style={[styles.thText, { flex: 1.0 }]}>Documents</Text>
-                    <Text style={[styles.thText, { flex: 1.1 }]}>Conversations</Text>
-                    <Text style={[styles.thText, { flex: 0.9 }]}>Status</Text>
+                  <View style={styles.tableHeadBar}>
+                    <Text style={[styles.thColText, { width: 28 }]}>#</Text>
+                    <Text style={[styles.thColText, { flex: 1.7 }]}>Company Name</Text>
+                    <Text style={[styles.thColText, { flex: 1.0 }]}>Documents</Text>
+                    <Text style={[styles.thColText, { flex: 1.1 }]}>Conversations</Text>
+                    <Text style={[styles.thColText, { flex: 0.9 }]}>Status</Text>
                   </View>
 
-                  {clients.slice(0, 5).map((client, idx) => (
-                    <View key={client.id} style={styles.tableBodyRow}>
-                      <Text style={[styles.tdTextMuted, { width: 30 }]}>{idx + 1}</Text>
-                      <View style={[styles.clientNameCol, { flex: 1.6 }]}>
-                        <View style={[styles.clientMiniAvatar, { backgroundColor: client.color }]}>
-                          <Text style={styles.clientMiniAvatarText}>{client.name.charAt(0)}</Text>
+                  {[
+                    { id: 1, name: 'HealthPlus', char: 'H', color: '#EF4444', docs: '2,480', conv: '18,230', status: 'Active' },
+                    { id: 2, name: 'TechNova Solutions', char: 'T', color: '#0066FF', docs: '1,920', conv: '12,450', status: 'Active' },
+                    { id: 3, name: 'AutoDrive Ltd', char: 'A', color: '#7C3AED', docs: '1,540', conv: '10,230', status: 'Active' },
+                    { id: 4, name: 'EduSmart Learning', char: 'E', color: '#10B981', docs: '980', conv: '7,560', status: 'Expiring Soon' },
+                    { id: 5, name: 'RetailCorp', char: 'R', color: '#2563EB', docs: '860', conv: '6,780', status: 'Active' },
+                  ].map((row, idx) => (
+                    <TouchableOpacity
+                      key={row.id}
+                      style={styles.tableClickableRow}
+                      onPress={() => {
+                        const found = clients.find(c => c.name === row.name) || clients[0];
+                        setSelectedClientModal(found);
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={[styles.tdIndexText, { width: 28 }]}>{idx + 1}</Text>
+                      <View style={[styles.companyAvatarCell, { flex: 1.7 }]}>
+                        <View style={[styles.circleInitialAvatar, { backgroundColor: row.color }]}>
+                          <Text style={styles.circleInitialText}>{row.char}</Text>
                         </View>
-                        <Text style={styles.clientNameText} numberOfLines={1}>
-                          {client.name}
-                        </Text>
+                        <Text style={styles.companyNameCellText} numberOfLines={1}>{row.name}</Text>
                       </View>
-                      <Text style={[styles.tdText, { flex: 1.0 }]}>{client.docs}</Text>
-                      <Text style={[styles.tdText, { flex: 1.1 }]}>{client.conversations}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{row.docs}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 1.1 }]}>{row.conv}</Text>
                       <View style={{ flex: 0.9 }}>
-                        <View style={styles.statusBadgeActive}>
-                          <View style={styles.statusDotActive} />
-                          <Text style={styles.statusBadgeTextActive}>Active</Text>
-                        </View>
+                        {row.status === 'Active' ? (
+                          <View style={styles.statusActivePill}>
+                            <View style={styles.dotActiveGreen} />
+                            <Text style={styles.statusActiveText}>Active</Text>
+                          </View>
+                        ) : (
+                          <View style={styles.statusExpiringPill}>
+                            <Text style={styles.statusExpiringText}>Expiring Soon</Text>
+                          </View>
+                        )}
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   ))}
                 </View>
 
-                {/* Subscription Expiry Table */}
-                <View style={[styles.gridCard, { flex: 1.1 }]}>
-                  <View style={styles.gridCardHeader}>
-                    <Text style={styles.gridCardTitle}>Subscription Expiry</Text>
+                {/* 3.2 Subscription Expiry Table */}
+                <View style={[styles.contentCard, { flex: 1.05 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Subscription Expiry</Text>
                     <TouchableOpacity onPress={() => setActiveNav('Subscriptions')}>
-                      <Text style={styles.viewAllLinkText}>View All →</Text>
+                      <Text style={styles.viewAllActionLink}>View All →</Text>
                     </TouchableOpacity>
                   </View>
 
-                  <View style={styles.tableHeaderRow}>
-                    <Text style={[styles.thText, { flex: 1.5 }]}>Company Name</Text>
-                    <Text style={[styles.thText, { flex: 1.0 }]}>Plan</Text>
-                    <Text style={[styles.thText, { flex: 1.2 }]}>Expiry Date</Text>
-                    <Text style={[styles.thText, { flex: 1.1 }]}>Days Left</Text>
+                  <View style={styles.tableHeadBar}>
+                    <Text style={[styles.thColText, { flex: 1.6 }]}>Company Name</Text>
+                    <Text style={[styles.thColText, { flex: 0.9 }]}>Plan</Text>
+                    <Text style={[styles.thColText, { flex: 1.2 }]}>Expiry Date</Text>
+                    <Text style={[styles.thColText, { flex: 0.8, textAlign: 'center' }]}>Days Left</Text>
                   </View>
 
-                  {clients.slice(3, 8).map((c) => (
-                    <View key={c.id} style={styles.tableBodyRow}>
-                      <Text style={[styles.clientNameText, { flex: 1.5 }]} numberOfLines={1}>
-                        {c.name}
-                      </Text>
-                      <View style={{ flex: 1.0 }}>
-                        <Text style={[styles.planBadgeText, { color: getPlanColor(c.plan) }]}>
-                          {c.plan}
-                        </Text>
+                  {[
+                    { name: 'EduSmart Learning', char: 'E', color: '#10B981', plan: 'Gold', date: '30 Sep 2025', days: 22 },
+                    { name: 'GreenEnergy Co', char: 'G', color: '#059669', plan: 'Silver', date: '15 Oct 2025', days: 37 },
+                    { name: 'HealthPlus', char: 'H', color: '#EF4444', plan: 'Platinum', date: '20 Oct 2025', days: 42 },
+                    { name: 'FinSecure Bank', char: 'F', color: '#7C3AED', plan: 'Gold', date: '05 Nov 2025', days: 58 },
+                    { name: 'LogiTrans Global', char: 'L', color: '#EA580C', plan: 'Silver', date: '14 Nov 2025', days: 67 },
+                  ].map((row, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={styles.tableClickableRow}
+                      onPress={() => {
+                        const found = clients.find(c => c.name === row.name) || clients[0];
+                        setSelectedClientModal(found);
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <View style={[styles.companyAvatarCell, { flex: 1.6 }]}>
+                        <View style={[styles.circleInitialAvatar, { backgroundColor: row.color }]}>
+                          <Text style={styles.circleInitialText}>{row.char}</Text>
+                        </View>
+                        <Text style={styles.companyNameCellText} numberOfLines={1}>{row.name}</Text>
                       </View>
-                      <Text style={[styles.tdTextMuted, { flex: 1.2 }]}>{c.endDate}</Text>
-                      <View style={{ flex: 1.1 }}>
-                        <View
-                          style={[
-                            styles.daysLeftPill,
-                            c.daysLeft === 'Expired'
-                              ? styles.daysLeftExpired
-                              : c.daysLeft.includes('22') || c.daysLeft.includes('58')
-                              ? styles.daysLeftWarning
-                              : styles.daysLeftNormal,
-                          ]}
-                        >
-                          <Text
-                            style={[
-                              styles.daysLeftText,
-                              c.daysLeft === 'Expired'
-                                ? { color: '#EF4444' }
-                                : c.daysLeft.includes('22') || c.daysLeft.includes('58')
-                                ? { color: '#B45309' }
-                                : { color: '#0056FF' },
-                            ]}
-                          >
-                            {c.daysLeft}
-                          </Text>
+                      <Text style={[styles.tdPlanText, { flex: 0.9 }]}>{row.plan}</Text>
+                      <Text style={[styles.tdDateText, { flex: 1.2 }]}>{row.date}</Text>
+                      <View style={{ flex: 0.8, alignItems: 'center' }}>
+                        <View style={styles.daysLeftAmberPill}>
+                          <Text style={styles.daysLeftAmberText}>{row.days}</Text>
                         </View>
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   ))}
                 </View>
               </View>
 
-              {/* Bottom CTA Banner (from PDF Page 3) */}
-              <View style={styles.bottomCtaBanner}>
-                <View style={styles.ctaBannerLeft}>
-                  <View style={styles.ctaBannerIconBox}>
-                    <MaterialCommunityIcons name="lightning-bolt" size={22} color="#0056FF" />
+              {/* 4. BOTTOM BANNER */}
+              <View style={styles.bottomCalloutCard}>
+                <View style={styles.calloutLeftContent}>
+                  <View style={styles.targetIconCircle}>
+                    <MaterialCommunityIcons name="bullseye-arrow" size={22} color="#7C3AED" />
                   </View>
-                  <View>
-                    <Text style={styles.ctaBannerHeading}>Let's make AI accessible to every business.</Text>
-                    <Text style={styles.ctaBannerSub}>
-                      Manage clients, subscriptions, and knowledge—all in one unified control pane.
+                  <View style={{ marginLeft: 14 }}>
+                    <Text style={styles.calloutHeading}>Let's make AI accessible to every business.</Text>
+                    <Text style={styles.calloutSub}>
+                      Manage clients, subscriptions and knowledge — all in one place.
                     </Text>
                   </View>
                 </View>
+
                 <TouchableOpacity
-                  style={styles.ctaBannerBtn}
+                  style={styles.calloutActionBtn}
                   onPress={() => setActiveNav('Reports')}
                   activeOpacity={0.85}
                 >
-                  <Text style={styles.ctaBannerBtnText}>View Reports →</Text>
+                  <Text style={styles.calloutActionBtnText}>View Reports →</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </>
           )}
 
           {/* ========================================================= */}
-          {/* 2. CLIENTS MANAGEMENT VIEW (PDF Pages 4, 5, 6)             */}
+          {/* CLIENTS MANAGEMENT TAB (Exact Matching PDF Page 4, 5, 6)  */}
           {/* ========================================================= */}
           {activeNav === 'Clients' && (
-            <View style={styles.sectionContainer}>
-              {/* 4 Summary Cards */}
+            <View style={styles.tabContentContainer}>
+              <View style={styles.subScreenHeaderRow}>
+                <View>
+                  <View style={styles.breadcrumbRow}>
+                    <Text style={styles.breadcrumbLink} onPress={() => setActiveNav('Dashboard')}>Dashboard</Text>
+                    <Text style={styles.breadcrumbDivider}>›</Text>
+                    <Text style={styles.breadcrumbActive}>Clients</Text>
+                  </View>
+                  <Text style={styles.greetingTitle}>Client Management</Text>
+                  <Text style={styles.greetingSubtitle}>Manage and monitor all client organizations using the Platinum Software AI platform.</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.primaryActionBtn}
+                  onPress={() => {
+                    setClientFormName('');
+                    setClientFormIndustry('IT Services');
+                    setClientFormSize('51 - 200 employees');
+                    setClientFormWebsite('https://');
+                    setClientFormContact('');
+                    setClientFormDesignation('');
+                    setClientFormEmail('');
+                    setClientFormPhone('');
+                    setClientFormPlan('Gold');
+                    setClientFormStartDate('18 Sep 2025');
+                    setClientFormEndDate('18 Sep 2026');
+                    setClientFormStatus('Active');
+                    setClientFormNotes('');
+                    setShowAddClientModal(true);
+                  }}
+                >
+                  <Feather name="plus" size={16} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.primaryActionBtnText}>Add Client</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 4 Summary KPI Cards */}
               <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <KPICard
-                  icon="account-group"
-                  title="Total Clients"
-                  value="48"
-                  trend="+ 12%"
-                  sub="+5 new this month"
-                  color="#0056FF"
-                  bgColor="#EFF6FF"
-                />
-                <KPICard
-                  icon="account-check"
-                  title="Active Clients"
-                  value="42"
-                  trend="+ 8%"
-                  sub="87.5% of total"
-                  color="#10B981"
-                  bgColor="#ECFDF5"
-                />
-                <KPICard
-                  icon="account-remove"
-                  title="Inactive Clients"
-                  value="6"
-                  trend="+ 25%"
-                  sub="12.5% of total"
-                  color="#EF4444"
-                  bgColor="#FEF2F2"
-                />
-                <KPICard
-                  icon="clock-alert-outline"
-                  title="Expiring Soon"
-                  value="5"
-                  trend="Alert"
-                  sub="in next 30 days View →"
-                  color="#F59E0B"
-                  bgColor="#FFFBEB"
-                />
-              </View>
-
-              {/* Search & Filters Bar (from PDF Page 4) */}
-              <View style={[styles.searchFilterCard, isMobile && styles.searchFilterCardMobile]}>
-                <View style={styles.searchBoxInputWrapper}>
-                  <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
-                  <TextInput
-                    placeholder="Search by company name, industry, or contact..."
-                    placeholderTextColor="#94A3B8"
-                    value={clientSearch}
-                    onChangeText={setClientSearch}
-                    style={styles.innerSearchInput}
-                  />
-                </View>
-
-                <View style={styles.filterDropdownsRow}>
-                  {/* Industry Dropdown */}
-                  <View style={styles.dropdownSelector}>
-                    <Text style={styles.dropdownLabel}>Industry: {selectedIndustry}</Text>
-                    <TouchableOpacity
-                      onPress={() =>
-                        setSelectedIndustry((prev) =>
-                          prev === 'All' ? 'IT Services' : prev === 'IT Services' ? 'Healthcare' : 'All'
-                        )
-                      }
-                    >
-                      <Feather name="chevron-down" size={14} color="#64748B" />
-                    </TouchableOpacity>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EBF3FF' }]}>
+                    <MaterialCommunityIcons name="office-building" size={24} color="#0066FF" />
                   </View>
-
-                  {/* Plan Dropdown */}
-                  <View style={styles.dropdownSelector}>
-                    <Text style={styles.dropdownLabel}>Plan: {selectedPlanFilter}</Text>
-                    <TouchableOpacity
-                      onPress={() =>
-                        setSelectedPlanFilter((prev) =>
-                          prev === 'All' ? 'Gold' : prev === 'Gold' ? 'Platinum' : 'All'
-                        )
-                      }
-                    >
-                      <Feather name="chevron-down" size={14} color="#64748B" />
-                    </TouchableOpacity>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Clients</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>48</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>12%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>+5 new this month</Text>
                   </View>
-
-                  {/* Reset Button */}
-                  <TouchableOpacity
-                    style={styles.resetFilterBtn}
-                    onPress={() => {
-                      setClientSearch('');
-                      setSelectedIndustry('All');
-                      setSelectedPlanFilter('All');
-                      setSelectedStatusFilter('All');
-                    }}
-                  >
-                    <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 4 }} />
-                    <Text style={styles.resetFilterBtnText}>Reset</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* All Clients (48) Table Card (from PDF Page 4) */}
-              <View style={styles.fullTableCard}>
-                <View style={styles.tableCardTitleBar}>
-                  <Text style={styles.tableCardMainTitle}>All Clients ({filteredClients.length})</Text>
-                  <Text style={styles.tableCardSubtitle}>Complete list of enrolled client tenants</Text>
                 </View>
 
-                {/* Table Headers */}
-                <View style={styles.tableHeaderRow}>
-                  <Text style={[styles.thText, { width: 32 }]}>#</Text>
-                  <Text style={[styles.thText, { flex: 1.6 }]}>Company Name</Text>
-                  <Text style={[styles.thText, { flex: 1.2 }]}>Industry</Text>
-                  <Text style={[styles.thText, { flex: 1.5 }]}>Contact Person</Text>
-                  <Text style={[styles.thText, { flex: 0.9 }]}>Plan</Text>
-                  <Text style={[styles.thText, { flex: 0.9 }]}>Status</Text>
-                  <Text style={[styles.thText, { flex: 0.7 }]}>Users</Text>
-                  <Text style={[styles.thText, { flex: 1.3 }]}>Subscription End</Text>
-                  <Text style={[styles.thText, { flex: 1.1, textAlign: 'right' }]}>Actions</Text>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                    <MaterialCommunityIcons name="check-circle-outline" size={24} color="#10B981" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Active Clients</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>42</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>8%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>87.5% of total</Text>
+                  </View>
                 </View>
 
-                {/* Table Rows */}
-                {filteredClients.map((client, index) => (
-                  <View key={client.id} style={styles.tableBodyRow}>
-                    <Text style={[styles.tdTextMuted, { width: 32 }]}>{index + 1}</Text>
-
-                    {/* Company */}
-                    <View style={[styles.clientNameCol, { flex: 1.6 }]}>
-                      <View style={[styles.clientMiniAvatar, { backgroundColor: client.color }]}>
-                        <Text style={styles.clientMiniAvatarText}>{client.name.charAt(0)}</Text>
-                      </View>
-                      <View>
-                        <Text style={styles.clientNameText}>{client.name}</Text>
-                        <Text style={styles.clientSubText}>{client.website}</Text>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF2F2' }]}>
+                    <MaterialCommunityIcons name="minus-circle-outline" size={24} color="#EF4444" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Inactive Clients</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>6</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEF2F2' }]}>
+                        <Feather name="arrow-down-right" size={12} color="#EF4444" />
+                        <Text style={[styles.kpiTrendText, { color: '#EF4444' }]}>25%</Text>
                       </View>
                     </View>
+                    <Text style={styles.kpiCardSubtext}>12.5% of total</Text>
+                  </View>
+                </View>
 
-                    {/* Industry */}
-                    <Text style={[styles.tdText, { flex: 1.2 }]}>{client.industry}</Text>
-
-                    {/* Contact Person */}
-                    <View style={{ flex: 1.5 }}>
-                      <Text style={styles.contactNameText}>{client.contactPerson}</Text>
-                      <Text style={styles.contactEmailText}>{client.email}</Text>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FFFBEB' }]}>
+                    <MaterialCommunityIcons name="clock-outline" size={24} color="#F59E0B" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Expiring Soon</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>5</Text>
                     </View>
-
-                    {/* Plan */}
-                    <View style={{ flex: 0.9 }}>
-                      <View style={[styles.planPill, { backgroundColor: getPlanBg(client.plan) }]}>
-                        <Text style={[styles.planPillText, { color: getPlanColor(client.plan) }]}>
-                          {client.plan}
-                        </Text>
-                      </View>
-                    </View>
-
-                    {/* Status */}
-                    <View style={{ flex: 0.9 }}>
-                      <View style={client.status === 'Active' ? styles.statusBadgeActive : styles.statusBadgeInactive}>
-                        <View style={client.status === 'Active' ? styles.statusDotActive : styles.statusDotInactive} />
-                        <Text style={client.status === 'Active' ? styles.statusBadgeTextActive : styles.statusBadgeTextInactive}>
-                          {client.status}
-                        </Text>
-                      </View>
-                    </View>
-
-                    {/* Users */}
-                    <Text style={[styles.tdText, { flex: 0.7 }]}>{client.users}</Text>
-
-                    {/* Subscription End */}
-                    <View style={{ flex: 1.3 }}>
-                      <Text style={styles.dateEndText}>{client.endDate}</Text>
-                      <Text style={styles.daysLeftSubText}>{client.daysLeft}</Text>
-                    </View>
-
-                    {/* Action Buttons: View & Edit */}
-                    <View style={[styles.actionButtonsCol, { flex: 1.1 }]}>
-                      <TouchableOpacity
-                        style={styles.actionBtnView}
-                        onPress={() => {
-                          setSelectedClient(client);
-                          setShowViewClientModal(true);
-                        }}
-                      >
-                        <Text style={styles.actionBtnViewText}>View</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={styles.actionBtnEdit}
-                        onPress={() => {
-                          setSelectedClient(client);
-                          setShowEditClientModal(true);
-                        }}
-                      >
-                        <Text style={styles.actionBtnEditText}>Edit</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text style={styles.kpiCardSubtext}>in next 30 days</Text>
+                      <TouchableOpacity onPress={() => setClientStatusFilter('Expiring Soon')}>
+                        <Text style={[styles.viewAllActionLink, { fontSize: 12 }]}>View →</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
-                ))}
+                </View>
+              </View>
 
-                {/* Table Footer Pagination */}
-                <View style={styles.tablePaginationFooter}>
-                  <Text style={styles.paginationInfoText}>
-                    Showing 1 to {filteredClients.length} of {clients.length} clients
-                  </Text>
-                  <View style={styles.paginationControls}>
-                    <TouchableOpacity style={styles.pageArrowBtn}>
-                      <Feather name="chevron-left" size={14} color="#64748B" />
+              {/* Search & Filter Bar */}
+              <View style={styles.contentCard}>
+                <View style={[styles.filterBarRow, isMobile && styles.filterBarRowMobile]}>
+                  <View style={[styles.searchBarBox, { flex: 1.4 }]}>
+                    <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
+                    <TextInput
+                      placeholder="Search by company name, industry, or contact..."
+                      placeholderTextColor="#94A3B8"
+                      value={clientSearch}
+                      onChangeText={setClientSearch}
+                      style={styles.innerSearch}
+                    />
+                    {clientSearch.length > 0 && (
+                      <TouchableOpacity onPress={() => setClientSearch('')}>
+                        <Feather name="x" size={14} color="#94A3B8" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+
+                  <View style={styles.filterDropdownWrapper}>
+                    <Text style={styles.filterFieldLabel}>Industry</Text>
+                    <select
+                      style={styles.nativeHtmlSelect}
+                      value={clientIndustryFilter}
+                      onChange={(e) => setClientIndustryFilter(e.target.value)}
+                    >
+                      <option value="All Industries">All Industries</option>
+                      <option value="IT Services">IT Services</option>
+                      <option value="Automotive">Automotive</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Education">Education</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Energy">Energy</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Logistics">Logistics</option>
+                      <option value="Cloud Services">Cloud Services</option>
+                      <option value="Technology">Technology</option>
+                    </select>
+                  </View>
+
+                  <View style={styles.filterDropdownWrapper}>
+                    <Text style={styles.filterFieldLabel}>Plan</Text>
+                    <select
+                      style={styles.nativeHtmlSelect}
+                      value={clientPlanFilter}
+                      onChange={(e) => setClientPlanFilter(e.target.value)}
+                    >
+                      <option value="All Plans">All Plans</option>
+                      <option value="Gold">Gold</option>
+                      <option value="Silver">Silver</option>
+                      <option value="Platinum">Platinum</option>
+                      <option value="Enterprise">Enterprise</option>
+                    </select>
+                  </View>
+
+                  <View style={styles.filterDropdownWrapper}>
+                    <Text style={styles.filterFieldLabel}>Status</Text>
+                    <select
+                      style={styles.nativeHtmlSelect}
+                      value={clientStatusFilter}
+                      onChange={(e) => setClientStatusFilter(e.target.value)}
+                    >
+                      <option value="All Statuses">All Statuses</option>
+                      <option value="Active">Active</option>
+                      <option value="Expiring Soon">Expiring Soon</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </View>
+
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end' }}>
+                    <TouchableOpacity style={styles.filterActionButton}>
+                      <Feather name="filter" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
+                      <Text style={styles.filterActionButtonText}>Filter</Text>
                     </TouchableOpacity>
-                    <View style={styles.pageNumberActive}>
-                      <Text style={styles.pageNumberActiveText}>1</Text>
+
+                    <TouchableOpacity
+                      style={styles.resetActionButton}
+                      onPress={() => {
+                        setClientSearch('');
+                        setClientIndustryFilter('All Industries');
+                        setClientPlanFilter('All Plans');
+                        setClientStatusFilter('All Statuses');
+                      }}
+                    >
+                      <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 6 }} />
+                      <Text style={styles.resetActionButtonText}>Reset</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Table of clients */}
+                <View style={{ marginTop: 16 }}>
+                  <View style={styles.tableSubheaderRow}>
+                    <Text style={styles.tableTitleText}>All Clients ({clients.length})</Text>
+                  </View>
+
+                  <View style={styles.tableHeadBar}>
+                    <Text style={[styles.thColText, { width: 32 }]}>#</Text>
+                    <Text style={[styles.thColText, { flex: 1.8 }]}>Company Name</Text>
+                    <Text style={[styles.thColText, { flex: 1.2 }]}>Industry</Text>
+                    <Text style={[styles.thColText, { flex: 1.6 }]}>Contact Person</Text>
+                    <Text style={[styles.thColText, { flex: 0.9 }]}>Plan</Text>
+                    <Text style={[styles.thColText, { flex: 1.1 }]}>Status</Text>
+                    <Text style={[styles.thColText, { flex: 0.7, textAlign: 'center' }]}>Users</Text>
+                    <Text style={[styles.thColText, { flex: 1.4 }]}>Subscription End</Text>
+                    <Text style={[styles.thColText, { flex: 1.2, textAlign: 'right' }]}>Actions</Text>
+                  </View>
+
+                  {clients
+                    .filter((c) => {
+                      const matchesSearch =
+                        c.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
+                        c.industry.toLowerCase().includes(clientSearch.toLowerCase()) ||
+                        c.contactPerson.toLowerCase().includes(clientSearch.toLowerCase()) ||
+                        c.email.toLowerCase().includes(clientSearch.toLowerCase());
+                      const matchesIndustry = clientIndustryFilter === 'All Industries' || c.industry === clientIndustryFilter;
+                      const matchesPlan = clientPlanFilter === 'All Plans' || c.plan.toLowerCase().includes(clientPlanFilter.toLowerCase());
+                      const matchesStatus = clientStatusFilter === 'All Statuses' || c.status === clientStatusFilter;
+                      return matchesSearch && matchesIndustry && matchesPlan && matchesStatus;
+                    })
+                    .map((client, i) => (
+                      <View key={client.id} style={styles.tableClickableRow}>
+                        <Text style={[styles.tdIndexText, { width: 32 }]}>{i + 1}</Text>
+
+                        <View style={[styles.companyAvatarCell, { flex: 1.8 }]}>
+                          <View style={[styles.circleInitialAvatar, { backgroundColor: client.avatarColor }]}>
+                            <Text style={styles.circleInitialText}>{client.avatarChar}</Text>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={styles.companyNameCellText} numberOfLines={1}>{client.name}</Text>
+                          </View>
+                        </View>
+
+                        <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{client.industry}</Text>
+
+                        <View style={{ flex: 1.6 }}>
+                          <Text style={styles.contactNameText}>{client.contactPerson}</Text>
+                          <Text style={styles.contactEmailText}>{client.email}</Text>
+                        </View>
+
+                        <View style={{ flex: 0.9 }}>
+                          <View
+                            style={[
+                              styles.planBadgeTag,
+                              client.plan === 'Gold' && styles.planBadgeGold,
+                              client.plan === 'Silver' && styles.planBadgeSilver,
+                              client.plan === 'Platinum' && styles.planBadgePlatinum,
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                styles.planBadgeTagText,
+                                client.plan === 'Gold' && styles.planBadgeGoldText,
+                                client.plan === 'Silver' && styles.planBadgeSilverText,
+                                client.plan === 'Platinum' && styles.planBadgePlatinumText,
+                              ]}
+                            >
+                              {client.plan}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View style={{ flex: 1.1 }}>
+                          {client.status === 'Active' && (
+                            <View style={styles.statusActivePill}>
+                              <View style={styles.dotActiveGreen} />
+                              <Text style={styles.statusActiveText}>Active</Text>
+                            </View>
+                          )}
+                          {client.status === 'Expiring Soon' && (
+                            <View style={styles.statusExpiringPill}>
+                              <View style={styles.dotAmber} />
+                              <Text style={styles.statusExpiringText}>Expiring Soon</Text>
+                            </View>
+                          )}
+                          {client.status === 'Inactive' && (
+                            <View style={styles.statusExpiredPill}>
+                              <View style={styles.dotRed} />
+                              <Text style={styles.statusExpiredText}>Inactive</Text>
+                            </View>
+                          )}
+                        </View>
+
+                        <Text style={[styles.tdNumberText, { flex: 0.7, textAlign: 'center' }]}>{client.users}</Text>
+
+                        <View style={{ flex: 1.4 }}>
+                          <Text
+                            style={[
+                              styles.tdDateText,
+                              client.status === 'Inactive' && { color: '#EF4444' },
+                            ]}
+                          >
+                            {client.endDate}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.daysLeftSubText,
+                              client.status === 'Expiring Soon' && { color: '#D97706', fontWeight: '600' },
+                              client.status === 'Inactive' && { color: '#EF4444', fontWeight: '600' },
+                            ]}
+                          >
+                            {client.daysLeftText}
+                          </Text>
+                        </View>
+
+                        <View style={{ flex: 1.2, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 6 }}>
+                          <TouchableOpacity
+                            style={styles.viewSmallBtn}
+                            onPress={() => setSelectedClientModal(client)}
+                          >
+                            <Text style={styles.viewSmallBtnText}>View</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.editSmallBtn}
+                            onPress={() => {
+                              setEditingClientModal(client);
+                              setClientFormName(client.name);
+                              setClientFormIndustry(client.industry);
+                              setClientFormSize(client.companySize || '51 - 200 employees');
+                              setClientFormWebsite(client.website || 'https://');
+                              setClientFormContact(client.contactPerson);
+                              setClientFormDesignation(client.designation || 'Manager');
+                              setClientFormEmail(client.email);
+                              setClientFormPhone(client.phone || '+91 98000 00000');
+                              setClientFormPlan(client.plan);
+                              setClientFormStartDate(client.startDate || '01 Jan 2025');
+                              setClientFormEndDate(client.endDate);
+                              setClientFormStatus(client.status);
+                              setClientFormNotes(client.notes || '');
+                            }}
+                          >
+                            <Text style={styles.editSmallBtnText}>Edit</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.iconActionBtn}
+                            onPress={() => {
+                              const newStatus = client.status === 'Active' ? 'Inactive' : 'Active';
+                              setClients(clients.map(c => c.id === client.id ? { ...c, status: newStatus } : c));
+                              notifyAction(setClientActionMessage, `Client ${client.name} status updated to ${newStatus}.`);
+                            }}
+                            title={client.status === 'Active' ? 'Deactivate Client' : 'Activate Client'}
+                          >
+                            <Feather
+                              name={client.status === 'Active' ? 'slash' : 'check-circle'}
+                              size={14}
+                              color={client.status === 'Active' ? '#EF4444' : '#10B981'}
+                            />
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.iconActionBtn}
+                            onPress={() => {
+                              if (window?.confirm ? window.confirm(`Are you sure you want to delete ${client.name}?`) : true) {
+                                setClients(clients.filter(c => c.id !== client.id));
+                                notifyAction(setClientActionMessage, `Client ${client.name} successfully deleted.`);
+                              }
+                            }}
+                            title="Delete Client"
+                          >
+                            <Feather name="trash-2" size={14} color="#94A3B8" />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))}
+
+                  <View style={styles.tablePaginationFooter}>
+                    <Text style={styles.paginationShowingText}>Showing 1 to 10 of 48 clients</Text>
+                    <View style={styles.paginationPagesRow}>
+                      <TouchableOpacity style={styles.pageBtn}><Feather name="chevron-left" size={14} color="#64748B" /></TouchableOpacity>
+                      <TouchableOpacity style={[styles.pageBtn, styles.pageBtnActive]}><Text style={styles.pageBtnActiveText}>1</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.pageBtn}><Text style={styles.pageBtnText}>2</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.pageBtn}><Text style={styles.pageBtnText}>3</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.pageBtn}><Text style={styles.pageBtnText}>4</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.pageBtn}><Text style={styles.pageBtnText}>5</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.pageBtn}><Feather name="chevron-right" size={14} color="#64748B" /></TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.pageNumberBtn}>
-                      <Text style={styles.pageNumberText}>2</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.pageNumberBtn}>
-                      <Text style={styles.pageNumberText}>3</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.pageArrowBtn}>
-                      <Feather name="chevron-right" size={14} color="#64748B" />
-                    </TouchableOpacity>
+                    <View style={styles.pageSizeSelectWrapper}>
+                      <select style={styles.pageSizeSelect}>
+                        <option>10 per page</option>
+                        <option>25 per page</option>
+                        <option>50 per page</option>
+                      </select>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -1381,760 +1853,771 @@ export default function AdminPortalView({ onBackToLanding }) {
           )}
 
           {/* ========================================================= */}
-          {/* 3. PLANS MANAGEMENT VIEW (PDF Pages 7, 8)                  */}
+          {/* PLANS MANAGEMENT TAB (Exact Matching PDF Page 7 & 8)       */}
           {/* ========================================================= */}
           {activeNav === 'Plans' && (
-            <View style={styles.sectionContainer}>
-              {/* 4 Summary Cards */}
+            <View style={styles.tabContentContainer}>
+              <View style={styles.subScreenHeaderRow}>
+                <View>
+                  <View style={styles.breadcrumbRow}>
+                    <Text style={styles.breadcrumbLink} onPress={() => setActiveNav('Dashboard')}>Dashboard</Text>
+                    <Text style={styles.breadcrumbDivider}>›</Text>
+                    <Text style={styles.breadcrumbActive}>Plans</Text>
+                  </View>
+                  <Text style={styles.greetingTitle}>Plans Management</Text>
+                  <Text style={styles.greetingSubtitle}>Create and manage subscription plans for your clients.</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.primaryActionBtn}
+                  onPress={() => {
+                    setPlanFormName('');
+                    setPlanFormType('Subscription');
+                    setPlanFormShortDesc('');
+                    setPlanFormDetailedDesc('');
+                    setPlanFormPrice('₹0.00');
+                    setPlanFormBilling('Monthly');
+                    setPlanFormValidity('12');
+                    setPlanFormCurrency('INR (₹)');
+                    setPlanFormMaxQueries('1000');
+                    setPlanFormKeyFeatures('Up to 1,000 queries/month\nStandard LLM model\nEmail support\nBasic analytics');
+                    setPlanFormMaxUsers('5');
+                    setPlanFormStorage('10 MB');
+                    setPlanFormStatus('Active');
+                    setPlanFormDisplayOrder(String(plans.length + 1));
+                    setShowAddPlanModal(true);
+                  }}
+                >
+                  <Feather name="plus" size={16} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.primaryActionBtnText}>Add Plan</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 4 KPI Summary Cards */}
               <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <KPICard
-                  icon="card-bulleted"
-                  title="Total Plans"
-                  value={plans.length.toString()}
-                  trend="Active"
-                  sub="Active subscription plans"
-                  color="#0056FF"
-                  bgColor="#EFF6FF"
-                />
-                <KPICard
-                  icon="check-circle"
-                  title="Active Plans"
-                  value={plans.filter((p) => p.status === 'Active').length.toString()}
-                  trend="100%"
-                  sub="100% of total"
-                  color="#10B981"
-                  bgColor="#ECFDF5"
-                />
-                <KPICard
-                  icon="close-circle"
-                  title="Inactive Plans"
-                  value="0"
-                  trend="0%"
-                  sub="0% of total"
-                  color="#64748B"
-                  bgColor="#F1F5F9"
-                />
-                <KPICard
-                  icon="domain"
-                  title="Total Clients Using Plans"
-                  value="48"
-                  trend="Active"
-                  sub="Across all plans"
-                  color="#F59E0B"
-                  bgColor="#FFFBEB"
-                />
-              </View>
-
-              {/* Search & View Mode Toggle */}
-              <View style={[styles.searchFilterCard, isMobile && styles.searchFilterCardMobile]}>
-                <View style={styles.searchBoxInputWrapper}>
-                  <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
-                  <TextInput
-                    placeholder="Search plans by name or description..."
-                    placeholderTextColor="#94A3B8"
-                    value={planSearch}
-                    onChangeText={setPlanSearch}
-                    style={styles.innerSearchInput}
-                  />
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
+                    <MaterialCommunityIcons name="card-bulleted-outline" size={24} color="#0066FF" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Plans</Text>
+                    <Text style={styles.kpiCardValue}>{plans.length}</Text>
+                    <Text style={styles.kpiCardSubtext}>Active subscription plans</Text>
+                  </View>
                 </View>
 
-                <View style={styles.filterDropdownsRow}>
-                  {/* Status Filter */}
-                  <View style={styles.dropdownSelector}>
-                    <Text style={styles.dropdownLabel}>Status: {planStatusFilter}</Text>
-                    <TouchableOpacity
-                      onPress={() => setPlanStatusFilter((prev) => (prev === 'All' ? 'Active' : 'All'))}
-                    >
-                      <Feather name="chevron-down" size={14} color="#64748B" />
-                    </TouchableOpacity>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                    <MaterialCommunityIcons name="check-circle-outline" size={24} color="#10B981" />
                   </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Active Plans</Text>
+                    <Text style={styles.kpiCardValue}>{plans.filter(p => p.status === 'Active').length}</Text>
+                    <Text style={styles.kpiCardSubtext}>100% of total</Text>
+                  </View>
+                </View>
 
-                  {/* View Mode Switcher */}
-                  <View style={styles.viewModeToggle}>
-                    <TouchableOpacity
-                      style={[styles.viewModeBtn, planViewMode === 'table' && styles.viewModeBtnActive]}
-                      onPress={() => setPlanViewMode('table')}
-                    >
-                      <Feather name="list" size={15} color={planViewMode === 'table' ? '#0056FF' : '#64748B'} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.viewModeBtn, planViewMode === 'grid' && styles.viewModeBtnActive]}
-                      onPress={() => setPlanViewMode('grid')}
-                    >
-                      <Feather name="grid" size={15} color={planViewMode === 'grid' ? '#0056FF' : '#64748B'} />
-                    </TouchableOpacity>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF2F2' }]}>
+                    <MaterialCommunityIcons name="minus-circle-outline" size={24} color="#EF4444" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Inactive Plans</Text>
+                    <Text style={styles.kpiCardValue}>{plans.filter(p => p.status === 'Inactive').length}</Text>
+                    <Text style={styles.kpiCardSubtext}>0% of total</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FFFBEB' }]}>
+                    <MaterialCommunityIcons name="account-multiple-check-outline" size={24} color="#F59E0B" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Clients Using Plans</Text>
+                    <Text style={styles.kpiCardValue}>48</Text>
+                    <Text style={styles.kpiCardSubtext}>Across all active plans</Text>
                   </View>
                 </View>
               </View>
 
-              {/* TABLE VIEW (Exact layout from PDF Page 7) */}
-              {planViewMode === 'table' ? (
-                <View style={styles.fullTableCard}>
-                  <View style={styles.tableCardTitleBar}>
-                    <Text style={styles.tableCardMainTitle}>All Plans ({filteredPlans.length})</Text>
-                    <Text style={styles.tableCardSubtitle}>Configured subscription tiers and feature allocations</Text>
+              {/* Search & Filter Bar */}
+              <View style={styles.contentCard}>
+                <View style={[styles.filterBarRow, isMobile && styles.filterBarRowMobile]}>
+                  <View style={[styles.searchBarBox, { flex: 1.8 }]}>
+                    <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
+                    <TextInput
+                      placeholder="Search plans by name or description..."
+                      placeholderTextColor="#94A3B8"
+                      value={planSearch}
+                      onChangeText={setPlanSearch}
+                      style={styles.innerSearch}
+                    />
+                    {planSearch.length > 0 && (
+                      <TouchableOpacity onPress={() => setPlanSearch('')}>
+                        <Feather name="x" size={14} color="#94A3B8" />
+                      </TouchableOpacity>
+                    )}
                   </View>
 
-                  <View style={styles.tableHeaderRow}>
-                    <Text style={[styles.thText, { width: 30 }]}>#</Text>
-                    <Text style={[styles.thText, { flex: 1.2 }]}>Plan</Text>
-                    <Text style={[styles.thText, { flex: 1.6 }]}>Description</Text>
-                    <Text style={[styles.thText, { flex: 1.1 }]}>Price (Monthly)</Text>
-                    <Text style={[styles.thText, { flex: 2.2 }]}>Key Features</Text>
-                    <Text style={[styles.thText, { flex: 0.8 }]}>Status</Text>
-                    <Text style={[styles.thText, { flex: 0.7 }]}>Clients</Text>
-                    <Text style={[styles.thText, { flex: 1.0, textAlign: 'right' }]}>Actions</Text>
+                  <View style={styles.filterDropdownWrapper}>
+                    <Text style={styles.filterFieldLabel}>Status</Text>
+                    <select
+                      style={styles.nativeHtmlSelect}
+                      value={planStatusFilter}
+                      onChange={(e) => setPlanStatusFilter(e.target.value)}
+                    >
+                      <option value="All Statuses">All Statuses</option>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
                   </View>
 
-                  {filteredPlans.map((plan, index) => (
-                    <View key={plan.id} style={styles.tableBodyRow}>
-                      <Text style={[styles.tdTextMuted, { width: 30 }]}>{index + 1}</Text>
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end' }}>
+                    <TouchableOpacity style={styles.filterActionButton}>
+                      <Feather name="filter" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
+                      <Text style={styles.filterActionButtonText}>Filter</Text>
+                    </TouchableOpacity>
 
-                      {/* Plan Badge */}
-                      <View style={[styles.planCellCol, { flex: 1.2 }]}>
-                        <View style={[styles.planIconCircle, { backgroundColor: plan.bgColor }]}>
-                          <MaterialCommunityIcons name="card-bulleted" size={16} color={plan.color} />
-                        </View>
-                        <View>
-                          <Text style={styles.planCellName}>{plan.name}</Text>
+                    <TouchableOpacity
+                      style={styles.resetActionButton}
+                      onPress={() => {
+                        setPlanSearch('');
+                        setPlanStatusFilter('All Statuses');
+                      }}
+                    >
+                      <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 6 }} />
+                      <Text style={styles.resetActionButtonText}>Reset</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Table of all plans (Matching PDF Page 7) */}
+                <View style={{ marginTop: 16 }}>
+                  <View style={styles.tableSubheaderRow}>
+                    <Text style={styles.tableTitleText}>All Plans ({plans.length})</Text>
+                  </View>
+
+                  <View style={styles.tableHeadBar}>
+                    <Text style={[styles.thColText, { width: 32 }]}>#</Text>
+                    <Text style={[styles.thColText, { flex: 1.2 }]}>Plan</Text>
+                    <Text style={[styles.thColText, { flex: 2.0 }]}>Description</Text>
+                    <Text style={[styles.thColText, { flex: 1.2 }]}>Price (Monthly)</Text>
+                    <Text style={[styles.thColText, { flex: 2.4 }]}>Key Features</Text>
+                    <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                    <Text style={[styles.thColText, { flex: 0.8, textAlign: 'center' }]}>Clients</Text>
+                    <Text style={[styles.thColText, { flex: 1.4, textAlign: 'right' }]}>Actions</Text>
+                  </View>
+
+                  {plans
+                    .filter((p) => {
+                      const matchesSearch =
+                        p.name.toLowerCase().includes(planSearch.toLowerCase()) ||
+                        p.desc.toLowerCase().includes(planSearch.toLowerCase());
+                      const matchesStatus = planStatusFilter === 'All Statuses' || p.status === planStatusFilter;
+                      return matchesSearch && matchesStatus;
+                    })
+                    .map((plan, idx) => (
+                      <View key={plan.id} style={styles.tableClickableRow}>
+                        <Text style={[styles.tdIndexText, { width: 32 }]}>{idx + 1}</Text>
+
+                        <View style={{ flex: 1.2 }}>
+                          <Text style={styles.planNameColumnText}>{plan.name}</Text>
                           {plan.badge && (
                             <View style={styles.popularBadge}>
                               <Text style={styles.popularBadgeText}>{plan.badge}</Text>
                             </View>
                           )}
                         </View>
-                      </View>
 
-                      {/* Description */}
-                      <Text style={[styles.tdTextMuted, { flex: 1.6 }]}>{plan.desc}</Text>
+                        <Text style={[styles.tdDescText, { flex: 2.0 }]}>{plan.desc}</Text>
 
-                      {/* Price */}
-                      <Text style={[styles.planPriceText, { flex: 1.1 }]}>{plan.price}</Text>
+                        <Text style={[styles.planPriceColumnText, { flex: 1.2 }]}>{plan.price}</Text>
 
-                      {/* Key Features (Bullet list from PDF) */}
-                      <View style={[styles.featuresBulletList, { flex: 2.2 }]}>
-                        {plan.features.map((f, i) => (
-                          <View key={i} style={styles.featureBulletItem}>
-                            <Text style={styles.bulletDot}>•</Text>
-                            <Text style={styles.featureBulletText}>{f}</Text>
-                          </View>
-                        ))}
-                      </View>
-
-                      {/* Status */}
-                      <View style={{ flex: 0.8 }}>
-                        <View style={styles.statusBadgeActive}>
-                          <View style={styles.statusDotActive} />
-                          <Text style={styles.statusBadgeTextActive}>{plan.status}</Text>
-                        </View>
-                      </View>
-
-                      {/* Clients Count */}
-                      <Text style={[styles.tdTextBold, { flex: 0.7 }]}>{plan.clients}</Text>
-
-                      {/* Actions: View & Edit */}
-                      <View style={[styles.actionButtonsCol, { flex: 1.0 }]}>
-                        <TouchableOpacity
-                          style={styles.actionBtnView}
-                          onPress={() => {
-                            setSelectedPlan(plan);
-                            setShowEditPlanModal(true);
-                          }}
-                        >
-                          <Text style={styles.actionBtnViewText}>Edit</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              ) : (
-                /* GRID CARDS VIEW */
-                <View style={styles.plansGrid}>
-                  {filteredPlans.map((plan) => (
-                    <View key={plan.id} style={styles.planCardItem}>
-                      <View style={styles.planCardHeader}>
-                        <View style={[styles.planIconCircleLarge, { backgroundColor: plan.bgColor }]}>
-                          <MaterialCommunityIcons name="card-bulleted" size={24} color={plan.color} />
-                        </View>
-                        {plan.badge && (
-                          <View style={styles.popularBadge}>
-                            <Text style={styles.popularBadgeText}>{plan.badge}</Text>
-                          </View>
-                        )}
-                      </View>
-
-                      <Text style={styles.planCardTitle}>{plan.name}</Text>
-                      <Text style={styles.planCardPrice}>
-                        {plan.price}
-                        <Text style={styles.planCardBilling}> /month</Text>
-                      </Text>
-                      <Text style={styles.planCardDesc}>{plan.desc}</Text>
-
-                      <View style={styles.planCardDivider} />
-
-                      <Text style={styles.planCardFeaturesLabel}>Included Features:</Text>
-                      <View style={styles.planCardFeatureList}>
-                        {plan.features.map((f, i) => (
-                          <View key={i} style={styles.planCardFeatureRow}>
-                            <Feather name="check" size={14} color="#10B981" style={{ marginRight: 8 }} />
-                            <Text style={styles.planCardFeatureText}>{f}</Text>
-                          </View>
-                        ))}
-                      </View>
-
-                      <View style={{ flex: 1 }} />
-
-                      <View style={styles.planCardFooterRow}>
-                        <Text style={styles.planCardClientsActive}>{plan.clients} Active Clients</Text>
-                        <TouchableOpacity
-                          style={styles.planCardEditBtn}
-                          onPress={() => {
-                            setSelectedPlan(plan);
-                            setShowEditPlanModal(true);
-                          }}
-                        >
-                          <Text style={styles.planCardEditBtnText}>Edit Plan</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* ========================================================= */}
-          {/* 4. MASTER SETTINGS VIEW (PDF Pages 15, 16, 17)             */}
-          {/* ========================================================= */}
-          {activeNav === 'Master Settings' && (
-            <View style={styles.sectionContainer}>
-              {/* Blue Platform Info Card (from PDF Page 15 top) */}
-              <View style={styles.masterSettingsInfoBanner}>
-                <MaterialCommunityIcons name="information" size={22} color="#0056FF" style={{ marginRight: 12 }} />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.masterSettingsInfoTitle}>Master Settings</Text>
-                  <Text style={styles.masterSettingsInfoDesc}>
-                    Centralized platform configuration across all modules. These settings help maintain consistent
-                    management, RBAC permissions, and multi-tenant operational limits.
-                  </Text>
-                </View>
-              </View>
-
-              {/* Master Settings 5 Category Cards (from PDF Page 15 top) */}
-              <View style={styles.settingsCategoryGrid}>
-                {[
-                  {
-                    id: 'General Settings',
-                    title: 'General Settings',
-                    desc: 'Configure basic platform information, timezone, language and general preferences.',
-                    icon: 'tune-vertical',
-                    color: '#0056FF',
-                  },
-                  {
-                    id: 'Role Management',
-                    title: 'Role Management',
-                    desc: 'Manage user roles and permissions. Add, edit, or control platform access across portals.',
-                    icon: 'shield-account',
-                    color: '#10B981',
-                  },
-                  {
-                    id: 'Master Data',
-                    title: 'Master Data',
-                    desc: 'Manage common master data such as client status, subscription status and reference values.',
-                    icon: 'database-settings',
-                    color: '#7C3AED',
-                  },
-                  {
-                    id: 'System Configuration',
-                    title: 'System Configuration',
-                    desc: 'Configure application-level settings such as session timeout, page size, and maintenance mode.',
-                    icon: 'server',
-                    color: '#0284C7',
-                  },
-                  {
-                    id: 'Appearance & Branding',
-                    title: 'Appearance & Branding',
-                    desc: 'Customize the look and feel of the platform including logo, theme, color scheme and brand info.',
-                    icon: 'palette',
-                    color: '#F59E0B',
-                  },
-                ].map((cat) => {
-                  const isSelected = settingsTab === cat.id;
-                  return (
-                    <TouchableOpacity
-                      key={cat.id}
-                      style={[styles.categoryNavCard, isSelected && styles.categoryNavCardSelected]}
-                      onPress={() => setSettingsTab(cat.id)}
-                      activeOpacity={0.8}
-                    >
-                      <View style={[styles.categoryIconCircle, { backgroundColor: cat.color + '15' }]}>
-                        <MaterialCommunityIcons name={cat.icon} size={22} color={cat.color} />
-                      </View>
-                      <Text style={[styles.categoryNavTitle, isSelected && { color: '#0056FF' }]}>
-                        {cat.title}
-                      </Text>
-                      <Text style={styles.categoryNavDesc}>{cat.desc}</Text>
-                      <View style={styles.categoryNavArrow}>
-                        <Feather name="arrow-right" size={14} color={isSelected ? '#0056FF' : '#94A3B8'} />
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              {/* 4.1 GENERAL SETTINGS SCREEN (PDF Page 15 bottom) */}
-              {settingsTab === 'General Settings' && (
-                <View style={styles.settingsSubScreenCard}>
-                  <View style={styles.settingsSubHeader}>
-                    <Text style={styles.settingsSubTitle}>General Settings</Text>
-                    <Text style={styles.settingsSubDesc}>Configure basic platform information and general preferences.</Text>
-                  </View>
-
-                  <View style={[styles.generalSettingsGrid, isMobile && styles.generalSettingsGridMobile]}>
-                    {/* Left Col: Platform Information Form */}
-                    <View style={styles.generalLeftCol}>
-                      <Text style={styles.subSectionTitle}>Platform Information</Text>
-
-                      <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Platform Name *</Text>
-                        <TextInput
-                          style={styles.textInputRegular}
-                          value={platformName}
-                          onChangeText={setPlatformName}
-                        />
-                      </View>
-
-                      <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Platform Description</Text>
-                        <TextInput
-                          style={styles.textInputRegular}
-                          value={platformDesc}
-                          onChangeText={setPlatformDesc}
-                        />
-                      </View>
-
-                      <View style={styles.formRowTwo}>
-                        <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                          <Text style={styles.formLabel}>Platform URL</Text>
-                          <TextInput
-                            style={styles.textInputRegular}
-                            value={platformUrl}
-                            onChangeText={setPlatformUrl}
-                          />
-                        </View>
-                        <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                          <Text style={styles.formLabel}>Support Email *</Text>
-                          <TextInput
-                            style={styles.textInputRegular}
-                            value={supportEmail}
-                            onChangeText={setSupportEmail}
-                          />
-                        </View>
-                      </View>
-
-                      <View style={styles.formRowTwo}>
-                        <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                          <Text style={styles.formLabel}>Default Language</Text>
-                          <TextInput
-                            style={styles.textInputRegular}
-                            value={defaultLang}
-                            onChangeText={setDefaultLang}
-                          />
-                        </View>
-                        <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                          <Text style={styles.formLabel}>Time Zone</Text>
-                          <TextInput
-                            style={styles.textInputRegular}
-                            value={timeZone}
-                            onChangeText={setTimeZone}
-                          />
-                        </View>
-                      </View>
-
-                      <View style={styles.formRowTwo}>
-                        <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                          <Text style={styles.formLabel}>Date Format</Text>
-                          <TextInput
-                            style={styles.textInputRegular}
-                            value={dateFormat}
-                            onChangeText={setDateFormat}
-                          />
-                        </View>
-                        <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                          <Text style={styles.formLabel}>Time Format</Text>
-                          <TextInput
-                            style={styles.textInputRegular}
-                            value={timeFormat}
-                            onChangeText={setTimeFormat}
-                          />
-                        </View>
-                      </View>
-                    </View>
-
-                    {/* Right Col: Logos & Preferences */}
-                    <View style={styles.generalRightCol}>
-                      {/* Logo Uploader */}
-                      <View style={styles.logoCardBox}>
-                        <Text style={styles.subSectionTitle}>Platform Logo</Text>
-                        <Text style={styles.logoHintText}>Recommended size: 200 x 50 px (PNG, SVG)</Text>
-
-                        <View style={styles.logoPreviewBox}>
-                          <MaterialCommunityIcons name="hexagon-multiple" size={28} color="#0056FF" />
-                          <View style={{ marginLeft: 8 }}>
-                            <Text style={styles.logoPreviewTitle}>PLATINUM SOFTWARE</Text>
-                            <Text style={styles.logoPreviewSub}>AI Chatbot Platform</Text>
-                          </View>
+                        <View style={{ flex: 2.4, paddingVertical: 4 }}>
+                          {plan.features.map((feat, fidx) => (
+                            <View key={fidx} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                              <Text style={styles.featureBulletDot}>•</Text>
+                              <Text style={styles.featureBulletText} numberOfLines={1}>{feat}</Text>
+                            </View>
+                          ))}
                         </View>
 
-                        <TouchableOpacity style={styles.uploadOutlineBtn}>
-                          <Feather name="upload" size={14} color="#0056FF" style={{ marginRight: 6 }} />
-                          <Text style={styles.uploadOutlineBtnText}>Change Logo</Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      {/* Favicon Uploader */}
-                      <View style={styles.logoCardBox}>
-                        <Text style={styles.subSectionTitle}>Favicon</Text>
-                        <Text style={styles.logoHintText}>Recommended size: 32 x 32 px (PNG, ICO)</Text>
-
-                        <View style={styles.faviconPreviewBox}>
-                          <MaterialCommunityIcons name="hexagon-multiple" size={22} color="#0056FF" />
-                        </View>
-
-                        <TouchableOpacity style={styles.uploadOutlineBtn}>
-                          <Feather name="upload" size={14} color="#0056FF" style={{ marginRight: 6 }} />
-                          <Text style={styles.uploadOutlineBtnText}>Change Favicon</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-
-                  {/* Additional Preferences Toggles (PDF Page 15) */}
-                  <View style={styles.preferencesSection}>
-                    <Text style={styles.subSectionTitle}>Additional Preferences</Text>
-
-                    <PreferenceToggleRow
-                      title="Show platform name in browser title"
-                      desc="Appends Platinum Software to browser tab titles"
-                      value={showNameInTitle}
-                      onToggle={() => setShowNameInTitle(!showNameInTitle)}
-                    />
-                    <PreferenceToggleRow
-                      title="Show live date and time in top header"
-                      desc="Displays live synchronized enterprise timestamp"
-                      value={showLiveDateTime}
-                      onToggle={() => setShowLiveDateTime(!showLiveDateTime)}
-                    />
-                    <PreferenceToggleRow
-                      title="Enable help & support link"
-                      desc="Shows customer support link in left sidebar and footer"
-                      value={enableSupportLink}
-                      onToggle={() => setEnableSupportLink(!enableSupportLink)}
-                    />
-                  </View>
-
-                  {/* Actions Footer */}
-                  <View style={styles.settingsFooterActions}>
-                    <TouchableOpacity
-                      style={styles.resetBtn}
-                      onPress={() => {
-                        setPlatformName('Platinum Software');
-                        setSupportEmail('support@platinumsoftware.com');
-                      }}
-                    >
-                      <Text style={styles.resetBtnText}>Reset to Default</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.saveChangesBtn} onPress={handleSaveSettings}>
-                      <Text style={styles.saveChangesBtnText}>Save Changes</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {/* 4.2 ROLE MANAGEMENT SCREEN (PDF Page 16 top & Page 17) */}
-              {settingsTab === 'Role Management' && (
-                <View style={styles.settingsSubScreenCard}>
-                  <View style={styles.roleHeaderBar}>
-                    <View>
-                      <Text style={styles.settingsSubTitle}>Role Management</Text>
-                      <Text style={styles.settingsSubDesc}>
-                        Manage user roles and permissions. Add, edit, activate or deactivate roles to control access.
-                      </Text>
-                    </View>
-
-                    <TouchableOpacity
-                      style={styles.topActionBtn}
-                      onPress={() => setShowAddRoleModal(true)}
-                    >
-                      <Feather name="plus" size={15} color="#FFFFFF" style={{ marginRight: 6 }} />
-                      <Text style={styles.topActionBtnText}>Add Role</Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* Roles Table */}
-                  <View style={styles.fullTableCard}>
-                    <View style={styles.tableHeaderRow}>
-                      <Text style={[styles.thText, { width: 32 }]}>#</Text>
-                      <Text style={[styles.thText, { flex: 1.5 }]}>Role Name</Text>
-                      <Text style={[styles.thText, { flex: 3.0 }]}>Description</Text>
-                      <Text style={[styles.thText, { flex: 1.0 }]}>Status</Text>
-                      <Text style={[styles.thText, { flex: 1.0, textAlign: 'right' }]}>Actions</Text>
-                    </View>
-
-                    {roles.map((r, i) => (
-                      <View key={r.id} style={styles.tableBodyRow}>
-                        <Text style={[styles.tdTextMuted, { width: 32 }]}>{i + 1}</Text>
-                        <View style={{ flex: 1.5 }}>
-                          <Text style={styles.roleNameText}>{r.name}</Text>
-                          <Text style={styles.rolePermissionsCount}>
-                            {r.permissions.length} module permissions
-                          </Text>
-                        </View>
-                        <Text style={[styles.tdText, { flex: 3.0 }]}>{r.desc}</Text>
                         <View style={{ flex: 1.0 }}>
-                          <View style={styles.statusBadgeActive}>
-                            <View style={styles.statusDotActive} />
-                            <Text style={styles.statusBadgeTextActive}>{r.status}</Text>
-                          </View>
+                          {plan.status === 'Active' ? (
+                            <View style={styles.statusActivePill}>
+                              <View style={styles.dotActiveGreen} />
+                              <Text style={styles.statusActiveText}>Active</Text>
+                            </View>
+                          ) : (
+                            <View style={styles.statusExpiredPill}>
+                              <View style={styles.dotRed} />
+                              <Text style={styles.statusExpiredText}>Inactive</Text>
+                            </View>
+                          )}
                         </View>
-                        <View style={[styles.actionButtonsCol, { flex: 1.0 }]}>
-                          <TouchableOpacity style={styles.actionBtnEdit}>
-                            <Text style={styles.actionBtnEditText}>Edit</Text>
+
+                        <Text style={[styles.tdNumberText, { flex: 0.8, textAlign: 'center' }]}>{plan.clients}</Text>
+
+                        <View style={{ flex: 1.4, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 6 }}>
+                          <TouchableOpacity
+                            style={styles.viewSmallBtn}
+                            onPress={() => setSelectedPlanModal(plan)}
+                          >
+                            <Text style={styles.viewSmallBtnText}>View</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.editSmallBtn}
+                            onPress={() => {
+                              setEditingPlanModal(plan);
+                              setPlanFormName(plan.name);
+                              setPlanFormType('Subscription');
+                              setPlanFormShortDesc(plan.desc);
+                              setPlanFormDetailedDesc(plan.detailedDesc || plan.desc);
+                              setPlanFormPrice(plan.price);
+                              setPlanFormBilling(plan.billingCycle || 'Monthly');
+                              setPlanFormValidity(plan.validity || '12');
+                              setPlanFormCurrency(plan.currency || 'INR (₹)');
+                              setPlanFormMaxQueries(plan.queries || '1,000');
+                              setPlanFormKeyFeatures(plan.features.join('\n'));
+                              setPlanFormMaxUsers(String(plan.maxUsers || 5));
+                              setPlanFormStorage(plan.storage || '10 MB');
+                              setPlanFormStatus(plan.status);
+                              setPlanFormDisplayOrder(String(plan.displayOrder || 1));
+                            }}
+                          >
+                            <Text style={styles.editSmallBtnText}>Edit</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.iconActionBtn}
+                            onPress={() => {
+                              const newStatus = plan.status === 'Active' ? 'Inactive' : 'Active';
+                              setPlans(plans.map(p => p.id === plan.id ? { ...p, status: newStatus } : p));
+                              notifyAction(setPlanActionMessage, `Plan ${plan.name} status changed to ${newStatus}.`);
+                            }}
+                            title={plan.status === 'Active' ? 'Deactivate Plan' : 'Activate Plan'}
+                          >
+                            <Feather
+                              name={plan.status === 'Active' ? 'slash' : 'check-circle'}
+                              size={14}
+                              color={plan.status === 'Active' ? '#EF4444' : '#10B981'}
+                            />
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.iconActionBtn}
+                            onPress={() => {
+                              if (window?.confirm ? window.confirm(`Are you sure you want to delete plan ${plan.name}?`) : true) {
+                                setPlans(plans.filter(p => p.id !== plan.id));
+                                notifyAction(setPlanActionMessage, `Plan ${plan.name} successfully deleted.`);
+                              }
+                            }}
+                            title="Delete Plan"
+                          >
+                            <Feather name="trash-2" size={14} color="#94A3B8" />
                           </TouchableOpacity>
                         </View>
                       </View>
                     ))}
-                  </View>
-                </View>
-              )}
 
-              {/* 4.3 MASTER DATA SCREEN */}
-              {settingsTab === 'Master Data' && (
-                <View style={styles.settingsSubScreenCard}>
-                  <Text style={styles.settingsSubTitle}>Platform Master Data</Text>
-                  <Text style={styles.settingsSubDesc}>
-                    Maintain centralized common master lists used across client and admin modules.
-                  </Text>
-
-                  <View style={styles.masterDataGrid}>
-                    <MasterDataCategory title="Client Industries" count="10 items" desc="IT Services, Healthcare, Automotive, Retail..." />
-                    <MasterDataCategory title="Subscription Statuses" count="4 items" desc="Active, Expiring Soon, Expired, Suspended..." />
-                    <MasterDataCategory title="Supported Currencies" count="3 items" desc="INR (₹), USD ($), EUR (€)..." />
-                    <MasterDataCategory title="Document Ingestion Types" count="5 items" desc="PDF, DOCX, XLSX, TXT, CSV..." />
-                  </View>
-                </View>
-              )}
-
-              {/* 4.4 SYSTEM CONFIGURATION SCREEN (PDF Page 16 bottom) */}
-              {settingsTab === 'System Configuration' && (
-                <View style={styles.settingsSubScreenCard}>
-                  <View style={styles.roleHeaderBar}>
-                    <View>
-                      <Text style={styles.settingsSubTitle}>System Configuration</Text>
-                      <Text style={styles.settingsSubDesc}>
-                        Manage platform-level configurable parameters used across application runtimes.
-                      </Text>
+                  <View style={styles.tablePaginationFooter}>
+                    <Text style={styles.paginationShowingText}>Showing 1 to 4 of 4 plans</Text>
+                    <View style={styles.paginationPagesRow}>
+                      <TouchableOpacity style={styles.pageBtn}><Feather name="chevron-left" size={14} color="#64748B" /></TouchableOpacity>
+                      <TouchableOpacity style={[styles.pageBtn, styles.pageBtnActive]}><Text style={styles.pageBtnActiveText}>1</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.pageBtn}><Feather name="chevron-right" size={14} color="#64748B" /></TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.topActionBtn}>
-                      <Feather name="plus" size={15} color="#FFFFFF" style={{ marginRight: 6 }} />
-                      <Text style={styles.topActionBtnText}>Add Configuration</Text>
+                    <View style={styles.pageSizeSelectWrapper}>
+                      <select style={styles.pageSizeSelect}>
+                        <option>10 per page</option>
+                        <option>25 per page</option>
+                      </select>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {activeNav === 'Subscriptions' && (
+            <View style={styles.tabContentContainer}>
+              <View style={styles.subScreenHeaderRow}>
+                <View>
+                  <Text style={styles.greetingTitle}>Subscriptions Management</Text>
+                  <Text style={styles.greetingSubtitle}>Track client subscriptions, renewal dates, and billing statuses.</Text>
+                </View>
+                <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setShowAddSubModal(true)}>
+                  <Feather name="plus" size={16} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.primaryActionBtnText}>Add Subscription</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 4 KPI Summary Cards */}
+              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
+                    <MaterialCommunityIcons name="credit-card-check-outline" size={24} color="#0066FF" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Subscriptions</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>{subscriptions.length}</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>15%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Total registered</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                    <MaterialCommunityIcons name="shield-check-outline" size={24} color="#10B981" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Active Subscriptions</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>{subscriptions.filter(s => s.status === 'Active').length}</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Text style={styles.kpiTrendText}>85.7%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Currently active</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF3C7' }]}>
+                    <MaterialCommunityIcons name="timer-sand" size={24} color="#F59E0B" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Expiring Soon</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>{subscriptions.filter(s => s.status === 'Expiring Soon').length}</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEF3C7' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#B45309' }]}>Alert</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Within 30 days</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEE2E2' }]}>
+                    <MaterialCommunityIcons name="alert-circle-outline" size={24} color="#EF4444" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Expired</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>{subscriptions.filter(s => s.status === 'Expired').length}</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEE2E2' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#DC2626' }]}>Renew</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Needs renewal</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Search & Filter Bar */}
+              <View style={[styles.actionFilterBar, { marginBottom: 16 }]}>
+                <View style={styles.searchBarBox}>
+                  <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
+                  <TextInput
+                    placeholder="Search by client name, subscription ID..."
+                    placeholderTextColor="#94A3B8"
+                    value={subSearch}
+                    onChangeText={setSubSearch}
+                    style={styles.innerSearch}
+                  />
+                </View>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  {['All', 'Active', 'Expiring Soon', 'Expired'].map((st) => (
+                    <TouchableOpacity
+                      key={st}
+                      style={[styles.filterPillBtn, subStatusFilter === st && styles.filterPillBtnActive]}
+                      onPress={() => setSubStatusFilter(st)}
+                    >
+                      <Text style={[styles.filterPillBtnText, subStatusFilter === st && styles.filterPillBtnTextActive]}>{st}</Text>
                     </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Subscriptions Table */}
+              <View style={styles.contentCard}>
+                <View style={styles.tableHeadBar}>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Subscription ID</Text>
+                  <Text style={[styles.thColText, { flex: 1.8 }]}>Client Organization</Text>
+                  <Text style={[styles.thColText, { flex: 1.0 }]}>Plan</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Start Date</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>End Date</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Days Left</Text>
+                  <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                  <Text style={[styles.thColText, { flex: 1.1 }]}>Billing</Text>
+                  <Text style={[styles.thColText, { flex: 0.9, textAlign: 'right' }]}>Actions</Text>
+                </View>
+
+                {subscriptions
+                  .filter(s => {
+                    const matchesSearch = s.client.toLowerCase().includes(subSearch.toLowerCase()) ||
+                      s.id.toLowerCase().includes(subSearch.toLowerCase());
+                    const matchesStatus = subStatusFilter === 'All' || s.status === subStatusFilter;
+                    return matchesSearch && matchesStatus;
+                  })
+                  .map((sub) => (
+                    <View key={sub.id} style={styles.tableClickableRow}>
+                      <Text style={[styles.tdBoldIdText, { flex: 1.2 }]}>{sub.id}</Text>
+                      <Text style={[styles.companyNameCellText, { flex: 1.8 }]}>{sub.client}</Text>
+                      <Text style={[styles.tdPlanText, { flex: 1.0 }]}>{sub.plan}</Text>
+                      <Text style={[styles.tdDateText, { flex: 1.2 }]}>{sub.startDate}</Text>
+                      <Text style={[styles.tdDateText, { flex: 1.2 }]}>{sub.endDate}</Text>
+                      <View style={{ flex: 1.2 }}>
+                        <View style={sub.status === 'Active' ? styles.daysLeftGreenPill : sub.status === 'Expiring Soon' ? styles.daysLeftAmberPill : styles.daysLeftRedPill}>
+                          <Text style={sub.status === 'Active' ? styles.daysLeftGreenText : sub.status === 'Expiring Soon' ? styles.daysLeftAmberText : styles.daysLeftRedText}>
+                            {sub.daysLeft}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={{ flex: 1.0 }}>
+                        <View style={sub.status === 'Active' ? styles.statusActivePill : sub.status === 'Expiring Soon' ? styles.statusExpiringPill : styles.statusExpiredPill}>
+                          <View style={sub.status === 'Active' ? styles.dotActiveGreen : sub.status === 'Expiring Soon' ? styles.dotAmber : styles.dotRed} />
+                          <Text style={sub.status === 'Active' ? styles.statusActiveText : sub.status === 'Expiring Soon' ? styles.statusExpiringText : styles.statusExpiredText}>
+                            {sub.status}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text style={[styles.tdBoldIdText, { flex: 1.1 }]}>{sub.amount}</Text>
+                      <View style={{ flex: 0.9, alignItems: 'flex-end' }}>
+                        <TouchableOpacity
+                          style={styles.viewSmallBtn}
+                          onPress={() => alert(`Subscription ${sub.id} for ${sub.client} renewal initiated`)}
+                        >
+                          <Text style={styles.viewSmallBtnText}>{sub.status === 'Expired' ? 'Renew' : 'Manage'}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
+              </View>
+            </View>
+          )}
+
+          {/* ========================================================= */}
+          {/* LLM DATA IMPORT TAB                                       */}
+          {/* ========================================================= */}
+          {activeNav === 'LLM Data Import' && (
+            <View style={styles.tabContentContainer}>
+              <View style={styles.subScreenHeaderRow}>
+                <View>
+                  <Text style={styles.greetingTitle}>LLM Data Import</Text>
+                  <Text style={styles.greetingSubtitle}>Multi-tenant document ingestion, chunking, and vector embedding status.</Text>
+                </View>
+                <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setShowImportModal(true)}>
+                  <Feather name="upload-cloud" size={16} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.primaryActionBtnText}>Import Data</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 4 KPI Summary Cards */}
+              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
+                    <MaterialCommunityIcons name="cloud-sync-outline" size={24} color="#0066FF" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Imports</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>128</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>+14</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>This month</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                    <MaterialCommunityIcons name="check-all" size={24} color="#10B981" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Completed</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>116</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Text style={styles.kpiTrendText}>90.6%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Indexed into RAG</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF3C7' }]}>
+                    <MaterialCommunityIcons name="cog-sync-outline" size={24} color="#F59E0B" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Processing</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>8</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEF3C7' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#B45309' }]}>6.3%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Vectorizing chunks</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEE2E2' }]}>
+                    <MaterialCommunityIcons name="alert-octagon-outline" size={24} color="#EF4444" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Failed</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>4</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEE2E2' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#DC2626' }]}>Retry</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Schema mismatch</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Search Bar */}
+              <View style={[styles.actionFilterBar, { marginBottom: 16 }]}>
+                <View style={[styles.searchBarBox, { flex: 1 }]}>
+                  <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
+                  <TextInput
+                    placeholder="Search by client, file name, or import ID..."
+                    placeholderTextColor="#94A3B8"
+                    value={importSearch}
+                    onChangeText={setImportSearch}
+                    style={styles.innerSearch}
+                  />
+                </View>
+              </View>
+
+              {/* Imports Monitoring Table */}
+              <View style={styles.contentCard}>
+                <View style={styles.tableHeadBar}>
+                  <Text style={[styles.thColText, { flex: 1.4 }]}>Import ID</Text>
+                  <Text style={[styles.thColText, { flex: 1.6 }]}>Client Organization</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Data Source</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Files & Types</Text>
+                  <Text style={[styles.thColText, { flex: 1.4 }]}>Imported On</Text>
+                  <Text style={[styles.thColText, { flex: 1.0 }]}>Chunks</Text>
+                  <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                  <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Action</Text>
+                </View>
+
+                {imports
+                  .filter(imp => imp.client.toLowerCase().includes(importSearch.toLowerCase()) || imp.id.toLowerCase().includes(importSearch.toLowerCase()))
+                  .map((item) => (
+                    <View key={item.id} style={styles.tableClickableRow}>
+                      <Text style={[styles.tdBoldIdText, { flex: 1.4 }]}>{item.id}</Text>
+                      <Text style={[styles.companyNameCellText, { flex: 1.6 }]}>{item.client}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{item.source}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{item.files} files ({item.fileTypes})</Text>
+                      <Text style={[styles.tdDateText, { flex: 1.4 }]}>{item.date}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{item.chunks}</Text>
+                      <View style={{ flex: 1.0 }}>
+                        <View style={item.status === 'Completed' ? styles.statusActivePill : item.status === 'Processing' ? styles.statusExpiringPill : styles.statusExpiredPill}>
+                          <View style={item.status === 'Completed' ? styles.dotActiveGreen : item.status === 'Processing' ? styles.dotAmber : styles.dotRed} />
+                          <Text style={item.status === 'Completed' ? styles.statusActiveText : item.status === 'Processing' ? styles.statusExpiringText : styles.statusExpiredText}>
+                            {item.status}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={{ flex: 1.0, alignItems: 'flex-end' }}>
+                        <TouchableOpacity
+                          style={styles.viewSmallBtn}
+                          onPress={() => setSelectedImportModal(item)}
+                        >
+                          <Text style={styles.viewSmallBtnText}>View</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
+              </View>
+            </View>
+          )}
+
+          {/* ========================================================= */}
+          {/* REPORTS & PLATFORM ANALYTICS TAB                          */}
+          {/* ========================================================= */}
+          {activeNav === 'Reports' && (
+            <View style={styles.tabContentContainer}>
+              <View style={styles.subScreenHeaderRow}>
+                <View>
+                  <Text style={styles.greetingTitle}>Reports & Platform Analytics</Text>
+                  <Text style={styles.greetingSubtitle}>Cross-tenant AI query usage, latency benchmarks, and revenue metrics.</Text>
+                </View>
+                <TouchableOpacity style={styles.timeFilterPill} onPress={() => alert('Exporting platform analytics report (PDF/CSV)...')}>
+                  <Feather name="download" size={14} color="#0066FF" style={{ marginRight: 6 }} />
+                  <Text style={[styles.timeFilterPillText, { color: '#0066FF' }]}>Export Report</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 4 KPI Summary Cards */}
+              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
+                    <MaterialCommunityIcons name="message-text-outline" size={24} color="#0066FF" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Total Questions</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>1,24,532</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>18%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Across all clients</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#F5F3FF' }]}>
+                    <MaterialCommunityIcons name="account-group-outline" size={24} color="#7C3AED" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Active Users</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>2,356</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>12%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Active employees</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#E0F2FE' }]}>
+                    <MaterialCommunityIcons name="speedometer" size={24} color="#0284C7" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Avg Response</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>2.1s</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-down-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>-28%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>Sub-second retrieval</Text>
+                  </View>
+                </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                    <MaterialCommunityIcons name="currency-inr" size={24} color="#10B981" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Revenue</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>₹12.49L</Text>
+                      <View style={styles.kpiTrendBadge}>
+                        <Feather name="arrow-up-right" size={12} color="#10B981" />
+                        <Text style={styles.kpiTrendText}>15%</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>This period</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Middle Row: Questions Over Time & Usage Distribution */}
+              <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
+                <View style={[styles.contentCard, { flex: 1.2 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Questions Volume Over Time</Text>
+                    <Text style={styles.kpiCardSubtext}>September 2026</Text>
                   </View>
 
-                  <View style={styles.fullTableCard}>
-                    <View style={styles.tableHeaderRow}>
-                      <Text style={[styles.thText, { flex: 2.0 }]}>Configuration Name</Text>
-                      <Text style={[styles.thText, { flex: 2.5 }]}>Description</Text>
-                      <Text style={[styles.thText, { flex: 1.2 }]}>Value</Text>
-                      <Text style={[styles.thText, { flex: 0.9 }]}>Status</Text>
-                    </View>
-
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: 180, paddingTop: 20 }}>
                     {[
-                      { name: 'Session Timeout', desc: 'Auto logout after period of inactivity', val: '60 Minutes', status: 'Active' },
-                      { name: 'Default Page Size', desc: 'Pagination record limit across tables', val: '10 records', status: 'Active' },
-                      { name: 'Max Upload Limit', desc: 'Maximum allowable file size per upload', val: '50 MB', status: 'Active' },
-                      { name: 'API Rate Limit', desc: 'Client endpoint request throttle quota', val: '100 req/min', status: 'Active' },
-                      { name: 'Maintenance Mode', desc: 'Temporary platform maintenance switch', val: 'Disabled', status: 'Inactive' },
-                    ].map((cfg, idx) => (
-                      <View key={idx} style={styles.tableBodyRow}>
-                        <Text style={[styles.clientNameText, { flex: 2.0 }]}>{cfg.name}</Text>
-                        <Text style={[styles.tdTextMuted, { flex: 2.5 }]}>{cfg.desc}</Text>
-                        <Text style={[styles.tdTextBold, { flex: 1.2 }]}>{cfg.val}</Text>
-                        <View style={{ flex: 0.9 }}>
-                          <View style={cfg.status === 'Active' ? styles.statusBadgeActive : styles.statusBadgeInactive}>
-                            <View style={cfg.status === 'Active' ? styles.statusDotActive : styles.statusDotInactive} />
-                            <Text style={cfg.status === 'Active' ? styles.statusBadgeTextActive : styles.statusBadgeTextInactive}>
-                              {cfg.status}
-                            </Text>
-                          </View>
+                      { period: 'Sep 1-5', height: 42, count: '18.4k' },
+                      { period: 'Sep 6-10', height: 58, count: '24.1k' },
+                      { period: 'Sep 11-15', height: 74, count: '31.2k' },
+                      { period: 'Sep 16-20', height: 68, count: '28.9k' },
+                      { period: 'Sep 21-25', height: 86, count: '36.5k' },
+                      { period: 'Sep 26-30', height: 95, count: '41.2k' },
+                    ].map((bar, i) => (
+                      <View key={i} style={{ alignItems: 'center', flex: 1 }}>
+                        <Text style={{ fontSize: 10.5, color: '#64748B', fontWeight: '700', marginBottom: 6 }}>{bar.count}</Text>
+                        <View style={{ width: 34, height: `${bar.height}%`, backgroundColor: '#0066FF', borderRadius: 6, opacity: 0.85 + (i * 0.02) }} />
+                        <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '500', marginTop: 8 }}>{bar.period}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+
+                <View style={[styles.contentCard, { flex: 0.8 }]}>
+                  <View style={styles.cardHeaderRow}>
+                    <Text style={styles.cardHeaderTitle}>Client Usage Distribution</Text>
+                  </View>
+
+                  <View style={{ gap: 12, marginTop: 8 }}>
+                    {[
+                      { name: 'TechNova Solutions', percent: '28%', queries: '34.8k', color: '#0066FF' },
+                      { name: 'AutoDrive Ltd', percent: '22%', queries: '27.4k', color: '#7C3AED' },
+                      { name: 'HealthPlus', percent: '18%', queries: '22.4k', color: '#10B981' },
+                      { name: 'EduSmart Learning', percent: '15%', queries: '18.6k', color: '#F59E0B' },
+                      { name: 'Other Clients', percent: '17%', queries: '21.3k', color: '#64748B' },
+                    ].map((u, i) => (
+                      <View key={i}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                          <Text style={{ fontSize: 12.5, fontWeight: '600', color: '#0F172A' }}>{u.name}</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: u.color }}>{u.percent} ({u.queries})</Text>
+                        </View>
+                        <View style={{ height: 6, backgroundColor: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
+                          <View style={{ width: u.percent, height: '100%', backgroundColor: u.color, borderRadius: 3 }} />
                         </View>
                       </View>
                     ))}
                   </View>
                 </View>
-              )}
-
-              {/* 4.5 APPEARANCE & BRANDING SCREEN (PDF Page 17 top) */}
-              {settingsTab === 'Appearance & Branding' && (
-                <View style={styles.settingsSubScreenCard}>
-                  <View style={styles.settingsSubHeader}>
-                    <Text style={styles.settingsSubTitle}>Appearance & Branding</Text>
-                    <Text style={styles.settingsSubDesc}>
-                      Customize the visual branding of the platform including logo, colors, and live UI preview.
-                    </Text>
-                  </View>
-
-                  <View style={[styles.generalSettingsGrid, isMobile && styles.generalSettingsGridMobile]}>
-                    {/* Controls */}
-                    <View style={styles.generalLeftCol}>
-                      <Text style={styles.subSectionTitle}>Brand Theme & Colors</Text>
-
-                      <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Primary Brand Color (Hex)</Text>
-                        <View style={styles.colorPickerInputRow}>
-                          <View style={[styles.colorSwatchBox, { backgroundColor: primaryColor }]} />
-                          <TextInput
-                            style={[styles.textInputRegular, { flex: 1 }]}
-                            value={primaryColor}
-                            onChangeText={setPrimaryColor}
-                          />
-                        </View>
-                      </View>
-
-                      <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Platform Tagline</Text>
-                        <TextInput
-                          style={styles.textInputRegular}
-                          value={tagline}
-                          onChangeText={setTagline}
-                        />
-                      </View>
-
-                      <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Footer Copyright Text</Text>
-                        <TextInput
-                          style={styles.textInputRegular}
-                          value={footerText}
-                          onChangeText={setFooterText}
-                        />
-                      </View>
-
-                      <TouchableOpacity style={styles.saveChangesBtn} onPress={handleSaveSettings}>
-                        <Text style={styles.saveChangesBtnText}>Apply Brand Styling</Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    {/* Live Preview (from PDF Page 17 top right) */}
-                    <View style={styles.generalRightCol}>
-                      <Text style={styles.subSectionTitle}>Live Portal Preview</Text>
-                      <View style={styles.livePreviewMiniMock}>
-                        <View style={[styles.miniMockHeader, { backgroundColor: primaryColor }]}>
-                          <Text style={styles.miniMockHeaderText}>PLATINUM SOFTWARE</Text>
-                          <View style={styles.miniMockAvatar} />
-                        </View>
-                        <View style={styles.miniMockBody}>
-                          <View style={styles.miniMockSidebar}>
-                            <View style={styles.miniMockBar} />
-                            <View style={styles.miniMockBar} />
-                            <View style={styles.miniMockBar} />
-                          </View>
-                          <View style={styles.miniMockContent}>
-                            <View style={styles.miniMockCardRow}>
-                              <View style={[styles.miniMockCard, { borderColor: primaryColor }]} />
-                              <View style={styles.miniMockCard} />
-                            </View>
-                            <View style={styles.miniMockTable} />
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* ========================================================= */}
-          {/* 5. SUBSCRIPTIONS VIEW                                      */}
-          {/* ========================================================= */}
-          {activeNav === 'Subscriptions' && (
-            <View style={styles.sectionContainer}>
-              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <KPICard icon="receipt" title="Total Subscriptions" value="48" trend="+12%" sub="Total created" color="#0056FF" bgColor="#EFF6FF" />
-                <KPICard icon="check-circle" title="Active Subscriptions" value="42" trend="87.5%" sub="Currently valid" color="#10B981" bgColor="#ECFDF5" />
-                <KPICard icon="alert-circle" title="Expired" value="3" trend="6.2%" sub="Needs renewal" color="#EF4444" bgColor="#FEF2F2" />
-                <KPICard icon="clock-alert-outline" title="Expiring Soon" value="5" trend="Alert" sub="In next 30 days" color="#F59E0B" bgColor="#FFFBEB" />
               </View>
 
-              <View style={styles.fullTableCard}>
-                <View style={styles.tableHeaderRow}>
-                  <Text style={[styles.thText, { flex: 1.0 }]}>Subscription ID</Text>
-                  <Text style={[styles.thText, { flex: 1.8 }]}>Client Name</Text>
-                  <Text style={[styles.thText, { flex: 1.0 }]}>Plan</Text>
-                  <Text style={[styles.thText, { flex: 1.2 }]}>Start Date</Text>
-                  <Text style={[styles.thText, { flex: 1.2 }]}>End Date</Text>
-                  <Text style={[styles.thText, { flex: 1.0 }]}>Status</Text>
+              {/* Client SLA Performance Table */}
+              <View style={styles.contentCard}>
+                <View style={styles.cardHeaderRow}>
+                  <Text style={styles.cardHeaderTitle}>Client Performance & SLA Benchmarks</Text>
                 </View>
 
-                {clients.map((c, i) => (
-                  <View key={c.id} style={styles.tableBodyRow}>
-                    <Text style={[styles.tdTextBold, { flex: 1.0 }]}>SUB-{100 + i}</Text>
-                    <Text style={[styles.clientNameText, { flex: 1.8 }]}>{c.name}</Text>
-                    <Text style={[styles.tdText, { flex: 1.0, color: getPlanColor(c.plan) }]}>{c.plan}</Text>
-                    <Text style={[styles.tdTextMuted, { flex: 1.2 }]}>{c.startDate}</Text>
-                    <Text style={[styles.tdTextMuted, { flex: 1.2 }]}>{c.endDate}</Text>
-                    <View style={{ flex: 1.0 }}>
-                      <View style={styles.statusBadgeActive}>
-                        <View style={styles.statusDotActive} />
-                        <Text style={styles.statusBadgeTextActive}>Active</Text>
-                      </View>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          {/* ========================================================= */}
-          {/* 6. LLM DATA IMPORT VIEW (PDF Pages 11, 12)                 */}
-          {/* ========================================================= */}
-          {activeNav === 'LLM Data Import' && (
-            <View style={styles.sectionContainer}>
-              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <KPICard icon="cloud-sync" title="Total Imports" value="128" trend="+12%" sub="+14 this month" color="#0056FF" bgColor="#EFF6FF" />
-                <KPICard icon="check-all" title="Completed" value="116" trend="90.6%" sub="90.6% of total" color="#10B981" bgColor="#ECFDF5" />
-                <KPICard icon="progress-clock" title="Processing" value="8" trend="6.3%" sub="6.3% of total" color="#F59E0B" bgColor="#FFFBEB" />
-                <KPICard icon="alert-circle" title="Failed" value="4" trend="3.1%" sub="3.1% of total" color="#EF4444" bgColor="#FEF2F2" />
-              </View>
-
-              <View style={styles.fullTableCard}>
-                <View style={styles.tableHeaderRow}>
-                  <Text style={[styles.thText, { flex: 1.2 }]}>Import ID</Text>
-                  <Text style={[styles.thText, { flex: 1.8 }]}>Client</Text>
-                  <Text style={[styles.thText, { flex: 1.2 }]}>Data Source</Text>
-                  <Text style={[styles.thText, { flex: 0.8 }]}>Files</Text>
-                  <Text style={[styles.thText, { flex: 1.4 }]}>Imported On</Text>
-                  <Text style={[styles.thText, { flex: 1.0 }]}>Status</Text>
+                <View style={styles.tableHeadBar}>
+                  <Text style={[styles.thColText, { flex: 1.8 }]}>Client Organization</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Questions Asked</Text>
+                  <Text style={[styles.thColText, { flex: 1.0 }]}>Active Users</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>Avg Latency</Text>
+                  <Text style={[styles.thColText, { flex: 1.2 }]}>SLA Compliance</Text>
+                  <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Health</Text>
                 </View>
 
                 {[
-                  { id: 'IMP-20250908-001', client: 'TechNova Solutions', src: 'Client Upload', files: 5, date: '08 Sep 2025, 10:15 AM', status: 'Completed' },
-                  { id: 'IMP-20250906-002', client: 'AutoDrive Ltd', src: 'API Import', files: 3, date: '06 Sep 2025, 04:30 PM', status: 'Completed' },
-                  { id: 'IMP-20250907-015', client: 'HealthPlus', src: 'Client Upload', files: 8, date: '07 Sep 2025, 11:20 AM', status: 'Completed' },
-                  { id: 'IMP-20250905-011', client: 'EduSmart Learning', src: 'Client Upload', files: 12, date: '05 Sep 2025, 02:10 PM', status: 'Processing' },
-                ].map((item) => (
-                  <View key={item.id} style={styles.tableBodyRow}>
-                    <Text style={[styles.tdTextBold, { flex: 1.2 }]}>{item.id}</Text>
-                    <Text style={[styles.clientNameText, { flex: 1.8 }]}>{item.client}</Text>
-                    <Text style={[styles.tdText, { flex: 1.2 }]}>{item.src}</Text>
-                    <Text style={[styles.tdText, { flex: 0.8 }]}>{item.files}</Text>
-                    <Text style={[styles.tdTextMuted, { flex: 1.4 }]}>{item.date}</Text>
-                    <View style={{ flex: 1.0 }}>
-                      <View style={item.status === 'Completed' ? styles.statusBadgeActive : styles.statusBadgeWarning}>
-                        <Text style={item.status === 'Completed' ? styles.statusBadgeTextActive : styles.statusBadgeTextWarning}>
-                          {item.status}
-                        </Text>
+                  { name: 'TechNova Solutions', questions: '25,430', users: '420', latency: '2.1s', sla: '99.98%', status: 'Optimal' },
+                  { name: 'AutoDrive Ltd', questions: '18,220', users: '310', latency: '2.4s', sla: '99.95%', status: 'Optimal' },
+                  { name: 'HealthPlus', questions: '15,100', users: '290', latency: '1.9s', sla: '100.0%', status: 'Optimal' },
+                  { name: 'EduSmart Learning', questions: '12,400', users: '210', latency: '2.8s', sla: '99.90%', status: 'Good' },
+                  { name: 'RetailCorp', questions: '9,850', users: '140', latency: '3.1s', sla: '99.85%', status: 'Attention' },
+                ].map((row, idx) => (
+                  <View key={idx} style={styles.tableClickableRow}>
+                    <Text style={[styles.companyNameCellText, { flex: 1.8 }]}>{row.name}</Text>
+                    <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.questions}</Text>
+                    <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{row.users}</Text>
+                    <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.latency}</Text>
+                    <Text style={[styles.tdPlanText, { flex: 1.2, color: '#10B981' }]}>{row.sla}</Text>
+                    <View style={{ flex: 1.0, alignItems: 'flex-end' }}>
+                      <View style={row.status === 'Optimal' ? styles.statusActivePill : styles.statusExpiringPill}>
+                        <View style={row.status === 'Optimal' ? styles.dotActiveGreen : styles.dotAmber} />
+                        <Text style={row.status === 'Optimal' ? styles.statusActiveText : styles.statusExpiringText}>{row.status}</Text>
                       </View>
                     </View>
                   </View>
@@ -2144,16 +2627,622 @@ export default function AdminPortalView({ onBackToLanding }) {
           )}
 
           {/* ========================================================= */}
-          {/* 7. REPORTS VIEW (PDF Pages 13, 14)                         */}
+          {/* MASTER SETTINGS TAB                                       */}
+
           {/* ========================================================= */}
-          {activeNav === 'Reports' && (
-            <View style={styles.sectionContainer}>
-              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <KPICard icon="chat-question" title="Total Questions" value="1,24,532" trend="+18%" sub="Across all clients" color="#0056FF" bgColor="#EFF6FF" />
-                <KPICard icon="domain" title="Active Clients" value="48" trend="Total" sub="48 of 52 clients" color="#10B981" bgColor="#ECFDF5" />
-                <KPICard icon="account-multiple" title="Total Users" value="2,356" trend="+12%" sub="Active employees" color="#7C3AED" bgColor="#F5F3FF" />
-                <KPICard icon="timer-outline" title="Avg Response Time" value="2.3 sec" trend="-28%" sub="Sub-second retrieval" color="#0284C7" bgColor="#F0F9FF" />
-                <KPICard icon="cash-multiple" title="Subscription Revenue" value="₹12,49,000" trend="+15%" sub="This period" color="#10B981" bgColor="#ECFDF5" />
+          {/* MASTER SETTINGS TAB (Exact Matching PDF Page 15, 16, 17)  */}
+          {/* ========================================================= */}
+          {activeNav === 'Master Settings' && (
+            <View style={styles.tabContentContainer}>
+              <View style={styles.subScreenHeaderRow}>
+                <View>
+                  <View style={styles.breadcrumbRow}>
+                    <Text style={styles.breadcrumbLink} onPress={() => setActiveNav('Dashboard')}>Dashboard</Text>
+                    <Text style={styles.breadcrumbDivider}>›</Text>
+                    <Text style={styles.breadcrumbActive}>Master Settings</Text>
+                    {settingsTab && (
+                      <>
+                        <Text style={styles.breadcrumbDivider}>›</Text>
+                        <Text style={styles.breadcrumbActive}>{settingsTab}</Text>
+                      </>
+                    )}
+                  </View>
+                  <Text style={styles.greetingTitle}>Master Settings</Text>
+                  <Text style={styles.greetingSubtitle}>Manage platform-level configuration and master data.</Text>
+                </View>
+              </View>
+
+              {/* Info Banner (PDF Page 15) */}
+              <View style={styles.masterSettingsInfoBanner}>
+                <Feather name="info" size={18} color="#0066FF" style={{ marginRight: 10, marginTop: 1 }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.masterSettingsInfoTitle}>Master Settings</Text>
+                  <Text style={styles.masterSettingsInfoDesc}>
+                    Centralized configuration variables used across the platform. These settings help maintain consistent platform behavior and configuration.
+                  </Text>
+                </View>
+              </View>
+
+              {/* 5 Sub-Section Navigation Tabs */}
+              <View style={styles.settingsSubTabsRow}>
+                {[
+                  { id: 'Role Management', label: 'Role Management', icon: 'shield-account-outline' },
+                  { id: 'System Configuration', label: 'System Configuration', icon: 'server-security' },
+                  { id: 'General Settings', label: 'General Settings', icon: 'tune' },
+                  { id: 'Appearance & Branding', label: 'Appearance & Branding', icon: 'palette-outline' },
+                  { id: 'Master Data', label: 'Master Data', icon: 'database-settings' },
+                ].map((t) => (
+                  <TouchableOpacity
+                    key={t.id}
+                    style={[styles.settingsSubTabBtn, settingsTab === t.id && styles.settingsSubTabBtnActive]}
+                    onPress={() => setSettingsTab(t.id)}
+                  >
+                    <MaterialCommunityIcons
+                      name={t.icon}
+                      size={16}
+                      color={settingsTab === t.id ? '#0066FF' : '#64748B'}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={[styles.settingsSubTabBtnText, settingsTab === t.id && styles.settingsSubTabBtnTextActive]}>
+                      {t.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* 1. ROLE MANAGEMENT (PDF Page 16 Top - Primary SOW Scope) */}
+              {settingsTab === 'Role Management' && (
+                <View style={styles.contentCard}>
+                  <View style={styles.cardHeaderRow}>
+                    <View>
+                      <Text style={styles.cardHeaderTitle}>Role Management</Text>
+                      <Text style={styles.greetingSubtitle}>Manage user roles and permissions. Add, edit, activate or deactivate roles to control platform access.</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.primaryActionBtn}
+                      onPress={() => {
+                        setRoleFormName('');
+                        setRoleFormDesc('');
+                        setRoleFormStatus('Active');
+                        setRoleFormPermissions(['Dashboard', 'Reports']);
+                        setShowAddRoleModal(true);
+                      }}
+                    >
+                      <Feather name="plus" size={14} color="#FFF" style={{ marginRight: 6 }} />
+                      <Text style={styles.primaryActionBtnText}>Add Role</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.rbacInfoCard}>
+                    <MaterialCommunityIcons name="shield-lock-outline" size={20} color="#0066FF" style={{ marginRight: 10 }} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.rbacInfoTitle}>Role-Based Access Control</Text>
+                      <Text style={styles.rbacInfoDesc}>Define roles and assign permissions to control access to platform features across Admin and Client portals.</Text>
+                    </View>
+                  </View>
+
+                  <View style={[styles.filterBarRow, { marginTop: 14, marginBottom: 14 }]}>
+                    <View style={[styles.searchBarBox, { flex: 1.6 }]}>
+                      <Feather name="search" size={15} color="#94A3B8" style={{ marginRight: 8 }} />
+                      <TextInput
+                        placeholder="Search roles by role name..."
+                        placeholderTextColor="#94A3B8"
+                        value={roleSearch}
+                        onChangeText={setRoleSearch}
+                        style={styles.innerSearch}
+                      />
+                      {roleSearch.length > 0 && (
+                        <TouchableOpacity onPress={() => setRoleSearch('')}>
+                          <Feather name="x" size={14} color="#94A3B8" />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+
+                    <View style={styles.filterDropdownWrapper}>
+                      <Text style={styles.filterFieldLabel}>Status</Text>
+                      <select
+                        style={styles.nativeHtmlSelect}
+                        value={roleStatusFilter}
+                        onChange={(e) => setRoleStatusFilter(e.target.value)}
+                      >
+                        <option value="All Status">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
+                    </View>
+                  </View>
+
+                  <View style={styles.tableHeadBar}>
+                    <Text style={[styles.thColText, { width: 32 }]}>#</Text>
+                    <Text style={[styles.thColText, { flex: 1.3 }]}>Role Name</Text>
+                    <Text style={[styles.thColText, { flex: 2.4 }]}>Description</Text>
+                    <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                    <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Actions</Text>
+                  </View>
+
+                  {roles
+                    .filter((r) => {
+                      const matchesSearch = r.name.toLowerCase().includes(roleSearch.toLowerCase()) || r.desc.toLowerCase().includes(roleSearch.toLowerCase());
+                      const matchesStatus = roleStatusFilter === 'All Status' || r.status === roleStatusFilter;
+                      return matchesSearch && matchesStatus;
+                    })
+                    .map((role, idx) => (
+                      <View key={role.id} style={styles.tableClickableRow}>
+                        <Text style={[styles.tdIndexText, { width: 32 }]}>{idx + 1}</Text>
+                        <Text style={[styles.roleNameText, { flex: 1.3 }]}>{role.name}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 2.4 }]}>{role.desc}</Text>
+                        <View style={{ flex: 1.0 }}>
+                          {role.status === 'Active' ? (
+                            <View style={styles.statusActivePill}>
+                              <View style={styles.dotActiveGreen} />
+                              <Text style={styles.statusActiveText}>Active</Text>
+                            </View>
+                          ) : (
+                            <View style={styles.statusExpiredPill}>
+                              <View style={styles.dotRed} />
+                              <Text style={styles.statusExpiredText}>Inactive</Text>
+                            </View>
+                          )}
+                        </View>
+                        <View style={{ flex: 1.0, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 8 }}>
+                          <TouchableOpacity
+                            style={styles.editSmallBtn}
+                            onPress={() => {
+                              setEditingRoleModal(role);
+                              setRoleFormName(role.name);
+                              setRoleFormDesc(role.desc);
+                              setRoleFormStatus(role.status);
+                              setRoleFormPermissions(role.permissions || ['Dashboard', 'Reports']);
+                            }}
+                          >
+                            <Feather name="edit-2" size={13} color="#0066FF" style={{ marginRight: 4 }} />
+                            <Text style={styles.editSmallBtnText}>Edit</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.iconActionBtn}
+                            onPress={() => {
+                              const newStatus = role.status === 'Active' ? 'Inactive' : 'Active';
+                              setRoles(roles.map(r => r.id === role.id ? { ...r, status: newStatus } : r));
+                              notifyAction(setRoleActionMessage, `Role ${role.name} set to ${newStatus}.`);
+                            }}
+                            title={role.status === 'Active' ? 'Deactivate Role' : 'Activate Role'}
+                          >
+                            <Feather
+                              name={role.status === 'Active' ? 'slash' : 'check-circle'}
+                              size={14}
+                              color={role.status === 'Active' ? '#EF4444' : '#10B981'}
+                            />
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.iconActionBtn}
+                            onPress={() => {
+                              if (window?.confirm ? window.confirm(`Delete role ${role.name}?`) : true) {
+                                setRoles(roles.filter(r => r.id !== role.id));
+                                notifyAction(setRoleActionMessage, `Role ${role.name} deleted.`);
+                              }
+                            }}
+                            title="Delete Role"
+                          >
+                            <Feather name="trash-2" size={14} color="#94A3B8" />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))}
+
+                  <View style={styles.tablePaginationFooter}>
+                    <Text style={styles.paginationShowingText}>Showing 1 to {roles.length} of {roles.length} roles</Text>
+                    <View style={styles.paginationPagesRow}>
+                      <TouchableOpacity style={[styles.pageBtn, styles.pageBtnActive]}><Text style={styles.pageBtnActiveText}>1</Text></TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* 2. SYSTEM CONFIGURATION (PDF Page 16 Bottom) */}
+              {settingsTab === 'System Configuration' && (
+                <View style={styles.contentCard}>
+                  <View style={styles.cardHeaderRow}>
+                    <View>
+                      <Text style={styles.cardHeaderTitle}>System Configuration</Text>
+                      <Text style={styles.greetingSubtitle}>Maintain platform-level configurable values used by the application.</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.primaryActionBtn}
+                      onPress={() => {
+                        setConfigFormName('');
+                        setConfigFormDesc('');
+                        setConfigFormValue('');
+                        setShowAddConfigModal(true);
+                      }}
+                    >
+                      <Feather name="plus" size={14} color="#FFF" style={{ marginRight: 6 }} />
+                      <Text style={styles.primaryActionBtnText}>Add Configuration</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.rbacInfoCard}>
+                    <MaterialCommunityIcons name="tune-vertical" size={20} color="#0066FF" style={{ marginRight: 10 }} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.rbacInfoTitle}>Configuration Settings</Text>
+                      <Text style={styles.rbacInfoDesc}>Manage application configuration values. Changes can be made by an administrator and will take effect as per system behavior.</Text>
+                    </View>
+                  </View>
+
+                  <View style={[styles.filterBarRow, { marginTop: 14, marginBottom: 14 }]}>
+                    <View style={[styles.searchBarBox, { flex: 1.8 }]}>
+                      <Feather name="search" size={15} color="#94A3B8" style={{ marginRight: 8 }} />
+                      <TextInput
+                        placeholder="Search configuration name..."
+                        placeholderTextColor="#94A3B8"
+                        value={configSearch}
+                        onChangeText={setConfigSearch}
+                        style={styles.innerSearch}
+                      />
+                    </View>
+                  </View>
+
+                  <View style={styles.tableHeadBar}>
+                    <Text style={[styles.thColText, { width: 32 }]}>#</Text>
+                    <Text style={[styles.thColText, { flex: 1.8 }]}>Configuration Name</Text>
+                    <Text style={[styles.thColText, { flex: 2.4 }]}>Description</Text>
+                    <Text style={[styles.thColText, { flex: 1.3 }]}>Value</Text>
+                    <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                    <Text style={[styles.thColText, { flex: 0.8, textAlign: 'right' }]}>Actions</Text>
+                  </View>
+
+                  {configs
+                    .filter(c => c.name.toLowerCase().includes(configSearch.toLowerCase()) || c.desc.toLowerCase().includes(configSearch.toLowerCase()))
+                    .map((item, idx) => (
+                      <View key={item.id} style={styles.tableClickableRow}>
+                        <Text style={[styles.tdIndexText, { width: 32 }]}>{idx + 1}</Text>
+                        <Text style={[styles.companyNameCellText, { flex: 1.8 }]}>{item.name}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 2.4 }]}>{item.desc}</Text>
+                        <View style={{ flex: 1.3 }}>
+                          <View style={styles.configBadge}>
+                            <Text style={styles.configBadgeText}>{item.value}</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 1.0 }}>
+                          <View style={styles.statusActivePill}>
+                            <View style={styles.dotActiveGreen} />
+                            <Text style={styles.statusActiveText}>{item.status}</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 0.8, alignItems: 'flex-end' }}>
+                          <TouchableOpacity
+                            style={styles.viewSmallBtn}
+                            onPress={() => {
+                              const newVal = prompt(`Edit value for ${item.name}:`, item.value);
+                              if (newVal) {
+                                setConfigs(configs.map(c => c.id === item.id ? { ...c, value: newVal } : c));
+                              }
+                            }}
+                          >
+                            <Text style={styles.viewSmallBtnText}>Edit</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))}
+                </View>
+              )}
+
+              {/* 3. GENERAL SETTINGS (PDF Page 15 Bottom) */}
+              {settingsTab === 'General Settings' && (
+                <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
+                  <View style={[styles.contentCard, { flex: 1.4 }]}>
+                    <Text style={styles.cardHeaderTitle}>Platform Information</Text>
+                    <Text style={[styles.greetingSubtitle, { marginBottom: 16 }]}>Basic information about the Platinum Software platform.</Text>
+
+                    {settingsSavedAlert && (
+                      <View style={styles.actionSuccessToast}>
+                        <Feather name="check-circle" size={16} color="#059669" style={{ marginRight: 8 }} />
+                        <Text style={styles.actionSuccessToastText}>General settings updated and applied successfully!</Text>
+                      </View>
+                    )}
+
+                    <View style={{ gap: 12 }}>
+                      <View>
+                        <Text style={styles.formLabel}>Platform Name *</Text>
+                        <TextInput style={styles.settingsInputBox} value={platformName} onChangeText={setPlatformName} />
+                      </View>
+
+                      <View>
+                        <Text style={styles.formLabel}>Platform Description</Text>
+                        <TextInput style={styles.settingsInputBox} value={platformDesc} onChangeText={setPlatformDesc} />
+                      </View>
+
+                      <View style={{ flexDirection: 'row', gap: 12 }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.formLabel}>Platform URL</Text>
+                          <TextInput style={styles.settingsInputBox} value={platformUrl} onChangeText={setPlatformUrl} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.formLabel}>Support Email</Text>
+                          <TextInput style={styles.settingsInputBox} value={supportEmail} onChangeText={setSupportEmail} />
+                        </View>
+                      </View>
+
+                      <View style={{ flexDirection: 'row', gap: 12 }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.formLabel}>Default Language</Text>
+                          <select style={styles.settingsSelectBox} value={defaultLang} onChange={(e) => setDefaultLang(e.target.value)}>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                          </select>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.formLabel}>Time Zone</Text>
+                          <select style={styles.settingsSelectBox} value={timeZone} onChange={(e) => setTimeZone(e.target.value)}>
+                            <option value="Asia/Kolkata (IST)">Asia/Kolkata (IST)</option>
+                            <option value="America/New_York (EST)">America/New_York (EST)</option>
+                            <option value="Europe/London (GMT)">Europe/London (GMT)</option>
+                            <option value="Asia/Singapore (SGT)">Asia/Singapore (SGT)</option>
+                          </select>
+                        </View>
+                      </View>
+
+                      <View style={{ flexDirection: 'row', gap: 12 }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.formLabel}>Date Format</Text>
+                          <select style={styles.settingsSelectBox} value={dateFormat} onChange={(e) => setDateFormat(e.target.value)}>
+                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                          </select>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.formLabel}>Time Format</Text>
+                          <select style={styles.settingsSelectBox} value={timeFormat} onChange={(e) => setTimeFormat(e.target.value)}>
+                            <option value="12 Hour (AM/PM)">12 Hour (AM/PM)</option>
+                            <option value="24 Hour">24 Hour</option>
+                          </select>
+                        </View>
+                      </View>
+
+                      <View style={{ marginTop: 10, borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 14 }}>
+                        <Text style={[styles.cardHeaderTitle, { fontSize: 14, marginBottom: 12 }]}>Additional Preferences</Text>
+
+                        <View style={styles.prefToggleRow}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={styles.prefToggleTitle}>Show platform name in browser title</Text>
+                            <Text style={styles.prefToggleDesc}>Display platform name in the browser tab title bar.</Text>
+                          </View>
+                          <TouchableOpacity
+                            style={[styles.toggleBtn, prefTitleInBrowser && styles.toggleBtnActive]}
+                            onPress={() => setPrefTitleInBrowser(!prefTitleInBrowser)}
+                          >
+                            <View style={[styles.toggleThumb, prefTitleInBrowser && styles.toggleThumbActive]} />
+                          </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.prefToggleRow}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={styles.prefToggleTitle}>Enable platform maintenance mode</Text>
+                            <Text style={styles.prefToggleDesc}>When active, client logins are held while admins perform updates.</Text>
+                          </View>
+                          <TouchableOpacity
+                            style={[styles.toggleBtn, maintenanceMode && styles.toggleBtnActive]}
+                            onPress={() => setMaintenanceMode(!maintenanceMode)}
+                          >
+                            <View style={[styles.toggleThumb, maintenanceMode && styles.toggleThumbActive]} />
+                          </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.prefToggleRow}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={styles.prefToggleTitle}>Enable logs & session tracking</Text>
+                            <Text style={styles.prefToggleDesc}>Track client active sessions and error logs for debugging.</Text>
+                          </View>
+                          <TouchableOpacity
+                            style={[styles.toggleBtn, prefLogging && styles.toggleBtnActive]}
+                            onPress={() => setPrefLogging(!prefLogging)}
+                          >
+                            <View style={[styles.toggleThumb, prefLogging && styles.toggleThumbActive]} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+
+                      <View style={{ flexDirection: 'row', gap: 10, marginTop: 14 }}>
+                        <TouchableOpacity
+                          style={styles.resetActionButton}
+                          onPress={() => {
+                            setPlatformName('Platinum Software');
+                            setPlatformDesc('AI Chatbot Platform for Businesses');
+                            setSupportEmail('support@platinumsoftware.com');
+                          }}
+                        >
+                          <Text style={styles.resetActionButtonText}>Reset to Default</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.primaryActionBtn}
+                          onPress={() => {
+                            setSettingsSavedAlert(true);
+                            setTimeout(() => setSettingsSavedAlert(false), 3000);
+                          }}
+                        >
+                          <Text style={styles.primaryActionBtnText}>Save Changes</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View style={{ flex: 0.95, gap: 16 }}>
+                    <View style={styles.contentCard}>
+                      <Text style={styles.cardHeaderTitle}>Platform Logo</Text>
+                      <Text style={[styles.greetingSubtitle, { marginBottom: 12 }]}>Custom platform logo (recommended size: 320 x 80 px).</Text>
+                      <View style={styles.logoPreviewBox}>
+                        <MaterialCommunityIcons name="hexagon-multiple" size={32} color="#0066FF" />
+                        <View style={{ marginLeft: 10 }}>
+                          <Text style={styles.logoPreviewTitle}>{platformName.toUpperCase()}</Text>
+                          <Text style={styles.logoPreviewSub}>{brandingTagline}</Text>
+                        </View>
+                      </View>
+                      <TouchableOpacity style={[styles.resetActionButton, { alignSelf: 'flex-start', marginTop: 12 }]} onPress={() => alert('Logo upload dialog ready')}>
+                        <Feather name="upload" size={14} color="#0066FF" style={{ marginRight: 6 }} />
+                        <Text style={[styles.resetActionButtonText, { color: '#0066FF' }]}>Change Logo</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.contentCard}>
+                      <Text style={styles.cardHeaderTitle}>Favicon</Text>
+                      <Text style={[styles.greetingSubtitle, { marginBottom: 12 }]}>Custom browser tab icon (recommended size: 32 x 32 px).</Text>
+                      <View style={styles.faviconPreviewBox}>
+                        <MaterialCommunityIcons name="hexagon-multiple" size={24} color="#0066FF" />
+                      </View>
+                      <TouchableOpacity style={[styles.resetActionButton, { alignSelf: 'flex-start', marginTop: 12 }]} onPress={() => alert('Favicon upload dialog ready')}>
+                        <Feather name="upload" size={14} color="#0066FF" style={{ marginRight: 6 }} />
+                        <Text style={[styles.resetActionButtonText, { color: '#0066FF' }]}>Change Favicon</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* 4. APPEARANCE & BRANDING (PDF Page 17 Top) */}
+              {settingsTab === 'Appearance & Branding' && (
+                <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
+                  <View style={[styles.contentCard, { flex: 1.2 }]}>
+                    <Text style={styles.cardHeaderTitle}>Customize Platform Branding</Text>
+                    <Text style={[styles.greetingSubtitle, { marginBottom: 16 }]}>Customize the visual elements that are displayed across the platform.</Text>
+
+                    {brandingSavedAlert && (
+                      <View style={styles.actionSuccessToast}>
+                        <Feather name="check-circle" size={16} color="#059669" style={{ marginRight: 8 }} />
+                        <Text style={styles.actionSuccessToastText}>Branding elements saved and applied!</Text>
+                      </View>
+                    )}
+
+                    <View style={{ gap: 14 }}>
+                      <View>
+                        <Text style={styles.formLabel}>Tagline (Optional)</Text>
+                        <TextInput style={styles.settingsInputBox} value={brandingTagline} onChangeText={setBrandingTagline} />
+                      </View>
+
+                      <View>
+                        <Text style={styles.formLabel}>Footer Text (Optional)</Text>
+                        <TextInput style={styles.settingsInputBox} value={brandingFooter} onChangeText={setBrandingFooter} />
+                      </View>
+
+                      <View>
+                        <Text style={styles.formLabel}>Primary Brand Color</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 4 }}>
+                          <View style={[styles.colorPreviewSquare, { backgroundColor: primaryColor }]} />
+                          <TextInput style={[styles.settingsInputBox, { width: 140 }]} value={primaryColor} onChangeText={setPrimaryColor} />
+                          <View style={{ flexDirection: 'row', gap: 6 }}>
+                            {['#0066FF', '#2563EB', '#7C3AED', '#059669', '#DC2626', '#06B6D4'].map(hex => (
+                              <TouchableOpacity
+                                key={hex}
+                                style={[styles.colorSwatchBtn, { backgroundColor: hex }, primaryColor === hex && styles.colorSwatchBtnActive]}
+                                onPress={() => setPrimaryColor(hex)}
+                              />
+                            ))}
+                          </View>
+                        </View>
+                      </View>
+
+                      <View style={{ flexDirection: 'row', gap: 10, marginTop: 14 }}>
+                        <TouchableOpacity style={styles.resetActionButton} onPress={() => setPrimaryColor('#0066FF')}>
+                          <Text style={styles.resetActionButtonText}>Reset to Default</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[styles.primaryActionBtn, { backgroundColor: primaryColor }]}
+                          onPress={() => {
+                            setBrandingSavedAlert(true);
+                            setTimeout(() => setBrandingSavedAlert(false), 3000);
+                          }}
+                        >
+                          <Text style={styles.primaryActionBtnText}>Save Changes</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View style={[styles.contentCard, { flex: 1.0 }]}>
+                    <Text style={styles.cardHeaderTitle}>Live Interface Preview</Text>
+                    <Text style={[styles.greetingSubtitle, { marginBottom: 14 }]}>Real-time simulation of your chosen brand colors and platform title.</Text>
+
+                    <View style={styles.livePreviewFrame}>
+                      <View style={styles.livePreviewTopBar}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <MaterialCommunityIcons name="hexagon-multiple" size={16} color={primaryColor} />
+                          <Text style={[styles.livePreviewLogoText, { color: '#0F172A' }]}>{platformName}</Text>
+                        </View>
+                        <View style={[styles.livePreviewAvatar, { backgroundColor: primaryColor }]}>
+                          <Text style={{ color: '#FFF', fontSize: 10, fontWeight: '700' }}>A</Text>
+                        </View>
+                      </View>
+
+                      <View style={styles.livePreviewBody}>
+                        <Text style={styles.livePreviewWelcome}>Welcome, Admin</Text>
+                        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+                          <View style={styles.livePreviewMetricBox}>
+                            <Text style={[styles.livePreviewMetricNum, { color: primaryColor }]}>48</Text>
+                            <Text style={styles.livePreviewMetricLbl}>Clients</Text>
+                          </View>
+                          <View style={styles.livePreviewMetricBox}>
+                            <Text style={styles.livePreviewMetricNum}>52</Text>
+                            <Text style={styles.livePreviewMetricLbl}>Subscriptions</Text>
+                          </View>
+                        </View>
+                        <TouchableOpacity style={[styles.livePreviewBtn, { backgroundColor: primaryColor }]}>
+                          <Text style={styles.livePreviewBtnText}>Primary Button</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* 5. MASTER DATA */}
+              {settingsTab === 'Master Data' && (
+                <View style={styles.contentCard}>
+                  <Text style={styles.cardHeaderTitle}>Platform Master Data</Text>
+                  <Text style={[styles.greetingSubtitle, { marginBottom: 16 }]}>Centralized reference enumerations used across the platform.</Text>
+
+                  <View style={styles.masterDataGrid}>
+                    <View style={styles.masterDataCard}>
+                      <Text style={styles.masterDataCardTitle}>Client Statuses</Text>
+                      <View style={styles.masterDataPillsRow}>
+                        <Text style={styles.masterDataPill}>Active</Text>
+                        <Text style={styles.masterDataPill}>Expiring Soon</Text>
+                        <Text style={styles.masterDataPill}>Inactive</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.masterDataCard}>
+                      <Text style={styles.masterDataCardTitle}>Industry Verticals</Text>
+                      <View style={styles.masterDataPillsRow}>
+                        <Text style={styles.masterDataPill}>IT Services</Text>
+                        <Text style={styles.masterDataPill}>Healthcare</Text>
+                        <Text style={styles.masterDataPill}>Automotive</Text>
+                        <Text style={styles.masterDataPill}>Education</Text>
+                        <Text style={styles.masterDataPill}>Retail</Text>
+                        <Text style={styles.masterDataPill}>Finance</Text>
+                        <Text style={styles.masterDataPill}>Energy</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.masterDataCard}>
+                      <Text style={styles.masterDataCardTitle}>Currencies & Formats</Text>
+                      <View style={styles.masterDataPillsRow}>
+                        <Text style={styles.masterDataPill}>INR (₹)</Text>
+                        <Text style={styles.masterDataPill}>USD ($)</Text>
+                        <Text style={styles.masterDataPill}>EUR (€)</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              <View style={styles.masterSettingsNoteBox}>
+                <Feather name="alert-triangle" size={16} color="#0284C7" style={{ marginRight: 8, marginTop: 1 }} />
+                <Text style={styles.masterSettingsNoteText}>
+                  Note: Changes made in Master Settings will apply across the platform. Please ensure the values are correct before saving.
+                </Text>
               </View>
             </View>
           )}
@@ -2161,394 +3250,991 @@ export default function AdminPortalView({ onBackToLanding }) {
       </View>
 
       {/* ========================================================= */}
-      {/* MODAL 1: ADD CLIENT MODAL (Exact Layout from PDF Page 5)  */}
+      {/* MODALS SECTION                                            */}
       {/* ========================================================= */}
-      <Modal visible={showAddClientModal} transparent animationType="fade">
-        <View style={styles.modalBackdrop}>
-          <View style={[styles.modalCardLarge, isMobile && styles.modalCardMobile]}>
-            {/* Header */}
-            <View style={styles.modalHeaderRow}>
-              <View>
-                <Text style={styles.modalMainTitle}>Add Client</Text>
-                <Text style={styles.modalSubTitle}>Create a new client organization in the system.</Text>
-              </View>
-              <TouchableOpacity onPress={() => setShowAddClientModal(false)}>
-                <Feather name="x" size={20} color="#64748B" />
-              </TouchableOpacity>
-            </View>
 
-            <ScrollView style={{ maxHeight: 520 }} contentContainerStyle={{ padding: 20 }}>
-              {/* Section 1: Company Information */}
-              <Text style={styles.formSectionHeader}>Company Information</Text>
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Company Name *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="Enter company name"
-                    value={newClientForm.name}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, name: v })}
-                  />
+      {/* 1. VIEW CLIENT MODAL */}
+      {selectedClientModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalDialogCard}>
+              <View style={styles.modalDialogHeader}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={[styles.circleInitialAvatar, { backgroundColor: selectedClientModal.avatarColor, width: 36, height: 36 }]}>
+                    <Text style={{ color: '#FFF', fontSize: 16, fontWeight: '800' }}>{selectedClientModal.avatarChar}</Text>
+                  </View>
+                  <View style={{ marginLeft: 12 }}>
+                    <Text style={styles.modalDialogTitle}>{selectedClientModal.name}</Text>
+                    <Text style={styles.modalDialogSub}>{selectedClientModal.industry} • Plan: {selectedClientModal.plan}</Text>
+                  </View>
                 </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Industry *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="e.g. IT Services, Healthcare"
-                    value={newClientForm.industry}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, industry: v })}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Company Size</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="e.g. 51-200 employees"
-                    value={newClientForm.companySize}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, companySize: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Website</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="https://www.example.com"
-                    value={newClientForm.website}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, website: v })}
-                  />
-                </View>
-              </View>
-
-              {/* Section 2: Contact Information */}
-              <Text style={[styles.formSectionHeader, { marginTop: 16 }]}>Contact Information</Text>
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Contact Person *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="Enter contact person name"
-                    value={newClientForm.contactPerson}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, contactPerson: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Designation</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="e.g. Operations Manager"
-                    value={newClientForm.designation}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, designation: v })}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Email Address *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="contact@company.com"
-                    value={newClientForm.email}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, email: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Phone Number *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="+91 98765 43210"
-                    value={newClientForm.phone}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, phone: v })}
-                  />
-                </View>
-              </View>
-
-              {/* Section 3: Subscription Details */}
-              <Text style={[styles.formSectionHeader, { marginTop: 16 }]}>Subscription Details</Text>
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Assigned Plan *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="Gold, Silver, Platinum, Enterprise"
-                    value={newClientForm.plan}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, plan: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Status *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="Active / Inactive"
-                    value={newClientForm.status}
-                    onChangeText={(v) => setNewClientForm({ ...newClientForm, status: v })}
-                  />
-                </View>
-              </View>
-
-              {/* Section 4: Notes */}
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Additional Notes</Text>
-                <TextInput
-                  style={[styles.textInputRegular, { height: 70 }]}
-                  multiline
-                  placeholder="Enter any administrative notes about this client..."
-                  value={newClientForm.notes}
-                  onChangeText={(v) => setNewClientForm({ ...newClientForm, notes: v })}
-                />
-              </View>
-            </ScrollView>
-
-            <View style={styles.modalFooterRow}>
-              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddClientModal(false)}>
-                <Text style={styles.modalCancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalSubmitBtn} onPress={handleCreateClient}>
-                <Text style={styles.modalSubmitBtnText}>Create Client</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* ========================================================= */}
-      {/* MODAL 2: ADD PLAN MODAL (Exact Layout from PDF Page 7)    */}
-      {/* ========================================================= */}
-      <Modal visible={showAddPlanModal} transparent animationType="fade">
-        <View style={styles.modalBackdrop}>
-          <View style={[styles.modalCardLarge, isMobile && styles.modalCardMobile]}>
-            <View style={styles.modalHeaderRow}>
-              <View>
-                <Text style={styles.modalMainTitle}>Add Plan</Text>
-                <Text style={styles.modalSubTitle}>Create a new subscription plan tier for your clients.</Text>
-              </View>
-              <TouchableOpacity onPress={() => setShowAddPlanModal(false)}>
-                <Feather name="x" size={20} color="#64748B" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={{ maxHeight: 520 }} contentContainerStyle={{ padding: 20 }}>
-              <Text style={styles.formSectionHeader}>Basic Information</Text>
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Plan Name *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="e.g. Diamond Enterprise"
-                    value={newPlanForm.name}
-                    onChangeText={(v) => setNewPlanForm({ ...newPlanForm, name: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Plan Type *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="e.g. Standard Tier, Enterprise Tier"
-                    value={newPlanForm.planType}
-                    onChangeText={(v) => setNewPlanForm({ ...newPlanForm, planType: v })}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Short Description</Text>
-                <TextInput
-                  style={styles.textInputRegular}
-                  placeholder="Enter a short summary of this plan"
-                  value={newPlanForm.shortDesc}
-                  onChangeText={(v) => setNewPlanForm({ ...newPlanForm, shortDesc: v })}
-                />
-              </View>
-
-              <Text style={[styles.formSectionHeader, { marginTop: 14 }]}>Pricing & Validity</Text>
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Price (Monthly) *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="e.g. ₹29,999"
-                    value={newPlanForm.price}
-                    onChangeText={(v) => setNewPlanForm({ ...newPlanForm, price: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Billing Cycle *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="Monthly / Yearly"
-                    value={newPlanForm.billingCycle}
-                    onChangeText={(v) => setNewPlanForm({ ...newPlanForm, billingCycle: v })}
-                  />
-                </View>
-              </View>
-
-              <Text style={[styles.formSectionHeader, { marginTop: 14 }]}>Features & Limits</Text>
-              <View style={styles.formRowTwo}>
-                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
-                  <Text style={styles.formLabel}>Max Queries per Month *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="10000"
-                    value={newPlanForm.maxQueries}
-                    onChangeText={(v) => setNewPlanForm({ ...newPlanForm, maxQueries: v })}
-                  />
-                </View>
-                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
-                  <Text style={styles.formLabel}>Max Users *</Text>
-                  <TextInput
-                    style={styles.textInputRegular}
-                    placeholder="25"
-                    value={newPlanForm.maxUsers}
-                    onChangeText={(v) => setNewPlanForm({ ...newPlanForm, maxUsers: v })}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Key Features (one per line) *</Text>
-                <TextInput
-                  style={[styles.textInputRegular, { height: 90 }]}
-                  multiline
-                  placeholder="Enter features (e.g. Up to 10,000 queries&#10;24/7 Priority Support&#10;Advanced Vector Embeddings)"
-                  value={newPlanForm.keyFeatures}
-                  onChangeText={(v) => setNewPlanForm({ ...newPlanForm, keyFeatures: v })}
-                />
-              </View>
-            </ScrollView>
-
-            <View style={styles.modalFooterRow}>
-              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddPlanModal(false)}>
-                <Text style={styles.modalCancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalSubmitBtn} onPress={handleCreatePlan}>
-                <Text style={styles.modalSubmitBtnText}>Create Plan</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* ========================================================= */}
-      {/* MODAL 3: ADD ROLE MODAL (Exact Layout from PDF Page 16)   */}
-      {/* ========================================================= */}
-      <Modal visible={showAddRoleModal} transparent animationType="fade">
-        <View style={styles.modalBackdrop}>
-          <View style={[styles.modalCardRegular, isMobile && styles.modalCardMobile]}>
-            <View style={styles.modalHeaderRow}>
-              <View>
-                <Text style={styles.modalMainTitle}>Add New Role</Text>
-                <Text style={styles.modalSubTitle}>Define a new RBAC role and assign permissions.</Text>
-              </View>
-              <TouchableOpacity onPress={() => setShowAddRoleModal(false)}>
-                <Feather name="x" size={20} color="#64748B" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ padding: 20 }}>
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Role Name *</Text>
-                <TextInput
-                  style={styles.textInputRegular}
-                  placeholder="e.g. Compliance Auditor"
-                  value={newRoleForm.name}
-                  onChangeText={(v) => setNewRoleForm({ ...newRoleForm, name: v })}
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Description *</Text>
-                <TextInput
-                  style={[styles.textInputRegular, { height: 70 }]}
-                  multiline
-                  placeholder="Enter a brief description of this role's scope..."
-                  value={newRoleForm.desc}
-                  onChangeText={(v) => setNewRoleForm({ ...newRoleForm, desc: v })}
-                />
-              </View>
-
-              <Text style={styles.formLabel}>Permissions *</Text>
-              <View style={styles.permissionsCheckboxGrid}>
-                {['Dashboard', 'Clients', 'Plans', 'Subscriptions', 'LLM Data Import', 'Reports', 'Master Settings'].map((mod) => {
-                  const isChecked = newRoleForm.permissions.includes(mod);
-                  return (
-                    <TouchableOpacity
-                      key={mod}
-                      style={styles.permissionCheckItem}
-                      onPress={() => {
-                        if (isChecked) {
-                          setNewRoleForm({
-                            ...newRoleForm,
-                            permissions: newRoleForm.permissions.filter((p) => p !== mod),
-                          });
-                        } else {
-                          setNewRoleForm({
-                            ...newRoleForm,
-                            permissions: [...newRoleForm.permissions, mod],
-                          });
-                        }
-                      }}
-                    >
-                      <MaterialCommunityIcons
-                        name={isChecked ? 'checkbox-marked' : 'checkbox-blank-outline'}
-                        size={18}
-                        color={isChecked ? '#0056FF' : '#94A3B8'}
-                        style={{ marginRight: 8 }}
-                      />
-                      <Text style={styles.permissionCheckLabel}>{mod}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
-            <View style={styles.modalFooterRow}>
-              <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddRoleModal(false)}>
-                <Text style={styles.modalCancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalSubmitBtn} onPress={handleCreateRole}>
-                <Text style={styles.modalSubmitBtnText}>Save Role</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* ========================================================= */}
-      {/* MODAL 4: VIEW CLIENT MODAL                                */}
-      {/* ========================================================= */}
-      {selectedClient && (
-        <Modal visible={showViewClientModal} transparent animationType="fade">
-          <View style={styles.modalBackdrop}>
-            <View style={[styles.modalCardRegular, isMobile && styles.modalCardMobile]}>
-              <View style={styles.modalHeaderRow}>
-                <View>
-                  <Text style={styles.modalMainTitle}>{selectedClient.name}</Text>
-                  <Text style={styles.modalSubTitle}>{selectedClient.industry} • Plan: {selectedClient.plan}</Text>
-                </View>
-                <TouchableOpacity onPress={() => setShowViewClientModal(false)}>
+                <TouchableOpacity onPress={() => setSelectedClientModal(null)}>
                   <Feather name="x" size={20} color="#64748B" />
                 </TouchableOpacity>
               </View>
 
-              <View style={{ padding: 20, gap: 12 }}>
-                <DetailField label="Contact Person" val={`${selectedClient.contactPerson} (${selectedClient.designation})`} />
-                <DetailField label="Official Email" val={selectedClient.email} />
-                <DetailField label="Phone" val={selectedClient.phone} />
-                <DetailField label="Company Size" val={selectedClient.companySize} />
-                <DetailField label="Website" val={selectedClient.website} />
-                <DetailField label="Subscription Validity" val={`${selectedClient.startDate} → ${selectedClient.endDate} (${selectedClient.daysLeft})`} />
-                <DetailField label="Administrative Notes" val={selectedClient.notes} />
+              <View style={styles.modalDialogBody}>
+                <View style={styles.modalStatGrid}>
+                  <View style={styles.modalStatBox}>
+                    <Text style={styles.modalStatNum}>{selectedClientModal.docs}</Text>
+                    <Text style={styles.modalStatLbl}>Indexed Documents</Text>
+                  </View>
+                  <View style={styles.modalStatBox}>
+                    <Text style={styles.modalStatNum}>{selectedClientModal.conversations}</Text>
+                    <Text style={styles.modalStatLbl}>Total Queries</Text>
+                  </View>
+                  <View style={styles.modalStatBox}>
+                    <Text style={styles.modalStatNum}>{selectedClientModal.users}</Text>
+                    <Text style={styles.modalStatLbl}>Active Users</Text>
+                  </View>
+                </View>
+
+                <View style={styles.modalFieldRow}>
+                  <Text style={styles.modalFieldKey}>Contact Person:</Text>
+                  <Text style={styles.modalFieldVal}>{selectedClientModal.contactPerson} ({selectedClientModal.designation || 'Operations'})</Text>
+                </View>
+                <View style={styles.modalFieldRow}>
+                  <Text style={styles.modalFieldKey}>Email Address:</Text>
+                  <Text style={styles.modalFieldVal}>{selectedClientModal.email}</Text>
+                </View>
+                <View style={styles.modalFieldRow}>
+                  <Text style={styles.modalFieldKey}>Website:</Text>
+                  <Text style={styles.modalFieldVal}>{selectedClientModal.website || 'https://example.com'}</Text>
+                </View>
+                <View style={styles.modalFieldRow}>
+                  <Text style={styles.modalFieldKey}>Subscription Period:</Text>
+                  <Text style={styles.modalFieldVal}>{selectedClientModal.startDate} to {selectedClientModal.endDate} ({selectedClientModal.daysLeftText})</Text>
+                </View>
+                <View style={styles.modalFieldRow}>
+                  <Text style={styles.modalFieldKey}>Status:</Text>
+                  <Text style={[styles.modalFieldVal, { fontWeight: '700', color: selectedClientModal.status === 'Active' ? '#10B981' : selectedClientModal.status === 'Expiring Soon' ? '#D97706' : '#EF4444' }]}>
+                    {selectedClientModal.status}
+                  </Text>
+                </View>
+                <View style={styles.modalFieldRow}>
+                  <Text style={styles.modalFieldKey}>Operational Notes:</Text>
+                  <Text style={styles.modalFieldVal}>{selectedClientModal.notes}</Text>
+                </View>
               </View>
 
-              <View style={styles.modalFooterRow}>
+              <View style={styles.modalDialogFooter}>
+                <TouchableOpacity
+                  style={styles.modalCloseBtn}
+                  onPress={() => setSelectedClientModal(null)}
+                >
+                  <Text style={styles.modalCloseBtnText}>Close Window</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 2. ADD CLIENT MODAL (Matching PDF Page 5 Top) */}
+      {showAddClientModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBoxLarge}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Add Client</Text>
+                  <Text style={styles.modalSubtitle}>Create a new client organization.</Text>
+                </View>
+                <TouchableOpacity onPress={() => setShowAddClientModal(false)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 460, paddingRight: 6 }}>
+                <Text style={styles.modalSectionHeading}>Company Information</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Company Name *</Text>
+                    <TextInput style={styles.modalInput} placeholder="Enter company name" value={clientFormName} onChangeText={setClientFormName} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Industry *</Text>
+                    <select style={styles.modalSelect} value={clientFormIndustry} onChange={(e) => setClientFormIndustry(e.target.value)}>
+                      <option value="IT Services">IT Services</option>
+                      <option value="Automotive">Automotive</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Education">Education</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Energy">Energy</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Logistics">Logistics</option>
+                    </select>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Company Size</Text>
+                    <select style={styles.modalSelect} value={clientFormSize} onChange={(e) => setClientFormSize(e.target.value)}>
+                      <option value="1 - 50 employees">1 - 50 employees</option>
+                      <option value="51 - 200 employees">51 - 200 employees</option>
+                      <option value="201 - 500 employees">201 - 500 employees</option>
+                      <option value="500+ employees">500+ employees</option>
+                    </select>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Website</Text>
+                    <TextInput style={styles.modalInput} placeholder="https://www.example.com" value={clientFormWebsite} onChangeText={setClientFormWebsite} />
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Contact Information</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Contact Person *</Text>
+                    <TextInput style={styles.modalInput} placeholder="Enter contact person name" value={clientFormContact} onChangeText={setClientFormContact} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Designation</Text>
+                    <TextInput style={styles.modalInput} placeholder="Enter designation" value={clientFormDesignation} onChangeText={setClientFormDesignation} />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Email *</Text>
+                    <TextInput style={styles.modalInput} placeholder="Enter email address" value={clientFormEmail} onChangeText={setClientFormEmail} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Phone *</Text>
+                    <TextInput style={styles.modalInput} placeholder="Enter phone number" value={clientFormPhone} onChangeText={setClientFormPhone} />
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Subscription Details</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Plan *</Text>
+                    <select style={styles.modalSelect} value={clientFormPlan} onChange={(e) => setClientFormPlan(e.target.value)}>
+                      <option value="Gold">Gold</option>
+                      <option value="Silver">Silver</option>
+                      <option value="Platinum">Platinum</option>
+                      <option value="Enterprise">Enterprise</option>
+                    </select>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Subscription Start Date</Text>
+                    <TextInput style={styles.modalInput} placeholder="DD/MM/YYYY" value={clientFormStartDate} onChangeText={setClientFormStartDate} />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Subscription End Date</Text>
+                    <TextInput style={styles.modalInput} placeholder="DD/MM/YYYY" value={clientFormEndDate} onChangeText={setClientFormEndDate} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Status *</Text>
+                    <select style={styles.modalSelect} value={clientFormStatus} onChange={(e) => setClientFormStatus(e.target.value)}>
+                      <option value="Active">Active</option>
+                      <option value="Expiring Soon">Expiring Soon</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Additional Notes</Text>
+                <TextInput
+                  style={[styles.modalInput, { height: 64, textAlignVertical: 'top' }]}
+                  placeholder="Enter any additional notes about the client..."
+                  multiline
+                  value={clientFormNotes}
+                  onChangeText={setClientFormNotes}
+                />
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddClientModal(false)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.modalSubmitBtn}
-                  onPress={() => setShowViewClientModal(false)}
+                  onPress={() => {
+                    if (!clientFormName.trim()) {
+                      alert('Please enter a company name.');
+                      return;
+                    }
+                    const newClient = {
+                      id: Date.now(),
+                      name: clientFormName,
+                      industry: clientFormIndustry,
+                      avatarChar: clientFormName.charAt(0).toUpperCase() || 'C',
+                      avatarColor: '#0066FF',
+                      contactPerson: clientFormContact || 'Authorized Representative',
+                      email: clientFormEmail || 'admin@company.com',
+                      phone: clientFormPhone,
+                      designation: clientFormDesignation,
+                      companySize: clientFormSize,
+                      website: clientFormWebsite,
+                      plan: clientFormPlan,
+                      status: clientFormStatus,
+                      users: 10,
+                      startDate: clientFormStartDate,
+                      endDate: clientFormEndDate,
+                      daysLeftNumber: 365,
+                      daysLeftText: '365 days left',
+                      notes: clientFormNotes || 'Newly added organization.',
+                      docs: '10',
+                      conversations: '50',
+                    };
+                    setClients([newClient, ...clients]);
+                    setShowAddClientModal(false);
+                    notifyAction(setClientActionMessage, `Client organization "${clientFormName}" created successfully!`);
+                  }}
                 >
-                  <Text style={styles.modalSubmitBtnText}>Close Details</Text>
+                  <Text style={styles.modalSubmitBtnText}>Create Client</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 3. EDIT CLIENT MODAL (Matching PDF Page 5 Bottom) */}
+      {editingClientModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBoxLarge}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Edit Client</Text>
+                  <Text style={styles.modalSubtitle}>Update the client organization details below.</Text>
+                </View>
+                <TouchableOpacity onPress={() => setEditingClientModal(null)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 460, paddingRight: 6 }}>
+                <Text style={styles.modalSectionHeading}>Company Information</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Company Name *</Text>
+                    <TextInput style={styles.modalInput} value={clientFormName} onChangeText={setClientFormName} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Industry *</Text>
+                    <select style={styles.modalSelect} value={clientFormIndustry} onChange={(e) => setClientFormIndustry(e.target.value)}>
+                      <option value="IT Services">IT Services</option>
+                      <option value="Automotive">Automotive</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Education">Education</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Energy">Energy</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Logistics">Logistics</option>
+                    </select>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Company Size</Text>
+                    <select style={styles.modalSelect} value={clientFormSize} onChange={(e) => setClientFormSize(e.target.value)}>
+                      <option value="1 - 50 employees">1 - 50 employees</option>
+                      <option value="51 - 200 employees">51 - 200 employees</option>
+                      <option value="201 - 500 employees">201 - 500 employees</option>
+                      <option value="500+ employees">500+ employees</option>
+                    </select>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Website</Text>
+                    <TextInput style={styles.modalInput} value={clientFormWebsite} onChangeText={setClientFormWebsite} />
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Contact Information</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Contact Person *</Text>
+                    <TextInput style={styles.modalInput} value={clientFormContact} onChangeText={setClientFormContact} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Designation</Text>
+                    <TextInput style={styles.modalInput} value={clientFormDesignation} onChangeText={setClientFormDesignation} />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Email *</Text>
+                    <TextInput style={styles.modalInput} value={clientFormEmail} onChangeText={setClientFormEmail} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Phone *</Text>
+                    <TextInput style={styles.modalInput} value={clientFormPhone} onChangeText={setClientFormPhone} />
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Subscription Details</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Plan *</Text>
+                    <select style={styles.modalSelect} value={clientFormPlan} onChange={(e) => setClientFormPlan(e.target.value)}>
+                      <option value="Gold">Gold</option>
+                      <option value="Silver">Silver</option>
+                      <option value="Platinum">Platinum</option>
+                      <option value="Enterprise">Enterprise</option>
+                    </select>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Subscription Start Date</Text>
+                    <TextInput style={styles.modalInput} value={clientFormStartDate} onChangeText={setClientFormStartDate} />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Subscription End Date</Text>
+                    <TextInput style={styles.modalInput} value={clientFormEndDate} onChangeText={setClientFormEndDate} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Status *</Text>
+                    <select style={styles.modalSelect} value={clientFormStatus} onChange={(e) => setClientFormStatus(e.target.value)}>
+                      <option value="Active">Active</option>
+                      <option value="Expiring Soon">Expiring Soon</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Additional Notes</Text>
+                <TextInput
+                  style={[styles.modalInput, { height: 64, textAlignVertical: 'top' }]}
+                  multiline
+                  value={clientFormNotes}
+                  onChangeText={setClientFormNotes}
+                />
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setEditingClientModal(null)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    setClients(clients.map(c => {
+                      if (c.id === editingClientModal.id) {
+                        return {
+                          ...c,
+                          name: clientFormName,
+                          industry: clientFormIndustry,
+                          companySize: clientFormSize,
+                          website: clientFormWebsite,
+                          contactPerson: clientFormContact,
+                          designation: clientFormDesignation,
+                          email: clientFormEmail,
+                          phone: clientFormPhone,
+                          plan: clientFormPlan,
+                          startDate: clientFormStartDate,
+                          endDate: clientFormEndDate,
+                          status: clientFormStatus,
+                          notes: clientFormNotes,
+                        };
+                      }
+                      return c;
+                    }));
+                    setEditingClientModal(null);
+                    notifyAction(setClientActionMessage, `Changes to ${clientFormName} saved successfully!`);
+                  }}
+                >
+                  <Text style={styles.modalSubmitBtnText}>Save Changes</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 4. ADD PLAN MODAL (Matching PDF Page 7 Bottom) */}
+      {showAddPlanModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBoxLarge}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Add Plan</Text>
+                  <Text style={styles.modalSubtitle}>Create a new subscription plan for your clients.</Text>
+                </View>
+                <TouchableOpacity onPress={() => setShowAddPlanModal(false)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 460, paddingRight: 6 }}>
+                <Text style={styles.modalSectionHeading}>Basic Information</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Plan Name *</Text>
+                    <TextInput style={styles.modalInput} placeholder="Enter plan name (e.g. Gold)" value={planFormName} onChangeText={setPlanFormName} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Plan Type *</Text>
+                    <select style={styles.modalSelect} value={planFormType} onChange={(e) => setPlanFormType(e.target.value)}>
+                      <option value="Subscription">Subscription</option>
+                      <option value="Custom Tier">Custom Tier</option>
+                      <option value="Add-on">Add-on</option>
+                    </select>
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.formLabel}>Short Description *</Text>
+                  <TextInput style={styles.modalInput} placeholder="Enter a short description" value={planFormShortDesc} onChangeText={setPlanFormShortDesc} />
+                </View>
+
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Detailed Description</Text>
+                  <TextInput style={[styles.modalInput, { height: 50 }]} placeholder="Enter detailed description of the plan" multiline value={planFormDetailedDesc} onChangeText={setPlanFormDetailedDesc} />
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Pricing & Validity</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Price (Monthly) *</Text>
+                    <TextInput style={styles.modalInput} placeholder="₹ 0.00" value={planFormPrice} onChangeText={setPlanFormPrice} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Billing Cycle *</Text>
+                    <select style={styles.modalSelect} value={planFormBilling} onChange={(e) => setPlanFormBilling(e.target.value)}>
+                      <option value="Monthly">Monthly</option>
+                      <option value="Quarterly">Quarterly</option>
+                      <option value="Annual">Annual</option>
+                    </select>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Validity (in months)</Text>
+                    <TextInput style={styles.modalInput} placeholder="12" value={planFormValidity} onChangeText={setPlanFormValidity} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Currency</Text>
+                    <TextInput style={styles.modalInput} value={planFormCurrency} onChangeText={setPlanFormCurrency} />
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Features & Limits</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Max Queries per Month *</Text>
+                    <TextInput style={styles.modalInput} placeholder="1000" value={planFormMaxQueries} onChangeText={setPlanFormMaxQueries} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Max Users *</Text>
+                    <TextInput style={styles.modalInput} placeholder="5" value={planFormMaxUsers} onChangeText={setPlanFormMaxUsers} />
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.formLabel}>Storage Limit (MB) *</Text>
+                  <TextInput style={styles.modalInput} placeholder="10" value={planFormStorage} onChangeText={setPlanFormStorage} />
+                </View>
+
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Key Features * (one per line)</Text>
+                  <TextInput
+                    style={[styles.modalInput, { height: 70, textAlignVertical: 'top' }]}
+                    multiline
+                    value={planFormKeyFeatures}
+                    onChangeText={setPlanFormKeyFeatures}
+                  />
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Other Settings</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Status *</Text>
+                    <select style={styles.modalSelect} value={planFormStatus} onChange={(e) => setPlanFormStatus(e.target.value)}>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Display Order</Text>
+                    <TextInput style={styles.modalInput} value={planFormDisplayOrder} onChangeText={setPlanFormDisplayOrder} />
+                  </View>
+                </View>
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddPlanModal(false)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    if (!planFormName.trim()) {
+                      alert('Please enter a plan name.');
+                      return;
+                    }
+                    const newPlan = {
+                      id: planFormName.toLowerCase().replace(/\s+/g, '-'),
+                      name: planFormName,
+                      badge: null,
+                      desc: planFormShortDesc || 'Subscription plan for organizations.',
+                      detailedDesc: planFormDetailedDesc,
+                      price: planFormPrice,
+                      rawPrice: planFormPrice.replace(/[^0-9]/g, '') || '0',
+                      billingCycle: planFormBilling,
+                      validity: `${planFormValidity} Months`,
+                      currency: planFormCurrency,
+                      queries: `Up to ${planFormMaxQueries} queries/month`,
+                      maxUsers: planFormMaxUsers,
+                      storage: planFormStorage,
+                      features: planFormKeyFeatures.split('\n').filter(Boolean),
+                      status: planFormStatus,
+                      clients: 0,
+                      displayOrder: Number(planFormDisplayOrder) || 5,
+                      color: '#0066FF',
+                      bgColor: '#EFF6FF',
+                    };
+                    setPlans([...plans, newPlan]);
+                    setShowAddPlanModal(false);
+                    notifyAction(setPlanActionMessage, `Subscription plan "${planFormName}" created successfully!`);
+                  }}
+                >
+                  <Text style={styles.modalSubmitBtnText}>Create Plan</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 5. EDIT PLAN MODAL */}
+      {editingPlanModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBoxLarge}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Edit Plan</Text>
+                  <Text style={styles.modalSubtitle}>Update the subscription plan configurations.</Text>
+                </View>
+                <TouchableOpacity onPress={() => setEditingPlanModal(null)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 460, paddingRight: 6 }}>
+                <Text style={styles.modalSectionHeading}>Basic Information</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Plan Name *</Text>
+                    <TextInput style={styles.modalInput} value={planFormName} onChangeText={setPlanFormName} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Plan Type</Text>
+                    <select style={styles.modalSelect} value={planFormType} onChange={(e) => setPlanFormType(e.target.value)}>
+                      <option value="Subscription">Subscription</option>
+                      <option value="Custom Tier">Custom Tier</option>
+                      <option value="Add-on">Add-on</option>
+                    </select>
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.formLabel}>Short Description</Text>
+                  <TextInput style={styles.modalInput} value={planFormShortDesc} onChangeText={setPlanFormShortDesc} />
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Pricing & Validity</Text>
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Price (Monthly) *</Text>
+                    <TextInput style={styles.modalInput} value={planFormPrice} onChangeText={setPlanFormPrice} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Billing Cycle</Text>
+                    <select style={styles.modalSelect} value={planFormBilling} onChange={(e) => setPlanFormBilling(e.target.value)}>
+                      <option value="Monthly">Monthly</option>
+                      <option value="Quarterly">Quarterly</option>
+                      <option value="Annual">Annual</option>
+                    </select>
+                  </View>
+                </View>
+
+                <Text style={styles.modalSectionHeading}>Features & Limits</Text>
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Key Features (one per line)</Text>
+                  <TextInput
+                    style={[styles.modalInput, { height: 75, textAlignVertical: 'top' }]}
+                    multiline
+                    value={planFormKeyFeatures}
+                    onChangeText={setPlanFormKeyFeatures}
+                  />
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.formLabel}>Status</Text>
+                    <select style={styles.modalSelect} value={planFormStatus} onChange={(e) => setPlanFormStatus(e.target.value)}>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </View>
+                </View>
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setEditingPlanModal(null)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    setPlans(plans.map(p => {
+                      if (p.id === editingPlanModal.id) {
+                        return {
+                          ...p,
+                          name: planFormName,
+                          desc: planFormShortDesc,
+                          price: planFormPrice,
+                          billingCycle: planFormBilling,
+                          features: planFormKeyFeatures.split('\n').filter(Boolean),
+                          status: planFormStatus,
+                        };
+                      }
+                      return p;
+                    }));
+                    setEditingPlanModal(null);
+                    notifyAction(setPlanActionMessage, `Plan ${planFormName} updated successfully!`);
+                  }}
+                >
+                  <Text style={styles.modalSubmitBtnText}>Save Changes</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 6. VIEW PLAN MODAL */}
+      {selectedPlanModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalDialogCard}>
+              <View style={styles.modalDialogHeader}>
+                <View>
+                  <Text style={styles.modalDialogTitle}>{selectedPlanModal.name} Plan Details</Text>
+                  <Text style={styles.modalDialogSub}>{selectedPlanModal.desc}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setSelectedPlanModal(null)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.modalDialogBody}>
+                <View style={styles.modalStatGrid}>
+                  <View style={styles.modalStatBox}>
+                    <Text style={styles.modalStatNum}>{selectedPlanModal.price}</Text>
+                    <Text style={styles.modalStatLbl}>Monthly Price</Text>
+                  </View>
+                  <View style={styles.modalStatBox}>
+                    <Text style={styles.modalStatNum}>{selectedPlanModal.clients}</Text>
+                    <Text style={styles.modalStatLbl}>Clients Enrolled</Text>
+                  </View>
+                  <View style={styles.modalStatBox}>
+                    <Text style={styles.modalStatNum}>{selectedPlanModal.maxUsers || 10}</Text>
+                    <Text style={styles.modalStatLbl}>Max Users</Text>
+                  </View>
+                </View>
+
+                <Text style={[styles.modalSectionHeading, { marginTop: 12 }]}>Included Features:</Text>
+                <View style={{ gap: 6, marginVertical: 8 }}>
+                  {selectedPlanModal.features.map((f, fi) => (
+                    <View key={fi} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Feather name="check" size={14} color="#10B981" style={{ marginRight: 8 }} />
+                      <Text style={styles.featureBulletText}>{f}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.modalDialogFooter}>
+                <TouchableOpacity style={styles.modalCloseBtn} onPress={() => setSelectedPlanModal(null)}>
+                  <Text style={styles.modalCloseBtnText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 7. ADD NEW ROLE MODAL (Matching PDF Page 16 Top Right) */}
+      {showAddRoleModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Add New Role</Text>
+                  <Text style={styles.modalSubtitle}>Create a user role and assign permissions.</Text>
+                </View>
+                <TouchableOpacity onPress={() => setShowAddRoleModal(false)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 420 }}>
+                <View style={{ marginBottom: 12 }}>
+                  <Text style={styles.formLabel}>Role Name *</Text>
+                  <TextInput style={styles.modalInput} placeholder="Enter role name (e.g. Compliance Officer)" value={roleFormName} onChangeText={setRoleFormName} />
+                </View>
+
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Description *</Text>
+                  <TextInput
+                    style={[styles.modalInput, { height: 60, textAlignVertical: 'top' }]}
+                    placeholder="Enter role description"
+                    multiline
+                    value={roleFormDesc}
+                    onChangeText={setRoleFormDesc}
+                  />
+                </View>
+
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Status *</Text>
+                  <View style={{ flexDirection: 'row', gap: 18, marginTop: 4 }}>
+                    <TouchableOpacity
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                      onPress={() => setRoleFormStatus('Active')}
+                    >
+                      <MaterialCommunityIcons
+                        name={roleFormStatus === 'Active' ? 'radiobox-marked' : 'radiobox-blank'}
+                        size={18}
+                        color={roleFormStatus === 'Active' ? '#0066FF' : '#94A3B8'}
+                      />
+                      <Text style={{ marginLeft: 6, fontSize: 13, color: '#334155' }}>Active</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                      onPress={() => setRoleFormStatus('Inactive')}
+                    >
+                      <MaterialCommunityIcons
+                        name={roleFormStatus === 'Inactive' ? 'radiobox-marked' : 'radiobox-blank'}
+                        size={18}
+                        color={roleFormStatus === 'Inactive' ? '#0066FF' : '#94A3B8'}
+                      />
+                      <Text style={{ marginLeft: 6, fontSize: 13, color: '#334155' }}>Inactive</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.formLabel}>Permissions * (Select modules this role can access)</Text>
+                  <View style={{ gap: 8, marginTop: 6 }}>
+                    {['Dashboard', 'Clients', 'Plans', 'Subscriptions', 'LLM Data Import', 'Reports', 'Master Settings'].map(mod => {
+                      const isChecked = roleFormPermissions.includes(mod);
+                      return (
+                        <TouchableOpacity
+                          key={mod}
+                          style={{ flexDirection: 'row', alignItems: 'center' }}
+                          onPress={() => {
+                            if (isChecked) {
+                              setRoleFormPermissions(roleFormPermissions.filter(p => p !== mod));
+                            } else {
+                              setRoleFormPermissions([...roleFormPermissions, mod]);
+                            }
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name={isChecked ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                            size={18}
+                            color={isChecked ? '#0066FF' : '#94A3B8'}
+                          />
+                          <Text style={{ marginLeft: 8, fontSize: 13, color: '#1E293B' }}>{mod}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddRoleModal(false)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    if (!roleFormName.trim()) {
+                      alert('Please enter a role name.');
+                      return;
+                    }
+                    const newRole = {
+                      id: Date.now(),
+                      name: roleFormName,
+                      desc: roleFormDesc || 'User role for platform access.',
+                      status: roleFormStatus,
+                      permissions: roleFormPermissions,
+                    };
+                    setRoles([...roles, newRole]);
+                    setShowAddRoleModal(false);
+                    notifyAction(setRoleActionMessage, `Role "${roleFormName}" created successfully!`);
+                  }}
+                >
+                  <Text style={styles.modalSubmitBtnText}>Save Role</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 8. EDIT ROLE MODAL */}
+      {editingRoleModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Edit Role</Text>
+                  <Text style={styles.modalSubtitle}>Update role permissions and status.</Text>
+                </View>
+                <TouchableOpacity onPress={() => setEditingRoleModal(null)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 420 }}>
+                <View style={{ marginBottom: 12 }}>
+                  <Text style={styles.formLabel}>Role Name *</Text>
+                  <TextInput style={styles.modalInput} value={roleFormName} onChangeText={setRoleFormName} />
+                </View>
+
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Description *</Text>
+                  <TextInput style={[styles.modalInput, { height: 60, textAlignVertical: 'top' }]} multiline value={roleFormDesc} onChangeText={setRoleFormDesc} />
+                </View>
+
+                <View style={{ marginBottom: 14 }}>
+                  <Text style={styles.formLabel}>Status</Text>
+                  <View style={{ flexDirection: 'row', gap: 18, marginTop: 4 }}>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setRoleFormStatus('Active')}>
+                      <MaterialCommunityIcons name={roleFormStatus === 'Active' ? 'radiobox-marked' : 'radiobox-blank'} size={18} color={roleFormStatus === 'Active' ? '#0066FF' : '#94A3B8'} />
+                      <Text style={{ marginLeft: 6, fontSize: 13, color: '#334155' }}>Active</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setRoleFormStatus('Inactive')}>
+                      <MaterialCommunityIcons name={roleFormStatus === 'Inactive' ? 'radiobox-marked' : 'radiobox-blank'} size={18} color={roleFormStatus === 'Inactive' ? '#0066FF' : '#94A3B8'} />
+                      <Text style={{ marginLeft: 6, fontSize: 13, color: '#334155' }}>Inactive</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.formLabel}>Permissions</Text>
+                  <View style={{ gap: 8, marginTop: 6 }}>
+                    {['Dashboard', 'Clients', 'Plans', 'Subscriptions', 'LLM Data Import', 'Reports', 'Master Settings'].map(mod => {
+                      const isChecked = roleFormPermissions.includes(mod);
+                      return (
+                        <TouchableOpacity
+                          key={mod}
+                          style={{ flexDirection: 'row', alignItems: 'center' }}
+                          onPress={() => {
+                            if (isChecked) {
+                              setRoleFormPermissions(roleFormPermissions.filter(p => p !== mod));
+                            } else {
+                              setRoleFormPermissions([...roleFormPermissions, mod]);
+                            }
+                          }}
+                        >
+                          <MaterialCommunityIcons name={isChecked ? 'checkbox-marked' : 'checkbox-blank-outline'} size={18} color={isChecked ? '#0066FF' : '#94A3B8'} />
+                          <Text style={{ marginLeft: 8, fontSize: 13, color: '#1E293B' }}>{mod}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setEditingRoleModal(null)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    setRoles(roles.map(r => {
+                      if (r.id === editingRoleModal.id) {
+                        return {
+                          ...r,
+                          name: roleFormName,
+                          desc: roleFormDesc,
+                          status: roleFormStatus,
+                          permissions: roleFormPermissions,
+                        };
+                      }
+                      return r;
+                    }));
+                    setEditingRoleModal(null);
+                    notifyAction(setRoleActionMessage, `Role ${roleFormName} updated successfully!`);
+                  }}
+                >
+                  <Text style={styles.modalSubmitBtnText}>Save Role</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 9. ADD CONFIGURATION MODAL */}
+      {showAddConfigModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Add Configuration</Text>
+                <TouchableOpacity onPress={() => setShowAddConfigModal(false)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+              <View style={{ gap: 12, paddingVertical: 10 }}>
+                <View>
+                  <Text style={styles.formLabel}>Configuration Name *</Text>
+                  <TextInput style={styles.modalInput} placeholder="e.g. Audit Log Purge Interval" value={configFormName} onChangeText={setConfigFormName} />
+                </View>
+                <View>
+                  <Text style={styles.formLabel}>Description</Text>
+                  <TextInput style={styles.modalInput} placeholder="Short description of this setting" value={configFormDesc} onChangeText={setConfigFormDesc} />
+                </View>
+                <View>
+                  <Text style={styles.formLabel}>Value *</Text>
+                  <TextInput style={styles.modalInput} placeholder="e.g. 90 Days" value={configFormValue} onChangeText={setConfigFormValue} />
+                </View>
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddConfigModal(false)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    if (!configFormName.trim()) return;
+                    setConfigs([
+                      ...configs,
+                      {
+                        id: Date.now(),
+                        name: configFormName,
+                        desc: configFormDesc || 'Configurable application setting.',
+                        value: configFormValue || 'Default',
+                        status: 'Active',
+                      }
+                    ]);
+                    setShowAddConfigModal(false);
+                  }}
+                >
+                  <Text style={styles.modalSubmitBtnText}>Save Config</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -2559,99 +4245,14 @@ export default function AdminPortalView({ onBackToLanding }) {
   );
 }
 
-// SUB-COMPONENTS
-function KPICard({ icon, title, value, trend, sub, color, bgColor }) {
-  return (
-    <View style={styles.kpiCard}>
-      <View style={styles.kpiTopRow}>
-        <View style={[styles.kpiIconCircle, { backgroundColor: bgColor }]}>
-          <MaterialCommunityIcons name={icon} size={20} color={color} />
-        </View>
-        <View style={styles.kpiTrendPill}>
-          <Text style={[styles.kpiTrendText, { color }]}>{trend}</Text>
-        </View>
-      </View>
-      <Text style={styles.kpiValue}>{value}</Text>
-      <Text style={styles.kpiTitle}>{title}</Text>
-      <Text style={styles.kpiSub}>{sub}</Text>
-    </View>
-  );
-}
-
-function DonutLegendItem({ color, label, count }) {
-  return (
-    <View style={styles.donutLegendRow}>
-      <View style={[styles.legendDot, { backgroundColor: color }]} />
-      <Text style={styles.legendLabel}>{label}</Text>
-      <Text style={styles.legendCount}>{count}</Text>
-    </View>
-  );
-}
-
-function TimelineRow({ icon, color, text, time }) {
-  return (
-    <View style={styles.timelineItemRow}>
-      <View style={[styles.timelineIconBox, { backgroundColor: color + '15' }]}>
-        <MaterialCommunityIcons name={icon} size={15} color={color} />
-      </View>
-      <View style={styles.timelineContent}>
-        <Text style={styles.timelineText}>{text}</Text>
-        <Text style={styles.timelineTime}>{time}</Text>
-      </View>
-    </View>
-  );
-}
-
-function PreferenceToggleRow({ title, desc, value, onToggle }) {
-  return (
-    <View style={styles.prefToggleRow}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.prefTitle}>{title}</Text>
-        <Text style={styles.prefDesc}>{desc}</Text>
-      </View>
-      <TouchableOpacity
-        style={[styles.toggleSwitch, value ? styles.toggleSwitchActive : styles.toggleSwitchInactive]}
-        onPress={onToggle}
-      >
-        <View style={[styles.toggleKnob, value ? styles.toggleKnobActive : styles.toggleKnobInactive]} />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function MasterDataCategory({ title, count, desc }) {
-  return (
-    <View style={styles.masterDataCard}>
-      <View style={styles.masterDataTop}>
-        <Text style={styles.masterDataTitle}>{title}</Text>
-        <View style={styles.masterDataPill}>
-          <Text style={styles.masterDataPillText}>{count}</Text>
-        </View>
-      </View>
-      <Text style={styles.masterDataDesc}>{desc}</Text>
-      <TouchableOpacity style={styles.masterDataEditLink}>
-        <Text style={styles.masterDataEditLinkText}>Manage Items →</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function DetailField({ label, val }) {
-  return (
-    <View style={styles.detailFieldRow}>
-      <Text style={styles.detailLabel}>{label}:</Text>
-      <Text style={styles.detailVal}>{val}</Text>
-    </View>
-  );
-}
-
+// Subcomponents
 function PaneFeature({ icon, title, desc }) {
   return (
     <View style={styles.paneFeatureRow}>
-      <View style={styles.paneFeatureIcon}>
-        <MaterialCommunityIcons name={icon} size={18} color="#FFFFFF" />
+      <View style={styles.paneFeatureIconSquare}>
+        <MaterialCommunityIcons name={icon} size={20} color="#00D2FF" />
       </View>
-      <View style={{ marginLeft: 12 }}>
+      <View style={{ marginLeft: 12, flex: 1 }}>
         <Text style={styles.paneFeatureTitle}>{title}</Text>
         <Text style={styles.paneFeatureDesc}>{desc}</Text>
       </View>
@@ -2659,93 +4260,1541 @@ function PaneFeature({ icon, title, desc }) {
   );
 }
 
-// UTILITIES FOR STYLING
-function getPlanColor(plan) {
-  switch (plan) {
-    case 'Gold':
-      return '#B45309';
-    case 'Silver':
-      return '#64748B';
-    case 'Platinum':
-      return '#0056FF';
-    case 'Enterprise':
-      return '#059669';
-    default:
-      return '#0F172A';
-  }
+function ActivityFeedItem({ icon, iconColor, iconBg, title, time }) {
+  return (
+    <View style={styles.activityItemRow}>
+      <View style={[styles.activityIconCircle, { backgroundColor: iconBg }]}>
+        <MaterialCommunityIcons name={icon} size={16} color={iconColor} />
+      </View>
+      <View style={{ marginLeft: 12, flex: 1 }}>
+        <Text style={styles.activityItemTitle} numberOfLines={1}>{title}</Text>
+        <Text style={styles.activityItemTime}>{time}</Text>
+      </View>
+    </View>
+  );
 }
 
-function getPlanBg(plan) {
-  switch (plan) {
-    case 'Gold':
-      return '#FEF3C7';
-    case 'Silver':
-      return '#F1F5F9';
-    case 'Platinum':
-      return '#EFF6FF';
-    case 'Enterprise':
-      return '#ECFDF5';
-    default:
-      return '#F8FAFC';
-  }
+function NotificationItem({ text, time, dotColor }) {
+  return (
+    <View style={styles.notificationItemRow}>
+      <View style={[styles.notificationDot, { backgroundColor: dotColor }]} />
+      <View style={{ marginLeft: 10, flex: 1 }}>
+        <Text style={styles.notificationText}>{text}</Text>
+        <Text style={styles.notificationTime}>{time}</Text>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  // LOGIN SCREEN STYLES
-  loginContainer: {
+  portalContainer: {
     flex: 1,
-    backgroundColor: '#FAFCFF',
+    flexDirection: 'row',
+    backgroundColor: '#F8FAFC',
+    minHeight: '100vh',
+  },
+  sidebar: {
+    width: 240,
+    backgroundColor: '#0A1329',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderRightWidth: 1,
+    borderRightColor: '#1E293B',
+    flexDirection: 'column',
+  },
+  sidebarLogoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 28,
+    paddingHorizontal: 4,
+  },
+  sidebarLogoIconBox: {
+    width: 38,
+    height: 38,
+    borderRadius: 8,
+    backgroundColor: '#0066FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sidebarBrandTitle: {
+    color: '#FFFFFF',
+    fontSize: 13.5,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  sidebarBrandSub: {
+    color: '#94A3B8',
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  sidebarMenuList: {
+    gap: 4,
+  },
+  sidebarNavItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  sidebarNavItemActive: {
+    backgroundColor: '#0066FF',
+  },
+  sidebarNavText: {
+    color: '#94A3B8',
+    fontSize: 13.5,
+    fontWeight: '600',
+  },
+  sidebarNavTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  needHelpCard: {
+    backgroundColor: '#0F1E36',
+    borderRadius: 10,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#1E293B',
+  },
+  needHelpLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headphoneIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    backgroundColor: '#EBF3FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  needHelpTitle: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  needHelpSub: {
+    color: '#94A3B8',
+    fontSize: 11,
+  },
+  mainArea: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#F8FAFC',
+  },
+  topNavbar: {
+    height: 64,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+  },
+  topSearchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    height: 38,
+    width: 320,
+  },
+  topSearchInput: {
+    flex: 1,
+    fontSize: 13,
+    color: '#0F172A',
+    outlineStyle: 'none',
+  },
+  topNavRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  bellBtn: {
+    position: 'relative',
+    padding: 6,
+  },
+  bellBadge: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    backgroundColor: '#EF4444',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bellBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  adminUserChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 20,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  adminAvatarCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#334155',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  adminAvatarLetter: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  adminUserName: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  adminOrgName: {
+    fontSize: 10.5,
+    color: '#64748B',
+  },
+  exitIconBtn: {
+    padding: 6,
+  },
+  notificationDropdown: {
+    position: 'absolute',
+    top: 70,
+    right: 24,
+    width: 320,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    zIndex: 999,
+  },
+  notificationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  notificationHeaderTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  notificationItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  notificationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  notificationText: {
+    fontSize: 12,
+    color: '#1E293B',
+  },
+  notificationTime: {
+    fontSize: 10.5,
+    color: '#94A3B8',
+  },
+  scrollBody: {
+    flex: 1,
+  },
+  greetingHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  greetingTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  greetingSubtitle: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  headerDateBadge: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  headerDateText: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  kpiRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 20,
+  },
+  kpiRowMobile: {
+    flexDirection: 'column',
+  },
+  kpiCard: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  kpiIconSquare: {
+    width: 46,
+    height: 46,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  kpiInfoCol: {
+    flex: 1,
+  },
+  kpiCardLabel: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  kpiValueRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  kpiCardValue: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginRight: 8,
+  },
+  kpiTrendBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  kpiTrendText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#10B981',
+  },
+  kpiCardSubtext: {
+    fontSize: 11,
+    color: '#94A3B8',
+  },
+  middleGridRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 20,
+  },
+  middleGridRowMobile: {
+    flexDirection: 'column',
+  },
+  contentCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  cardHeaderTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  timeFilterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  timeFilterPillText: {
+    fontSize: 12,
+    color: '#334155',
+    fontWeight: '600',
+  },
+  timeFilterDropdownMenu: {
+    position: 'absolute',
+    top: 30,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    zIndex: 100,
+    width: 120,
+  },
+  dropdownMenuItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F8FAFC',
+  },
+  dropdownMenuItemText: {
+    fontSize: 12,
+    color: '#334155',
+  },
+  donutVisualLayout: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingVertical: 14,
+  },
+  donutRingOuter: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    borderWidth: 14,
+    borderColor: '#0066FF',
+    borderTopColor: '#06B6D4',
+    borderRightColor: '#8B5CF6',
+    borderBottomColor: '#64748B',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  donutRingHole: {
+    alignItems: 'center',
+  },
+  donutCenterBigNum: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  donutCenterSub: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  donutLegendCol: {
+    gap: 8,
+  },
+  donutLegendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legendColorDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  legendPlanName: {
+    fontSize: 12,
+    color: '#334155',
+    fontWeight: '600',
+    width: 60,
+  },
+  legendPlanMetric: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  viewAllActionLink: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#0066FF',
+  },
+  activityFeedList: {
+    gap: 12,
+    paddingTop: 4,
+  },
+  activityItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  activityIconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activityItemTitle: {
+    fontSize: 12.5,
+    color: '#1E293B',
+    fontWeight: '600',
+  },
+  activityItemTime: {
+    fontSize: 11,
+    color: '#94A3B8',
+  },
+  tableHeadBar: {
+    flexDirection: 'row',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginBottom: 6,
+  },
+  thColText: {
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: '#64748B',
+    textTransform: 'uppercase',
+  },
+  tableClickableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  tdIndexText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#94A3B8',
+  },
+  companyAvatarCell: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  circleInitialAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  circleInitialText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  companyNameCellText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  tdNumberText: {
+    fontSize: 12.5,
+    color: '#334155',
+    fontWeight: '500',
+  },
+  tdPlanText: {
+    fontSize: 12.5,
+    color: '#0F172A',
+    fontWeight: '600',
+  },
+  tdDateText: {
+    fontSize: 12,
+    color: '#475569',
+  },
+  daysLeftSubText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  contactNameText: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#1E293B',
+  },
+  contactEmailText: {
+    fontSize: 11,
+    color: '#64748B',
+  },
+  daysLeftAmberPill: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+  },
+  daysLeftAmberText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#B45309',
+  },
+  statusActivePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  dotActiveGreen: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#10B981',
+    marginRight: 6,
+  },
+  statusActiveText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#059669',
+  },
+  statusExpiringPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFBEB',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  dotAmber: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#F59E0B',
+    marginRight: 6,
+  },
+  statusExpiringText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#B45309',
+  },
+  statusExpiredPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF2F2',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  dotRed: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#EF4444',
+    marginRight: 6,
+  },
+  statusExpiredText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#DC2626',
+  },
+  bottomCalloutCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  calloutLeftContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  targetIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F3E8FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calloutHeading: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  calloutSub: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  calloutActionBtn: {
+    backgroundColor: '#4338CA',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  calloutActionBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12.5,
+    fontWeight: '700',
+  },
+  tabContentContainer: {
+    flexDirection: 'column',
+    gap: 16,
+  },
+  subScreenHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 4,
+  },
+  breadcrumbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  breadcrumbLink: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
+    cursor: 'pointer',
+  },
+  breadcrumbDivider: {
+    fontSize: 12,
+    color: '#94A3B8',
+  },
+  breadcrumbActive: {
+    fontSize: 12,
+    color: '#0066FF',
+    fontWeight: '700',
+  },
+  primaryActionBtn: {
+    backgroundColor: '#0066FF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 9,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  primaryActionBtnText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  filterBarRow: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  filterBarRowMobile: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+  searchBarBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 38,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  innerSearch: {
+    flex: 1,
+    fontSize: 12.5,
+    color: '#0F172A',
+    outlineStyle: 'none',
+  },
+  filterDropdownWrapper: {
+    flex: 1,
+  },
+  filterFieldLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+    marginBottom: 2,
+  },
+  nativeHtmlSelect: {
+    height: 38,
+    borderRadius: 8,
+    borderColor: '#CBD5E1',
+    borderWidth: 1,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10,
+    fontSize: 12.5,
+    color: '#0F172A',
+    outline: 'none',
+    width: '100%',
+  },
+  filterActionButton: {
+    backgroundColor: '#0066FF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 38,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  filterActionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12.5,
+    fontWeight: '700',
+  },
+  resetActionButton: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 38,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  resetActionButtonText: {
+    color: '#475569',
+    fontSize: 12.5,
+    fontWeight: '600',
+  },
+  tableSubheaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  tableTitleText: {
+    fontSize: 14.5,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  planBadgeTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  planBadgeGold: {
+    backgroundColor: '#FEF3C7',
+  },
+  planBadgeGoldText: {
+    color: '#B45309',
+    fontWeight: '700',
+    fontSize: 11,
+  },
+  planBadgeSilver: {
+    backgroundColor: '#F1F5F9',
+  },
+  planBadgeSilverText: {
+    color: '#475569',
+    fontWeight: '700',
+    fontSize: 11,
+  },
+  planBadgePlatinum: {
+    backgroundColor: '#F3E8FF',
+  },
+  planBadgePlatinumText: {
+    color: '#7C3AED',
+    fontWeight: '700',
+    fontSize: 11,
+  },
+  viewSmallBtn: {
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  viewSmallBtnText: {
+    fontSize: 11.5,
+    fontWeight: '600',
+    color: '#0066FF',
+  },
+  editSmallBtn: {
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editSmallBtnText: {
+    fontSize: 11.5,
+    fontWeight: '600',
+    color: '#0066FF',
+  },
+  iconActionBtn: {
+    padding: 6,
+    borderRadius: 6,
+  },
+  tablePaginationFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 14,
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  paginationShowingText: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  paginationPagesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  pageBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  pageBtnActive: {
+    backgroundColor: '#0066FF',
+    borderColor: '#0066FF',
+  },
+  pageBtnActiveText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  pageBtnText: {
+    color: '#334155',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  pageSizeSelectWrapper: {
+    width: 110,
+  },
+  pageSizeSelect: {
+    height: 30,
+    borderRadius: 6,
+    borderColor: '#CBD5E1',
+    borderWidth: 1,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 8,
+    fontSize: 11.5,
+    color: '#334155',
+    outline: 'none',
+  },
+  planNameColumnText: {
+    fontSize: 13.5,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  popularBadge: {
+    backgroundColor: '#0066FF',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
+  popularBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 9.5,
+    fontWeight: '800',
+  },
+  tdDescText: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  planPriceColumnText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  featureBulletDot: {
+    fontSize: 14,
+    color: '#10B981',
+    marginRight: 6,
+  },
+  featureBulletText: {
+    fontSize: 11.5,
+    color: '#334155',
+  },
+  masterSettingsInfoBanner: {
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    borderRadius: 10,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  masterSettingsInfoTitle: {
+    fontSize: 13.5,
+    fontWeight: '800',
+    color: '#1E40AF',
+    marginBottom: 2,
+  },
+  masterSettingsInfoDesc: {
+    fontSize: 12,
+    color: '#1E3A8A',
+    lineHeight: 18,
+  },
+  settingsSubTabsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+    flexWrap: 'wrap',
+  },
+  settingsSubTabBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  settingsSubTabBtnActive: {
+    borderColor: '#0066FF',
+    backgroundColor: '#EFF6FF',
+  },
+  settingsSubTabBtnText: {
+    fontSize: 12.5,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  settingsSubTabBtnTextActive: {
+    color: '#0066FF',
+    fontWeight: '700',
+  },
+  rbacInfoCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  rbacInfoTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  rbacInfoDesc: {
+    fontSize: 11.5,
+    color: '#64748B',
+  },
+  roleNameText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  configBadge: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  configBadgeText: {
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: '#334155',
+  },
+  settingsInputBox: {
+    height: 38,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 13,
+    color: '#0F172A',
+    backgroundColor: '#FFFFFF',
+    outlineStyle: 'none',
+  },
+  settingsSelectBox: {
+    height: 38,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    fontSize: 12.5,
+    color: '#0F172A',
+    backgroundColor: '#FFFFFF',
+    outline: 'none',
+    width: '100%',
+  },
+  prefToggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F8FAFC',
+  },
+  prefToggleTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1E293B',
+  },
+  prefToggleDesc: {
+    fontSize: 11.5,
+    color: '#64748B',
+  },
+  toggleBtn: {
+    width: 40,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#E2E8F0',
+    padding: 2,
+    justifyContent: 'center',
+  },
+  toggleBtnActive: {
+    backgroundColor: '#0066FF',
+  },
+  toggleThumb: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#FFFFFF',
+  },
+  toggleThumbActive: {
+    alignSelf: 'flex-end',
+  },
+  logoPreviewBox: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    padding: 16,
+    backgroundColor: '#F8FAFC',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logoPreviewTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  logoPreviewSub: {
+    fontSize: 10.5,
+    color: '#64748B',
+  },
+  faviconPreviewBox: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F8FAFC',
+  },
+  colorPreviewSquare: {
+    width: 38,
+    height: 38,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  colorSwatchBtn: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+  },
+  colorSwatchBtnActive: {
+    borderWidth: 2,
+    borderColor: '#0F172A',
+  },
+  livePreviewFrame: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    overflow: 'hidden',
+    backgroundColor: '#F8FAFC',
+  },
+  livePreviewTopBar: {
+    height: 38,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+  },
+  livePreviewLogoText: {
+    fontSize: 11.5,
+    fontWeight: '800',
+    marginLeft: 6,
+  },
+  livePreviewAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  livePreviewBody: {
+    padding: 14,
+  },
+  livePreviewWelcome: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  livePreviewMetricBox: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 6,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  livePreviewMetricNum: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  livePreviewMetricLbl: {
+    fontSize: 10.5,
+    color: '#64748B',
+  },
+  livePreviewBtn: {
+    marginTop: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  livePreviewBtnText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  masterDataGrid: {
+    gap: 12,
+  },
+  masterDataCard: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: '#F8FAFC',
+  },
+  masterDataCardTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 8,
+  },
+  masterDataPillsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  masterDataPill: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    fontSize: 11.5,
+    color: '#334155',
+    fontWeight: '600',
+  },
+  masterSettingsNoteBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#F0F9FF',
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 10,
+  },
+  masterSettingsNoteText: {
+    fontSize: 11.5,
+    color: '#0369A1',
+    lineHeight: 16,
+  },
+  actionSuccessToast: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+  },
+  actionSuccessToastText: {
+    color: '#065F46',
+    fontSize: 12.5,
+    fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 16,
+  },
+  modalDialogCard: {
+    width: '100%',
+    maxWidth: 500,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+  },
+  modalDialogHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  modalDialogTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  modalDialogSub: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  modalDialogBody: {
+    paddingVertical: 14,
+  },
+  modalStatGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 14,
+  },
+  modalStatBox: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  modalStatNum: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  modalStatLbl: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  modalFieldRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  modalFieldKey: {
+    width: 130,
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  modalFieldVal: {
+    flex: 1,
+    fontSize: 12,
+    color: '#0F172A',
+  },
+  modalDialogFooter: {
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    alignItems: 'flex-end',
+  },
+  modalCloseBtn: {
+    backgroundColor: '#0F172A',
+    paddingVertical: 7,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  modalCloseBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  modalBox: {
+    width: '100%',
+    maxWidth: 480,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
+  },
+  modalBoxLarge: {
+    width: '100%',
+    maxWidth: 600,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 22,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    marginBottom: 12,
+  },
+  modalTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  modalSubtitle: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  modalSectionHeading: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0066FF',
+    marginVertical: 10,
+  },
+  formLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#334155',
+    marginBottom: 4,
+  },
+  modalInput: {
+    height: 38,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 12.5,
+    color: '#0F172A',
+    outlineStyle: 'none',
+  },
+  modalSelect: {
+    height: 38,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    fontSize: 12.5,
+    color: '#0F172A',
+    backgroundColor: '#FFFFFF',
+    outline: 'none',
+    width: '100%',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  modalCancelBtn: {
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  modalCancelBtnText: {
+    fontSize: 12.5,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  modalSubmitBtn: {
+    backgroundColor: '#0066FF',
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 8,
+  },
+  modalSubmitBtnText: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  loginContainer: {
+    flex: 1,
+    backgroundColor: '#070D1E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
     minHeight: '100vh',
-    padding: 24,
   },
   topBackNav: {
     position: 'absolute',
-    top: 24,
+    top: 20,
     left: 24,
     zIndex: 10,
   },
   backBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
   },
   backBtnText: {
-    color: '#0056FF',
-    fontSize: 13.5,
+    fontSize: 12,
     fontWeight: '700',
+    color: '#0066FF',
   },
   loginCardWrapper: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    overflow: 'hidden',
-    maxWidth: 960,
     width: '100%',
+    maxWidth: 920,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.08,
-    shadowRadius: 28,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    zIndex: 2,
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
   },
   loginCardWrapperMobile: {
     flexDirection: 'column',
+    maxWidth: 440,
   },
   loginLeftPane: {
-    flex: 1,
-    backgroundColor: '#0056FF',
-    padding: 40,
+    flex: 1.1,
+    backgroundColor: '#0A1329',
+    padding: 36,
     justifyContent: 'space-between',
   },
   paneLogoRow: {
@@ -2756,121 +5805,133 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '800',
-    letterSpacing: 1,
   },
   paneLogoSub: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: '#00D2FF',
     fontSize: 11,
+    fontWeight: '600',
   },
   paneHeroTitle: {
+    fontSize: 30,
+    fontWeight: '900',
     color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '800',
-    lineHeight: 40,
-    marginVertical: 20,
+    lineHeight: 36,
+    marginVertical: 14,
   },
   paneHeroDesc: {
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontSize: 13.5,
-    lineHeight: 22,
-    marginBottom: 24,
+    fontSize: 12.5,
+    color: '#94A3B8',
+    lineHeight: 18,
+    marginBottom: 20,
   },
   paneFeaturesList: {
-    gap: 16,
-    marginBottom: 24,
+    gap: 12,
   },
   paneFeatureRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  paneFeatureIcon: {
-    width: 32,
-    height: 32,
+  paneFeatureIconSquare: {
+    width: 34,
+    height: 34,
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 210, 255, 0.1)',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   paneFeatureTitle: {
-    color: '#FFFFFF',
-    fontSize: 13,
+    fontSize: 12.5,
     fontWeight: '700',
+    color: '#FFFFFF',
   },
   paneFeatureDesc: {
-    color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 11,
+    color: '#64748B',
   },
   paneFooterText: {
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontSize: 11.5,
+    fontSize: 11,
+    color: '#475569',
+    fontStyle: 'italic',
+    marginTop: 20,
   },
   loginRightPane: {
     flex: 1.2,
-    padding: 40,
-    justifyContent: 'space-between',
+    padding: 36,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
   loginRightHeader: {
-    alignItems: 'center',
     marginBottom: 20,
+  },
+  loginTopSecurityTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  loginTopSecurityTagText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#10B981',
+  },
+  loginLogoIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   rightHeaderTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '800',
     color: '#0F172A',
-    letterSpacing: 1,
-    marginTop: 6,
   },
   rightHeaderSub: {
-    fontSize: 11,
-    color: '#64748B',
+    fontSize: 11.5,
+    color: '#0066FF',
+    fontWeight: '600',
   },
   loginFormBox: {
-    width: '100%',
+    gap: 12,
   },
   loginFormHeading: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '800',
     color: '#0F172A',
-    marginBottom: 6,
   },
   loginFormSub: {
-    fontSize: 13,
+    fontSize: 12.5,
     color: '#64748B',
-    marginBottom: 20,
+    marginBottom: 8,
+  },
+  forgotAlertBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 6,
+  },
+  forgotAlertText: {
+    fontSize: 11.5,
+    color: '#1D4ED8',
+    flex: 1,
   },
   formGroup: {
-    marginBottom: 14,
-  },
-  formLabel: {
-    fontSize: 12.5,
-    fontWeight: '700',
-    color: '#334155',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 42,
     borderWidth: 1,
     borderColor: '#CBD5E1',
-    borderRadius: 10,
+    borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 10,
     backgroundColor: '#F8FAFC',
   },
   textInput: {
     flex: 1,
-    fontSize: 13.5,
-    color: '#0F172A',
-    outlineStyle: 'none',
-  },
-  textInputRegular: {
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-    backgroundColor: '#FFFFFF',
-    fontSize: 13.5,
+    fontSize: 13,
     color: '#0F172A',
     outlineStyle: 'none',
   },
@@ -2878,1709 +5939,56 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginVertical: 4,
   },
   rememberRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    cursor: 'pointer',
   },
   rememberText: {
-    fontSize: 12.5,
+    fontSize: 12,
     color: '#475569',
+    marginLeft: 6,
   },
   forgotText: {
-    fontSize: 12.5,
-    color: '#0056FF',
+    fontSize: 12,
+    color: '#0066FF',
     fontWeight: '600',
   },
   signInPrimaryBtn: {
+    backgroundColor: '#0066FF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0056FF',
-    paddingVertical: 12,
-    borderRadius: 10,
-    shadowColor: '#0056FF',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    cursor: 'pointer',
+    height: 44,
+    borderRadius: 8,
+    marginTop: 8,
   },
   signInPrimaryBtnText: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
   },
-  securityWarningBox: {
+  adminPortalWarningBanner: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EFF6FF',
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 18,
+    alignItems: 'flex-start',
+    backgroundColor: '#F0F9FF',
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: '#BAE6FD',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 10,
   },
-  securityWarningText: {
-    color: '#1E40AF',
-    fontSize: 11,
+  adminPortalWarningText: {
+    fontSize: 11.5,
+    color: '#0369A1',
     lineHeight: 16,
     flex: 1,
   },
   portalFooterCopy: {
-    fontSize: 11,
+    fontSize: 10.5,
     color: '#94A3B8',
     textAlign: 'center',
     marginTop: 20,
-  },
-
-  // PORTAL SHELL STYLES
-  dashContainer: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-    minHeight: '100vh',
-  },
-  dashTopNav: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 64,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    paddingHorizontal: 24,
-    zIndex: 10,
-  },
-  dashLogoBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dashLogoText: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#0F172A',
-    letterSpacing: 0.5,
-  },
-  dashLogoSubText: {
-    fontSize: 10,
-    color: '#64748B',
-    marginTop: -2,
-  },
-  dashSearchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F5F9',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    width: 340,
-  },
-  dashSearchInput: {
-    flex: 1,
-    fontSize: 13,
-    color: '#0F172A',
-    outlineStyle: 'none',
-  },
-  dashNavRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  dateTimeBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F5F9',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 6,
-  },
-  dateTimeText: {
-    fontSize: 12,
-    color: '#475569',
-    fontWeight: '500',
-  },
-  dashNavIconBtn: {
-    position: 'relative',
-    padding: 6,
-    cursor: 'pointer',
-  },
-  notificationDot: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    width: 7,
-    height: 7,
-    borderRadius: 3.5,
-    backgroundColor: '#EF4444',
-  },
-  adminUserBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  adminAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#0056FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  adminAvatarText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  adminName: {
-    fontSize: 12.5,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  adminRole: {
-    fontSize: 10,
-    color: '#64748B',
-  },
-  dashExitBtn: {
-    padding: 6,
-    cursor: 'pointer',
-  },
-  dashBody: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  sidebar: {
-    width: 230,
-    backgroundColor: '#FFFFFF',
-    borderRightWidth: 1,
-    borderRightColor: '#E2E8F0',
-    paddingVertical: 18,
-    paddingHorizontal: 12,
-  },
-  sidebarItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginBottom: 4,
-    position: 'relative',
-    cursor: 'pointer',
-  },
-  sidebarItemActive: {
-    backgroundColor: '#EFF6FF',
-  },
-  sidebarItemText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#64748B',
-  },
-  sidebarItemTextActive: {
-    color: '#0056FF',
-    fontWeight: '700',
-  },
-  sidebarActivePill: {
-    position: 'absolute',
-    right: 0,
-    top: 8,
-    bottom: 8,
-    width: 3,
-    backgroundColor: '#0056FF',
-    borderRadius: 2,
-  },
-  sidebarNeedHelpBox: {
-    backgroundColor: '#F8FAFC',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    marginBottom: 12,
-  },
-  sidebarNeedHelpTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  sidebarNeedHelpSub: {
-    fontSize: 11,
-    color: '#0056FF',
-    marginTop: 2,
-  },
-  sidebarBackToWeb: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    backgroundColor: '#EFF6FF',
-    marginBottom: 10,
-    cursor: 'pointer',
-  },
-  sidebarBackToWebText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#0056FF',
-  },
-  sidebarVersionText: {
-    fontSize: 10,
-    color: '#94A3B8',
-    textAlign: 'center',
-  },
-  mainContent: {
-    flex: 1,
-  },
-  breadcrumbHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 24,
-  },
-  breadcrumbRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  breadcrumbMuted: {
-    fontSize: 12,
-    color: '#94A3B8',
-    fontWeight: '500',
-  },
-  breadcrumbActive: {
-    fontSize: 12,
-    color: '#0056FF',
-    fontWeight: '600',
-  },
-  screenMainHeading: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginBottom: 4,
-  },
-  screenMainSub: {
-    fontSize: 13.5,
-    color: '#64748B',
-  },
-  topActionBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#0056FF',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    shadowColor: '#0056FF',
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    cursor: 'pointer',
-  },
-  topActionBtnText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  toastCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ECFDF5',
-    borderWidth: 1,
-    borderColor: '#A7F3D0',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  toastText: {
-    fontSize: 13,
-    color: '#065F46',
-    fontWeight: '600',
-  },
-
-  // KPI CARDS
-  sectionContainer: {
-    width: '100%',
-  },
-  kpiRow: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 24,
-  },
-  kpiRowMobile: {
-    flexDirection: 'column',
-  },
-  kpiCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 6,
-  },
-  kpiTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  kpiIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  kpiTrendPill: {
-    backgroundColor: '#F8FAFC',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  kpiTrendText: {
-    fontSize: 11.5,
-    fontWeight: '700',
-  },
-  kpiValue: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginBottom: 2,
-  },
-  kpiTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#475569',
-  },
-  kpiSub: {
-    fontSize: 11,
-    color: '#94A3B8',
-    marginTop: 2,
-  },
-
-  // CHARTS & GRIDS
-  middleGridRow: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 24,
-  },
-  middleGridRowMobile: {
-    flexDirection: 'column',
-  },
-  gridCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-  },
-  gridCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  gridCardTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  filterDropdownPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  filterDropdownPillText: {
-    fontSize: 11.5,
-    color: '#64748B',
-    fontWeight: '600',
-  },
-  viewAllLinkText: {
-    fontSize: 12,
-    color: '#0056FF',
-    fontWeight: '700',
-    cursor: 'pointer',
-  },
-
-  // CLIENT GROWTH MOCK CHART
-  areaChartContainer: {
-    flexDirection: 'row',
-    height: 160,
-    alignItems: 'flex-end',
-    paddingTop: 10,
-  },
-  chartYAxis: {
-    justifyContent: 'space-between',
-    height: '100%',
-    paddingRight: 10,
-    borderRightWidth: 1,
-    borderRightColor: '#E2E8F0',
-  },
-  axisLabel: {
-    fontSize: 10,
-    color: '#94A3B8',
-  },
-  chartBarsGroup: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-end',
-    height: '100%',
-    paddingLeft: 10,
-  },
-  chartBarCol: {
-    alignItems: 'center',
-    width: 36,
-    height: '100%',
-    justifyContent: 'flex-end',
-  },
-  chartBarFill: {
-    width: 24,
-    borderRadius: 4,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingTop: 4,
-  },
-  chartBarFillNormal: {
-    backgroundColor: '#BFDBFE',
-  },
-  chartBarFillActive: {
-    backgroundColor: '#0056FF',
-  },
-  chartBarValue: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  chartBarMonth: {
-    fontSize: 11,
-    color: '#64748B',
-    marginTop: 6,
-  },
-
-  // DONUT MOCK
-  donutLayout: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    height: 160,
-  },
-  donutCenterCircle: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    borderWidth: 14,
-    borderColor: '#0056FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  donutCenterValue: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#0F172A',
-  },
-  donutCenterLabel: {
-    fontSize: 11,
-    color: '#64748B',
-  },
-  donutLegendCol: {
-    gap: 8,
-  },
-  donutLegendRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  legendLabel: {
-    fontSize: 12,
-    color: '#334155',
-    fontWeight: '600',
-    width: 90,
-  },
-  legendCount: {
-    fontSize: 12,
-    color: '#64748B',
-  },
-
-  // TIMELINE
-  timelineList: {
-    gap: 12,
-  },
-  timelineItemRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  timelineIconBox: {
-    width: 26,
-    height: 26,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-    marginTop: 1,
-  },
-  timelineContent: {
-    flex: 1,
-  },
-  timelineText: {
-    fontSize: 12.5,
-    color: '#1E293B',
-    fontWeight: '500',
-  },
-  timelineTime: {
-    fontSize: 11,
-    color: '#94A3B8',
-    marginTop: 1,
-  },
-
-  // CTA BANNER (from PDF Page 3)
-  bottomCtaBanner: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  ctaBannerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-  },
-  ctaBannerIconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#EFF6FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ctaBannerHeading: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  ctaBannerSub: {
-    fontSize: 12.5,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  ctaBannerBtn: {
-    backgroundColor: '#EFF6FF',
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  ctaBannerBtnText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0056FF',
-  },
-
-  // SEARCH & FILTER BAR
-  searchFilterCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 12,
-    marginBottom: 16,
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  searchFilterCardMobile: {
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  },
-  searchBoxInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    flex: 1,
-    minWidth: 260,
-  },
-  innerSearchInput: {
-    flex: 1,
-    fontSize: 13,
-    color: '#0F172A',
-    outlineStyle: 'none',
-  },
-  filterDropdownsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  dropdownSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    gap: 6,
-  },
-  dropdownLabel: {
-    fontSize: 12,
-    color: '#475569',
-    fontWeight: '600',
-  },
-  resetFilterBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 8,
-    backgroundColor: '#F1F5F9',
-    cursor: 'pointer',
-  },
-  resetFilterBtnText: {
-    fontSize: 12,
-    color: '#475569',
-    fontWeight: '600',
-  },
-
-  // TABLES
-  fullTableCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-  },
-  tableCardTitleBar: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  tableCardMainTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  tableCardSubtitle: {
-    fontSize: 12,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  tableHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  thText: {
-    fontSize: 11.5,
-    fontWeight: '700',
-    color: '#64748B',
-    letterSpacing: 0.5,
-  },
-  tableBodyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 13,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  tdText: {
-    fontSize: 13,
-    color: '#1E293B',
-  },
-  tdTextMuted: {
-    fontSize: 12.5,
-    color: '#64748B',
-  },
-  tdTextBold: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  clientNameCol: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  clientMiniAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  clientMiniAvatarText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  clientNameText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  clientSubText: {
-    fontSize: 11,
-    color: '#94A3B8',
-  },
-  contactNameText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#1E293B',
-  },
-  contactEmailText: {
-    fontSize: 11,
-    color: '#64748B',
-  },
-  dateEndText: {
-    fontSize: 12.5,
-    fontWeight: '600',
-    color: '#1E293B',
-  },
-  daysLeftSubText: {
-    fontSize: 11,
-    color: '#64748B',
-  },
-  daysLeftPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    alignSelf: 'flex-start',
-  },
-  daysLeftNormal: {
-    backgroundColor: '#EFF6FF',
-  },
-  daysLeftWarning: {
-    backgroundColor: '#FEF3C7',
-  },
-  daysLeftExpired: {
-    backgroundColor: '#FEE2E2',
-  },
-  daysLeftText: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  planPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    alignSelf: 'flex-start',
-  },
-  planPillText: {
-    fontSize: 11.5,
-    fontWeight: '700',
-  },
-  statusBadgeActive: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ECFDF5',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    gap: 5,
-    alignSelf: 'flex-start',
-  },
-  statusDotActive: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#10B981',
-  },
-  statusBadgeTextActive: {
-    fontSize: 11.5,
-    color: '#059669',
-    fontWeight: '600',
-  },
-  statusBadgeInactive: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FEF2F2',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    gap: 5,
-    alignSelf: 'flex-start',
-  },
-  statusDotInactive: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#EF4444',
-  },
-  statusBadgeTextInactive: {
-    fontSize: 11.5,
-    color: '#DC2626',
-    fontWeight: '600',
-  },
-  statusBadgeWarning: {
-    backgroundColor: '#FFFBEB',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  statusBadgeTextWarning: {
-    fontSize: 11.5,
-    color: '#B45309',
-    fontWeight: '600',
-  },
-  actionButtonsCol: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: 8,
-  },
-  actionBtnView: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: '#EFF6FF',
-    cursor: 'pointer',
-  },
-  actionBtnViewText: {
-    fontSize: 11.5,
-    color: '#0056FF',
-    fontWeight: '700',
-  },
-  actionBtnEdit: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: '#F1F5F9',
-    cursor: 'pointer',
-  },
-  actionBtnEditText: {
-    fontSize: 11.5,
-    color: '#475569',
-    fontWeight: '700',
-  },
-  tablePaginationFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
-  },
-  paginationInfoText: {
-    fontSize: 12.5,
-    color: '#64748B',
-  },
-  paginationControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  pageArrowBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    cursor: 'pointer',
-  },
-  pageNumberBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    cursor: 'pointer',
-  },
-  pageNumberText: {
-    fontSize: 12,
-    color: '#475569',
-    fontWeight: '600',
-  },
-  pageNumberActive: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    backgroundColor: '#0056FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pageNumberActiveText: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-
-  // PLANS TABLE CELLS
-  planCellCol: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  planIconCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  planCellName: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  popularBadge: {
-    backgroundColor: '#EFF6FF',
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    borderRadius: 4,
-    marginTop: 2,
-    alignSelf: 'flex-start',
-  },
-  popularBadgeText: {
-    fontSize: 9.5,
-    color: '#0056FF',
-    fontWeight: '700',
-  },
-  planPriceText: {
-    fontSize: 13.5,
-    fontWeight: '800',
-    color: '#0F172A',
-  },
-  featuresBulletList: {
-    gap: 2,
-  },
-  featureBulletItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  bulletDot: {
-    fontSize: 12,
-    color: '#0056FF',
-    marginRight: 4,
-  },
-  featureBulletText: {
-    fontSize: 11.5,
-    color: '#475569',
-    lineHeight: 16,
-    flex: 1,
-  },
-
-  // PLANS GRID CARDS
-  viewModeToggle: {
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  viewModeBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    backgroundColor: '#FFFFFF',
-    cursor: 'pointer',
-  },
-  viewModeBtnActive: {
-    backgroundColor: '#EFF6FF',
-  },
-  plansGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 20,
-  },
-  planCardItem: {
-    flexBasis: '48%',
-    flexGrow: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-  },
-  planCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 14,
-  },
-  planIconCircleLarge: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  planCardTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginBottom: 4,
-  },
-  planCardPrice: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#0056FF',
-    marginBottom: 8,
-  },
-  planCardBilling: {
-    fontSize: 13,
-    color: '#64748B',
-    fontWeight: '500',
-  },
-  planCardDesc: {
-    fontSize: 13,
-    color: '#475569',
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  planCardDivider: {
-    height: 1,
-    backgroundColor: '#E2E8F0',
-    marginBottom: 16,
-  },
-  planCardFeaturesLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#0F172A',
-    marginBottom: 10,
-  },
-  planCardFeatureList: {
-    gap: 8,
-    marginBottom: 20,
-  },
-  planCardFeatureRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  planCardFeatureText: {
-    fontSize: 12.5,
-    color: '#334155',
-  },
-  planCardFooterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-  },
-  planCardClientsActive: {
-    fontSize: 12,
-    color: '#64748B',
-    fontWeight: '600',
-  },
-  planCardEditBtn: {
-    backgroundColor: '#EFF6FF',
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 8,
-  },
-  planCardEditBtnText: {
-    fontSize: 12,
-    color: '#0056FF',
-    fontWeight: '700',
-  },
-
-  // MASTER SETTINGS STYLES (PDF Pages 15, 16, 17)
-  masterSettingsInfoBanner: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: '#EFF6FF',
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-  },
-  masterSettingsInfoTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1E40AF',
-    marginBottom: 2,
-  },
-  masterSettingsInfoDesc: {
-    fontSize: 12.5,
-    color: '#1E40AF',
-    lineHeight: 18,
-  },
-  settingsCategoryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 14,
-    marginBottom: 24,
-  },
-  categoryNavCard: {
-    flexBasis: '18%',
-    flexGrow: 1,
-    minWidth: 180,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
-    padding: 16,
-    cursor: 'pointer',
-  },
-  categoryNavCardSelected: {
-    borderColor: '#0056FF',
-    shadowColor: '#0056FF',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-  },
-  categoryIconCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  categoryNavTitle: {
-    fontSize: 13.5,
-    fontWeight: '700',
-    color: '#0F172A',
-    marginBottom: 4,
-  },
-  categoryNavDesc: {
-    fontSize: 11,
-    color: '#64748B',
-    lineHeight: 16,
-    marginBottom: 12,
-  },
-  categoryNavArrow: {
-    alignSelf: 'flex-end',
-  },
-
-  // SETTINGS SUB SCREENS
-  settingsSubScreenCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-  },
-  settingsSubHeader: {
-    marginBottom: 20,
-    paddingBottom: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  settingsSubTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginBottom: 2,
-  },
-  settingsSubDesc: {
-    fontSize: 12.5,
-    color: '#64748B',
-  },
-  generalSettingsGrid: {
-    flexDirection: 'row',
-    gap: 24,
-    marginBottom: 24,
-  },
-  generalSettingsGridMobile: {
-    flexDirection: 'column',
-  },
-  generalLeftCol: {
-    flex: 1.5,
-  },
-  generalRightCol: {
-    flex: 1,
-    gap: 16,
-  },
-  subSectionTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#0F172A',
-    marginBottom: 14,
-  },
-  formRowTwo: {
-    flexDirection: 'row',
-  },
-  logoCardBox: {
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 16,
-  },
-  logoHintText: {
-    fontSize: 11,
-    color: '#64748B',
-    marginBottom: 12,
-  },
-  logoPreviewBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 12,
-    marginBottom: 12,
-  },
-  logoPreviewTitle: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#0F172A',
-  },
-  logoPreviewSub: {
-    fontSize: 9.5,
-    color: '#64748B',
-  },
-  faviconPreviewBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  uploadOutlineBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#0056FF',
-    borderRadius: 8,
-    paddingVertical: 7,
-    backgroundColor: '#FFFFFF',
-    cursor: 'pointer',
-  },
-  uploadOutlineBtnText: {
-    fontSize: 12,
-    color: '#0056FF',
-    fontWeight: '700',
-  },
-  preferencesSection: {
-    paddingTop: 18,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    marginBottom: 24,
-  },
-  prefToggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F8FAFC',
-  },
-  prefTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#1E293B',
-  },
-  prefDesc: {
-    fontSize: 11.5,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  toggleSwitch: {
-    width: 42,
-    height: 24,
-    borderRadius: 12,
-    padding: 2,
-    cursor: 'pointer',
-  },
-  toggleSwitchActive: {
-    backgroundColor: '#0056FF',
-  },
-  toggleSwitchInactive: {
-    backgroundColor: '#CBD5E1',
-  },
-  toggleKnob: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-  },
-  toggleKnobActive: {
-    transform: [{ translateX: 18 }],
-  },
-  toggleKnobInactive: {
-    transform: [{ translateX: 0 }],
-  },
-  settingsFooterActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    gap: 12,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-  },
-  resetBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 8,
-    backgroundColor: '#F1F5F9',
-    cursor: 'pointer',
-  },
-  resetBtnText: {
-    fontSize: 12.5,
-    color: '#475569',
-    fontWeight: '600',
-  },
-  saveChangesBtn: {
-    backgroundColor: '#0056FF',
-    paddingHorizontal: 20,
-    paddingVertical: 9,
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  saveChangesBtnText: {
-    fontSize: 12.5,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-
-  // ROLE MANAGEMENT STYLES
-  roleHeaderBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingBottom: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  roleNameText: {
-    fontSize: 13.5,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  rolePermissionsCount: {
-    fontSize: 11,
-    color: '#0056FF',
-    fontWeight: '500',
-  },
-
-  // MASTER DATA CARDS
-  masterDataGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    marginTop: 16,
-  },
-  masterDataCard: {
-    flexBasis: '47%',
-    flexGrow: 1,
-    backgroundColor: '#F8FAFC',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 16,
-  },
-  masterDataTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  masterDataTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  masterDataPill: {
-    backgroundColor: '#EFF6FF',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  masterDataPillText: {
-    fontSize: 11,
-    color: '#0056FF',
-    fontWeight: '600',
-  },
-  masterDataDesc: {
-    fontSize: 12,
-    color: '#64748B',
-    marginBottom: 12,
-  },
-  masterDataEditLink: {
-    alignSelf: 'flex-start',
-  },
-  masterDataEditLinkText: {
-    fontSize: 12,
-    color: '#0056FF',
-    fontWeight: '700',
-  },
-
-  // APPEARANCE COLOR SWATCH & LIVE MINI MOCK
-  colorPickerInputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  colorSwatchBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
-  },
-  livePreviewMiniMock: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
-    overflow: 'hidden',
-    height: 180,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-  },
-  miniMockHeader: {
-    height: 28,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  miniMockHeaderText: {
-    color: '#FFFFFF',
-    fontSize: 9,
-    fontWeight: '800',
-  },
-  miniMockAvatar: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-  },
-  miniMockBody: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  miniMockSidebar: {
-    width: 44,
-    backgroundColor: '#F8FAFC',
-    borderRightWidth: 1,
-    borderRightColor: '#E2E8F0',
-    padding: 6,
-    gap: 6,
-  },
-  miniMockBar: {
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#CBD5E1',
-  },
-  miniMockContent: {
-    flex: 1,
-    padding: 8,
-    gap: 8,
-  },
-  miniMockCardRow: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  miniMockCard: {
-    flex: 1,
-    height: 34,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    backgroundColor: '#F8FAFC',
-  },
-  miniMockTable: {
-    flex: 1,
-    borderRadius: 6,
-    backgroundColor: '#F1F5F9',
-  },
-
-  // MODALS GENERAL
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalCardLarge: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    width: '100%',
-    maxWidth: 720,
-    maxHeight: '90vh',
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-  },
-  modalCardRegular: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    width: '100%',
-    maxWidth: 540,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-  },
-  modalCardMobile: {
-    maxWidth: '100%',
-  },
-  modalHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    backgroundColor: '#F8FAFC',
-  },
-  modalMainTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#0F172A',
-  },
-  modalSubTitle: {
-    fontSize: 12,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  formSectionHeader: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0056FF',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 10,
-  },
-  modalFooterRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    backgroundColor: '#F8FAFC',
-    gap: 10,
-  },
-  modalCancelBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
-    cursor: 'pointer',
-  },
-  modalCancelBtnText: {
-    fontSize: 12.5,
-    color: '#475569',
-    fontWeight: '600',
-  },
-  modalSubmitBtn: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#0056FF',
-    cursor: 'pointer',
-  },
-  modalSubmitBtnText: {
-    fontSize: 12.5,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-
-  // PERMISSION CHECKBOXES
-  permissionsCheckboxGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginTop: 8,
-  },
-  permissionCheckItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '45%',
-    paddingVertical: 4,
-    cursor: 'pointer',
-  },
-  permissionCheckLabel: {
-    fontSize: 12.5,
-    color: '#334155',
-    fontWeight: '500',
-  },
-
-  // DETAIL FIELD
-  detailFieldRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  detailLabel: {
-    fontSize: 12.5,
-    color: '#64748B',
-    fontWeight: '600',
-  },
-  detailVal: {
-    fontSize: 12.5,
-    color: '#0F172A',
-    fontWeight: '600',
-    maxWidth: '60%',
-    textAlign: 'right',
   },
 });
