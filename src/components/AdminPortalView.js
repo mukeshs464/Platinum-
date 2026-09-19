@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -621,6 +621,14 @@ export default function AdminPortalView({ onBackToLanding }) {
 
   // Active navigation tab
   const [activeNav, setActiveNav] = useState('Dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Live clock
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Search & Notifications State
   const [globalSearch, setGlobalSearch] = useState('');
@@ -968,19 +976,37 @@ export default function AdminPortalView({ onBackToLanding }) {
   // =========================================================
   // ADMIN PORTAL MAIN SHELL (Sidebar + Topbar + Content Area)
   // =========================================================
+  // ---- live date/time helpers ----
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const liveDay = dayNames[now.getDay()];
+  const liveDate = now.getDate();
+  const liveMonth = monthNames[now.getMonth()];
+  const liveYear = now.getFullYear();
+  const liveHour = now.getHours();
+  const liveMin = String(now.getMinutes()).padStart(2, '0');
+  const liveSec = String(now.getSeconds()).padStart(2, '0');
+  const liveAmPm = liveHour >= 12 ? 'PM' : 'AM';
+  const liveHour12 = liveHour % 12 || 12;
+  const liveDateStr = `${liveDay}, ${liveDate} ${liveMonth} ${liveYear}`;
+  const liveTimeStr = `${liveHour12}:${liveMin}:${liveSec} ${liveAmPm}`;
+
   return (
     <View style={styles.portalContainer}>
       {/* 1. LEFT SIDEBAR */}
       {!isMobile && (
-        <View style={styles.sidebar}>
-          <View style={styles.sidebarLogoRow}>
+        <View style={[styles.sidebar, sidebarCollapsed && styles.sidebarCollapsed]}>
+          {/* Logo Row */}
+          <View style={[styles.sidebarLogoRow, sidebarCollapsed && { justifyContent: 'center', paddingHorizontal: 0 }]}>
             <View style={styles.sidebarLogoIconBox}>
               <MaterialCommunityIcons name="hexagon-multiple" size={24} color="#00D2FF" />
             </View>
-            <View style={{ marginLeft: 10 }}>
-              <Text style={styles.sidebarBrandTitle}>PLATINUM SOFTWARE</Text>
-              <Text style={styles.sidebarBrandSub}>AI Chatbot Platform</Text>
-            </View>
+            {!sidebarCollapsed && (
+              <View style={{ marginLeft: 10 }}>
+                <Text style={styles.sidebarBrandTitle}>PLATINUM SOFTWARE</Text>
+                <Text style={styles.sidebarBrandSub}>AI Chatbot Platform</Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.sidebarMenuList}>
@@ -997,7 +1023,7 @@ export default function AdminPortalView({ onBackToLanding }) {
               return (
                 <TouchableOpacity
                   key={item.id}
-                  style={[styles.sidebarNavItem, isActive && styles.sidebarNavItemActive]}
+                  style={[styles.sidebarNavItem, isActive && styles.sidebarNavItemActive, sidebarCollapsed && { justifyContent: 'center', paddingHorizontal: 0 }]}
                   onPress={() => setActiveNav(item.id)}
                   activeOpacity={0.85}
                 >
@@ -1005,11 +1031,13 @@ export default function AdminPortalView({ onBackToLanding }) {
                     name={item.icon}
                     size={20}
                     color={isActive ? '#FFFFFF' : '#8F9BB3'}
-                    style={{ marginRight: 14 }}
+                    style={{ marginRight: sidebarCollapsed ? 0 : 14 }}
                   />
-                  <Text style={[styles.sidebarNavText, isActive && styles.sidebarNavTextActive]}>
-                    {item.label}
-                  </Text>
+                  {!sidebarCollapsed && (
+                    <Text style={[styles.sidebarNavText, isActive && styles.sidebarNavTextActive]}>
+                      {item.label}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               );
             })}
@@ -1017,22 +1045,24 @@ export default function AdminPortalView({ onBackToLanding }) {
 
           <View style={{ flex: 1 }} />
 
-          <TouchableOpacity
-            style={styles.needHelpCard}
-            onPress={() => alert('Platinum Support: support@platinumsoftware.com')}
-            activeOpacity={0.8}
-          >
-            <View style={styles.needHelpLeft}>
-              <View style={styles.headphoneIconBox}>
-                <MaterialCommunityIcons name="headphones" size={18} color="#0066FF" />
+          {!sidebarCollapsed && (
+            <TouchableOpacity
+              style={styles.needHelpCard}
+              onPress={() => alert('Platinum Support: support@platinumsoftware.com')}
+              activeOpacity={0.8}
+            >
+              <View style={styles.needHelpLeft}>
+                <View style={styles.headphoneIconBox}>
+                  <MaterialCommunityIcons name="headphones" size={18} color="#0066FF" />
+                </View>
+                <View style={{ marginLeft: 10 }}>
+                  <Text style={styles.needHelpTitle}>Need Help?</Text>
+                  <Text style={styles.needHelpSub}>Contact Support</Text>
+                </View>
               </View>
-              <View style={{ marginLeft: 10 }}>
-                <Text style={styles.needHelpTitle}>Need Help?</Text>
-                <Text style={styles.needHelpSub}>Contact Support</Text>
-              </View>
-            </View>
-            <Feather name="arrow-right" size={16} color="#0066FF" />
-          </TouchableOpacity>
+              <Feather name="arrow-right" size={16} color="#0066FF" />
+            </TouchableOpacity>
+          )}
         </View>
       )}
 
@@ -1040,6 +1070,15 @@ export default function AdminPortalView({ onBackToLanding }) {
       <View style={styles.mainArea}>
         {/* Topbar */}
         <View style={styles.topNavbar}>
+          {/* Hamburger Toggle Button */}
+          <TouchableOpacity
+            style={styles.hamburgerBtn}
+            onPress={() => setSidebarCollapsed(!sidebarCollapsed)}
+            activeOpacity={0.7}
+          >
+            <Feather name={sidebarCollapsed ? 'menu' : 'sidebar'} size={20} color="#475569" />
+          </TouchableOpacity>
+
           <View style={styles.topSearchBox}>
             <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 10 }} />
             <TextInput
@@ -1130,7 +1169,7 @@ export default function AdminPortalView({ onBackToLanding }) {
                   <Text style={styles.greetingSubtitle}>Here's an overview of your AI chatbot platform.</Text>
                 </View>
                 <View style={styles.headerDateBadge}>
-                  <Text style={styles.headerDateText}>Monday, 8 September 2025  |  10:24 AM</Text>
+                  <Text style={styles.headerDateText}>{liveDateStr}  |  {liveTimeStr}</Text>
                 </View>
               </View>
 
@@ -3063,14 +3102,14 @@ export default function AdminPortalView({ onBackToLanding }) {
                   <View style={{ position: 'relative' }}>
                     <TouchableOpacity
                       style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 12, height: 38, gap: 8 }}
-                      onPress={() => setShowRepTopDateDropdown(!showRepTopDateDropdown)}
+                      onPress={() => setRepTopDateOpen(!repTopDateOpen)}
                       activeOpacity={0.8}
                     >
                       <Feather name="calendar" size={14} color="#64748B" />
                       <Text style={{ fontSize: 13, color: '#0F172A', fontWeight: '500' }}>{repTopDateRange}</Text>
                       <Feather name="chevron-down" size={14} color="#64748B" />
                     </TouchableOpacity>
-                    {showRepTopDateDropdown && (
+                    {repTopDateOpen && (
                       <View style={[styles.filterDropdownMenu, { right: 0, left: 'auto', minWidth: 210 }]}>
                         {['01 Sep 2025 — 30 Sep 2025', 'Last 30 Days', 'Last Quarter', 'Year to Date', 'Custom Range'].map((r) => (
                           <TouchableOpacity
@@ -3078,7 +3117,7 @@ export default function AdminPortalView({ onBackToLanding }) {
                             style={[styles.dropdownMenuItem, repTopDateRange === r && { backgroundColor: '#EFF6FF' }]}
                             onPress={() => {
                               setRepTopDateRange(r);
-                              setShowRepTopDateDropdown(false);
+                              setRepTopDateOpen(false);
                             }}
                           >
                             <Text style={[styles.dropdownMenuItemText, repTopDateRange === r && { color: '#0066FF', fontWeight: '700' }]}>{r}</Text>
@@ -5686,6 +5725,12 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: '#1E293B',
     flexDirection: 'column',
+    transition: 'width 0.25s ease',
+  },
+  sidebarCollapsed: {
+    width: 64,
+    paddingHorizontal: 8,
+    alignItems: 'center',
   },
   sidebarLogoRow: {
     flexDirection: 'row',
@@ -5779,6 +5824,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
+  },
+  hamburgerBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
   },
   topSearchBox: {
     flexDirection: 'row',
