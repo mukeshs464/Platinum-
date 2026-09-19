@@ -69,7 +69,7 @@ const DEPARTMENTS = [
   },
 ];
 
-export default function ForOrganizations({ onOpenChat }) {
+export default function ForOrganizations({ onNavigateContact }) {
   const { width } = useWindowDimensions();
   const isMobile = width < 860;
   const [activeDeptId, setActiveDeptId] = useState('hr');
@@ -202,10 +202,10 @@ export default function ForOrganizations({ onOpenChat }) {
 
             <TouchableOpacity 
               style={[styles.testPromptBtn, { backgroundColor: activeDept.color }]}
-              onPress={onOpenChat}
+              onPress={onNavigateContact}
               activeOpacity={0.85}
             >
-              <Text style={styles.testPromptBtnText}>Try this in Platinum AI Assistant</Text>
+              <Text style={styles.testPromptBtnText}>Schedule a Department Pilot</Text>
               <Feather name="arrow-up-right" size={16} color="#FFFFFF" style={{ marginLeft: 6 }} />
             </TouchableOpacity>
 

@@ -180,7 +180,10 @@ export default function App() {
                 activeSection={activeSection}
                 onNavigate={handleNavigate}
               />
-              <Hero onOpenChat={() => setIsChatOpen(true)} />
+              <Hero
+                onExplore={() => handleNavigate('how-it-works')}
+                onContact={() => handleNavigate('contact')}
+              />
             </View>
           </View>
 
@@ -209,7 +212,7 @@ export default function App() {
               }}
               style={styles.content}
             >
-              <ForOrganizations onOpenChat={() => setIsChatOpen(true)} />
+              <ForOrganizations onNavigateContact={() => handleNavigate('contact')} />
             </View>
 
             <View style={styles.sectionDivider} />
@@ -259,13 +262,6 @@ export default function App() {
           </View>
         </View>
       </Animated.ScrollView>
-
-      {/* FLOATING INTERACTIVE PLATINUM AI ASSISTANT POPUP */}
-      <ChatbotPopup
-        isOpen={isChatOpen}
-        onToggle={setIsChatOpen}
-        onClose={() => setIsChatOpen(false)}
-      />
     </SafeAreaView>
   );
 }
@@ -288,7 +284,9 @@ const styles = StyleSheet.create({
   },
   solidBody: {
     width: '100%',
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255, 255, 255, 0.70)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(226, 232, 240, 0.6)',
   },
   content: {
     width: '100%',

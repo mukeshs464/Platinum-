@@ -11,7 +11,7 @@ export const BACKGROUND_TEMPLATES = [
     name: 'Skyline Executive Overview',
     source: require('../../images/Empty_office_interior_shown_20260916092803.jpeg'),
     mood: 'Morning Daylight',
-    tint: 'rgba(250, 252, 255, 0.25)',
+    tint: 'rgba(250, 252, 255, 0.92)',
     filter: 'contrast(102%) brightness(102%)',
   },
   {
@@ -19,7 +19,7 @@ export const BACKGROUND_TEMPLATES = [
     name: 'Modern Desk & Workspace',
     source: require('../../images/Camera_pans_across_office_desk_20260916092807.jpeg'),
     mood: 'Executive Focus',
-    tint: 'rgba(240, 245, 255, 0.28)',
+    tint: 'rgba(245, 248, 255, 0.92)',
     filter: 'contrast(104%) brightness(100%)',
   },
   {
@@ -27,7 +27,7 @@ export const BACKGROUND_TEMPLATES = [
     name: 'Architectural City Skyline',
     source: require('../../images/Panning_office_background_20260916092814.jpeg'),
     mood: 'High-Tech Urban',
-    tint: 'rgba(245, 248, 255, 0.22)',
+    tint: 'rgba(248, 250, 255, 0.91)',
     filter: 'contrast(105%) brightness(101%)',
   },
   {
@@ -35,7 +35,7 @@ export const BACKGROUND_TEMPLATES = [
     name: 'Corporate Headquarters Suite',
     source: require('../../images/Camera_panning_office_interior_20260916092818.jpeg'),
     mood: 'Corporate Boardroom',
-    tint: 'rgba(248, 250, 255, 0.26)',
+    tint: 'rgba(250, 252, 255, 0.92)',
     filter: 'contrast(103%) brightness(103%)',
   },
   {
@@ -43,7 +43,7 @@ export const BACKGROUND_TEMPLATES = [
     name: 'Electric Blue Enterprise Suite',
     source: require('../../images/Empty_office_interior_shown_20260916092803.jpeg'),
     mood: 'Electric Sapphire',
-    tint: 'rgba(235, 245, 255, 0.32)',
+    tint: 'rgba(240, 248, 255, 0.93)',
     filter: 'hue-rotate(5deg) contrast(106%)',
   },
   {
@@ -51,7 +51,7 @@ export const BACKGROUND_TEMPLATES = [
     name: 'Tech Innovation Room',
     source: require('../../images/Panning_office_background_20260916092814.jpeg'),
     mood: 'Deep Minimalist',
-    tint: 'rgba(240, 248, 255, 0.25)',
+    tint: 'rgba(245, 250, 255, 0.92)',
     filter: 'brightness(98%) contrast(108%)',
   },
 ];
