@@ -284,9 +284,7 @@ const styles = StyleSheet.create({
   },
   solidBody: {
     width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.70)',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(226, 232, 240, 0.6)',
+    backgroundColor: 'transparent',
   },
   content: {
     width: '100%',
