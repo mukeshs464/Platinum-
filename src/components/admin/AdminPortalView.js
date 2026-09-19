@@ -4781,38 +4781,6 @@ export default function AdminPortalView({ onBackToLanding, themeColor: initialTh
                   </View>
                 </View>
 
-                <Text style={styles.modalSectionHeading}>Subscription Details</Text>
-                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 10 }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.formLabel}>Plan *</Text>
-                    <select style={styles.modalSelect} value={clientFormPlan} onChange={(e) => setClientFormPlan(e.target.value)}>
-                      <option value="Gold">Gold</option>
-                      <option value="Silver">Silver</option>
-                      <option value="Platinum">Platinum</option>
-                      <option value="Enterprise">Enterprise</option>
-                    </select>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.formLabel}>Subscription Start Date</Text>
-                    <TextInput style={styles.modalInput} placeholder="DD/MM/YYYY" value={clientFormStartDate} onChangeText={setClientFormStartDate} />
-                  </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', gap: 12, marginBottom: 14 }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.formLabel}>Subscription End Date</Text>
-                    <TextInput style={styles.modalInput} placeholder="DD/MM/YYYY" value={clientFormEndDate} onChangeText={setClientFormEndDate} />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.formLabel}>Status *</Text>
-                    <select style={styles.modalSelect} value={clientFormStatus} onChange={(e) => setClientFormStatus(e.target.value)}>
-                      <option value="Active">Active</option>
-                      <option value="Expiring Soon">Expiring Soon</option>
-                      <option value="Inactive">Inactive</option>
-                    </select>
-                  </View>
-                </View>
-
                 <Text style={styles.modalSectionHeading}>Additional Notes</Text>
                 <TextInput
                   style={[styles.modalInput, { height: 64, textAlignVertical: 'top' }]}
@@ -4846,19 +4814,26 @@ export default function AdminPortalView({ onBackToLanding, themeColor: initialTh
                       designation: clientFormDesignation,
                       companySize: clientFormSize,
                       website: clientFormWebsite,
-                      plan: clientFormPlan,
-                      status: clientFormStatus,
-                      users: 10,
-                      startDate: clientFormStartDate,
-                      endDate: clientFormEndDate,
-                      daysLeftNumber: 365,
-                      daysLeftText: '365 days left',
+                      plan: 'No Plan',
+                      status: 'Active',
+                      users: 0,
+                      startDate: '-',
+                      endDate: '-',
+                      daysLeftNumber: 0,
+                      daysLeftText: 'No Subscription',
                       notes: clientFormNotes || 'Newly added organization.',
-                      docs: '10',
-                      conversations: '50',
+                      docs: '0',
+                      conversations: '0',
                     };
                     setClients([newClient, ...clients]);
                     setShowAddClientModal(false);
+                    setClientFormName('');
+                    setClientFormContact('');
+                    setClientFormDesignation('');
+                    setClientFormEmail('');
+                    setClientFormPhone('');
+                    setClientFormWebsite('');
+                    setClientFormNotes('');
                     notifyAction(setClientActionMessage, `Client organization "${clientFormName}" created successfully!`);
                   }}
                 >
@@ -5617,230 +5592,222 @@ export default function AdminPortalView({ onBackToLanding, themeColor: initialTh
         </Modal>
       )}
 
-      {/* 10. ADD SUBSCRIPTION MODAL (Exact Matching Image media_1789816227394.png) */}
-      {showAddSubModal && (
-        <Modal visible={true} transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalBox, { maxWidth: 780, width: '92%' }]}>
-              {/* Header */}
-              <View style={styles.modalHeader}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF', width: 38, height: 38, borderRadius: 8 }]}>
-                    <MaterialCommunityIcons name="file-document-edit-outline" size={20} color="#0066FF" />
-                  </View>
-                  <View>
-                    <Text style={styles.modalTitle}>Add Subscription</Text>
-                    <Text style={styles.modalSubtitle}>Assign a subscription plan to a client.</Text>
-                  </View>
-                </View>
-                <TouchableOpacity onPress={() => setShowAddSubModal(false)}>
-                  <Feather name="x" size={20} color="#64748B" />
-                </TouchableOpacity>
-              </View>
+      {/* 10. ADD SUBSCRIPTION MODAL (Client & Plan selection with auto-fetched details) */}
+      {showAddSubModal && (() => {
+        const activeClient = clients.find(c => c.name === subFormClient) || clients[0];
+        const activePlan = plans.find(p => p.name === subFormPlan) || plans[0];
 
-              {/* Body: Two Columns */}
-              <ScrollView style={{ maxHeight: 520, paddingVertical: 10 }}>
-                <View style={{ flexDirection: isMobile ? 'column' : 'row', gap: 24 }}>
-                  {/* Left Column: Client & Plan Info */}
-                  <View style={{ flex: 1, gap: 14 }}>
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A', borderBottomWidth: 1, borderBottomColor: '#F1F5F9', paddingBottom: 6 }}>
-                      Client Information
-                    </Text>
+        // Format dates dynamically
+        const now = new Date();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const autoStartDate = `${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        const nextYear = new Date(now);
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        const autoEndDate = `${String(nextYear.getDate()).padStart(2, '0')} ${months[nextYear.getMonth()]} ${nextYear.getFullYear()}`;
 
+        return (
+          <Modal visible={true} transparent animationType="fade">
+            <View style={styles.modalOverlay}>
+              <View style={[styles.modalBox, { maxWidth: 720, width: '92%' }]}>
+                {/* Header */}
+                <View style={styles.modalHeader}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF', width: 38, height: 38, borderRadius: 8 }]}>
+                      <MaterialCommunityIcons name="file-document-edit-outline" size={20} color="#0066FF" />
+                    </View>
                     <View>
+                      <Text style={styles.modalTitle}>Add Subscription</Text>
+                      <Text style={styles.modalSubtitle}>Select client and plan to automatically load subscription details.</Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity onPress={() => setShowAddSubModal(false)}>
+                    <Feather name="x" size={20} color="#64748B" />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Body: Two Fields Only + Automatically Fetched Details Card */}
+                <ScrollView style={{ maxHeight: 520, paddingVertical: 10 }}>
+                  {/* TWO FIELDS ONLY: Client Name & Plan Name */}
+                  <View style={{ flexDirection: isMobile ? 'column' : 'row', gap: 16, marginBottom: 18 }}>
+                    {/* Field 1: Client Name */}
+                    <View style={{ flex: 1 }}>
                       <Text style={styles.formLabel}>Client Name *</Text>
-                      <View style={{ position: 'relative' }}>
-                        <TextInput
-                          style={styles.modalInput}
-                          placeholder="Select or enter client name"
-                          value={subFormClient}
-                          onChangeText={setSubFormClient}
-                        />
-                      </View>
-                    </View>
-
-                    <View>
-                      <Text style={styles.formLabel}>Contact Person (Optional)</Text>
-                      <TextInput
-                        style={styles.modalInput}
-                        placeholder="Enter contact person name"
-                        value={subFormContact}
-                        onChangeText={setSubFormContact}
-                      />
-                    </View>
-
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A', borderBottomWidth: 1, borderBottomColor: '#F1F5F9', paddingBottom: 6, marginTop: 8 }}>
-                      Plan Information
-                    </Text>
-
-                    <View>
-                      <Text style={styles.formLabel}>Select Plan *</Text>
-                      <View style={{ flexDirection: 'row', gap: 8 }}>
-                        {['Gold', 'Silver', 'Platinum', 'Enterprise'].map(pln => (
-                          <TouchableOpacity
-                            key={pln}
-                            style={[
-                              styles.filterDropdownBtn,
-                              { flex: 1, minWidth: 60, justifyContent: 'center' },
-                              subFormPlan === pln && { borderColor: '#0066FF', backgroundColor: '#EFF6FF' }
-                            ]}
-                            onPress={() => setSubFormPlan(pln)}
-                          >
-                            <Text style={[styles.filterDropdownText, subFormPlan === pln && { color: '#0066FF', fontWeight: '700' }]}>{pln}</Text>
-                          </TouchableOpacity>
+                      <select
+                        style={[styles.modalSelect, { height: 42, fontSize: 13.5 }]}
+                        value={subFormClient || activeClient?.name || ''}
+                        onChange={(e) => setSubFormClient(e.target.value)}
+                      >
+                        {clients.map(c => (
+                          <option key={c.id || c.name} value={c.name}>
+                            {c.name} {c.industry ? `(${c.industry})` : ''}
+                          </option>
                         ))}
-                      </View>
+                      </select>
                     </View>
 
-                    <View style={{ flexDirection: 'row', gap: 12 }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.formLabel}>Start Date *</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 10, height: 40 }}>
-                          <TextInput
-                            style={{ flex: 1, fontSize: 13, color: '#0F172A' }}
-                            placeholder="DD MMM YYYY"
-                            value={subFormStartDate || '12 Dec 2024'}
-                            onChangeText={setSubFormStartDate}
-                          />
-                          <Feather name="calendar" size={14} color="#64748B" />
-                        </View>
-                      </View>
-
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.formLabel}>End Date *</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 10, height: 40 }}>
-                          <TextInput
-                            style={{ flex: 1, fontSize: 13, color: '#0F172A' }}
-                            placeholder="DD MMM YYYY"
-                            value={subFormEndDate || '12 Dec 2025'}
-                            onChangeText={setSubFormEndDate}
-                          />
-                          <Feather name="calendar" size={14} color="#64748B" />
-                        </View>
-                      </View>
+                    {/* Field 2: Plan Name */}
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.formLabel}>Plan Name *</Text>
+                      <select
+                        style={[styles.modalSelect, { height: 42, fontSize: 13.5 }]}
+                        value={subFormPlan || activePlan?.name || ''}
+                        onChange={(e) => setSubFormPlan(e.target.value)}
+                      >
+                        {plans.map(p => (
+                          <option key={p.id || p.name} value={p.name}>
+                            {p.name} — {p.price}{p.billingCycle ? ` / ${p.billingCycle}` : ''}
+                          </option>
+                        ))}
+                      </select>
                     </View>
                   </View>
 
-                  {/* Right Column: Subscription Details */}
-                  <View style={{ flex: 1, gap: 14 }}>
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A', borderBottomWidth: 1, borderBottomColor: '#F1F5F9', paddingBottom: 6 }}>
-                      Subscription Details
-                    </Text>
-
-                    <View style={{ flexDirection: 'row', gap: 12 }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.formLabel}>Billing Cycle *</Text>
-                        <View style={{ flexDirection: 'row', gap: 6 }}>
-                          {['Monthly', 'Quarterly', 'Annual'].map(b => (
-                            <TouchableOpacity
-                              key={b}
-                              style={[
-                                styles.filterDropdownBtn,
-                                { flex: 1, minWidth: 50, paddingHorizontal: 6, justifyContent: 'center' },
-                                subFormBilling === b && { borderColor: '#0066FF', backgroundColor: '#EFF6FF' }
-                              ]}
-                              onPress={() => setSubFormBilling(b)}
-                            >
-                              <Text style={[styles.filterDropdownText, { fontSize: 11 }, subFormBilling === b && { color: '#0066FF', fontWeight: '700' }]}>{b}</Text>
-                            </TouchableOpacity>
-                          ))}
+                  {/* AUTO-FETCHED DETAILS PREVIEW */}
+                  <View style={{
+                    backgroundColor: '#F8FAFC',
+                    borderRadius: 14,
+                    borderWidth: 1,
+                    borderColor: '#E2E8F0',
+                    padding: 16,
+                    gap: 14,
+                  }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#E2E8F0', paddingBottom: 10 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' }}>
+                          <MaterialCommunityIcons name="lightning-bolt" size={16} color="#0066FF" />
                         </View>
+                        <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A' }}>
+                          Auto-Fetched Subscription Details
+                        </Text>
                       </View>
-
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.formLabel}>Users *</Text>
-                        <TextInput
-                          style={styles.modalInput}
-                          placeholder="e.g. 24"
-                          keyboardType="numeric"
-                          value={subFormUsers || '24'}
-                          onChangeText={setSubFormUsers}
-                        />
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#ECFDF5', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 }}>
+                        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#10B981' }} />
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#059669' }}>Automatically Loaded</Text>
                       </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', gap: 12 }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.formLabel}>Amount (₹) *</Text>
-                        <TextInput
-                          style={styles.modalInput}
-                          placeholder="₹ 9,999/month"
-                          value={subFormAmount || '₹9,999/month'}
-                          onChangeText={setSubFormAmount}
-                        />
+                    <View style={{ flexDirection: isMobile ? 'column' : 'row', gap: 14 }}>
+                      {/* Left Sub-card: Client Organization Details */}
+                      <View style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 10, borderWidth: 1, borderColor: '#F1F5F9', padding: 14, gap: 10 }}>
+                        <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#0066FF', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                          Client Organization
+                        </Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Contact Person:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activeClient?.contactPerson || 'Authorized Rep'}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Official Email:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activeClient?.email || 'admin@company.com'}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Phone Number:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activeClient?.phone || '-'}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Industry Vertical:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activeClient?.industry || 'General Enterprise'}</Text>
+                        </View>
                       </View>
 
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.formLabel}>Status *</Text>
-                        <View style={{ flexDirection: 'row', gap: 6 }}>
-                          {['Active', 'Expiring Soon'].map(st => (
-                            <TouchableOpacity
-                              key={st}
-                              style={[
-                                styles.filterDropdownBtn,
-                                { flex: 1, minWidth: 60, paddingHorizontal: 6, justifyContent: 'center' },
-                                subFormStatus === st && { borderColor: '#0066FF', backgroundColor: '#EFF6FF' }
-                              ]}
-                              onPress={() => setSubFormStatus(st)}
-                            >
-                              <Text style={[styles.filterDropdownText, { fontSize: 11 }, subFormStatus === st && { color: '#0066FF', fontWeight: '700' }]}>{st}</Text>
-                            </TouchableOpacity>
-                          ))}
+                      {/* Right Sub-card: Plan & Subscription Details */}
+                      <View style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 10, borderWidth: 1, borderColor: '#F1F5F9', padding: 14, gap: 10 }}>
+                        <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#0066FF', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                          Plan Parameters
+                        </Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Subscription Rate:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: '#059669' }}>{activePlan?.price || 'Custom'}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Billing Cycle:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activePlan?.billingCycle || 'Monthly'}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Included User Seats:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activePlan?.maxUsers || '10'} Users</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Monthly AI Queries:</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '600', color: '#0F172A' }}>{activePlan?.queries || 'Standard'}</Text>
                         </View>
                       </View>
                     </View>
 
-                    <View>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={styles.formLabel}>Additional Notes</Text>
-                        <Text style={{ fontSize: 11, color: '#94A3B8' }}>{subFormNotes.length}/500</Text>
+                    {/* Auto-Calculated Subscription Schedule Row */}
+                    <View style={{ flexDirection: 'row', backgroundColor: '#EFF6FF', borderRadius: 8, padding: 12, justifyContent: 'space-around', alignItems: 'center' }}>
+                      <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 11, color: '#64748B', marginBottom: 2 }}>Effective Start Date</Text>
+                        <Text style={{ fontSize: 12.5, fontWeight: '700', color: '#0066FF' }}>{autoStartDate}</Text>
                       </View>
-                      <TextInput
-                        style={[styles.modalInput, { height: 70, textAlignVertical: 'top' }]}
-                        placeholder="Enter any additional notes..."
-                        placeholderTextColor="#94A3B8"
-                        multiline
-                        maxLength={500}
-                        value={subFormNotes}
-                        onChangeText={setSubFormNotes}
-                      />
+                      <View style={{ width: 1, height: 24, backgroundColor: '#DBEAFE' }} />
+                      <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 11, color: '#64748B', marginBottom: 2 }}>Renewal / End Date</Text>
+                        <Text style={{ fontSize: 12.5, fontWeight: '700', color: '#0066FF' }}>{autoEndDate}</Text>
+                      </View>
+                      <View style={{ width: 1, height: 24, backgroundColor: '#DBEAFE' }} />
+                      <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 11, color: '#64748B', marginBottom: 2 }}>Initial Status</Text>
+                        <Text style={{ fontSize: 12.5, fontWeight: '700', color: '#059669' }}>Active</Text>
+                      </View>
                     </View>
                   </View>
+                </ScrollView>
+
+                {/* Actions Footer */}
+                <View style={styles.modalActions}>
+                  <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddSubModal(false)}>
+                    <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.modalSubmitBtn}
+                    onPress={() => {
+                      const clientName = subFormClient || activeClient?.name || 'Client';
+                      const planName = subFormPlan || activePlan?.name || 'Gold';
+                      const targetClient = clients.find(c => c.name === clientName) || activeClient;
+                      const targetPlan = plans.find(p => p.name === planName) || activePlan;
+
+                      const newSub = {
+                        id: `SUB-00${subscriptions.length + 1}`,
+                        client: targetClient.name,
+                        plan: targetPlan.name,
+                        startDate: autoStartDate,
+                        endDate: autoEndDate,
+                        daysLeft: '365 days',
+                        status: 'Active',
+                        amount: targetPlan.price ? `${targetPlan.price}/${targetPlan.billingCycle || 'month'}` : 'Custom',
+                        billingCycle: targetPlan.billingCycle || 'Monthly',
+                        users: parseInt(targetPlan.maxUsers) || 10,
+                        contactPerson: targetClient.contactPerson,
+                        email: targetClient.email,
+                      };
+                      setSubscriptions([newSub, ...subscriptions]);
+
+                      // Automatically update the client in clients list
+                      setClients(clients.map(c => c.name === targetClient.name ? {
+                        ...c,
+                        plan: targetPlan.name,
+                        startDate: autoStartDate,
+                        endDate: autoEndDate,
+                        daysLeftNumber: 365,
+                        daysLeftText: '365 days left',
+                        status: 'Active',
+                        users: parseInt(targetPlan.maxUsers) || c.users || 10,
+                      } : c));
+
+                      setShowAddSubModal(false);
+                      notifyAction(setSubActionMessage, `Subscription created: ${targetClient.name} assigned to ${targetPlan.name} plan!`);
+                    }}
+                  >
+                    <Feather name="file-plus" size={15} color="#FFF" style={{ marginRight: 6 }} />
+                    <Text style={styles.modalSubmitBtnText}>Create Subscription</Text>
+                  </TouchableOpacity>
                 </View>
-              </ScrollView>
-
-              {/* Actions Footer */}
-              <View style={styles.modalActions}>
-                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddSubModal(false)}>
-                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalSubmitBtn}
-                  onPress={() => {
-                    const newSub = {
-                      id: `SUB-00${subscriptions.length + 1}`,
-                      client: subFormClient.trim() || 'New Enterprise Client',
-                      plan: subFormPlan,
-                      startDate: subFormStartDate || '12 Dec 2024',
-                      endDate: subFormEndDate || '12 Dec 2025',
-                      daysLeft: '365 days',
-                      status: subFormStatus,
-                      amount: subFormAmount || '₹9,999/month',
-                      users: parseInt(subFormUsers) || 24,
-                    };
-                    setSubscriptions([newSub, ...subscriptions]);
-                    setShowAddSubModal(false);
-                    notifyAction(setSubActionMessage, `Subscription created for ${newSub.client}!`);
-                  }}
-                >
-                  <Feather name="file-plus" size={15} color="#FFF" style={{ marginRight: 6 }} />
-                  <Text style={styles.modalSubmitBtnText}>Create Subscription</Text>
-                </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </Modal>
-      )}
+          </Modal>
+        );
+      })()}
 
       {/* 11. IMPORT KNOWLEDGE DATA MODAL */}
       {showImportModal && (
