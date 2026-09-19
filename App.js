@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, SafeAreaView, Animated, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
@@ -22,6 +22,40 @@ export default function App() {
   const scrollY = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef(null);
   const { height: windowHeight } = Dimensions.get('window');
+
+  // Global Brand Theme Color
+  const [themeColor, setThemeColor] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return window.localStorage.getItem('platinum_brand_color') || '#0066FF';
+      }
+    } catch (e) {}
+    return '#0066FF';
+  });
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--primary-color', themeColor);
+      document.documentElement.style.setProperty('--brand-primary', themeColor);
+      let styleTag = document.getElementById('platinum-dynamic-theme');
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = 'platinum-dynamic-theme';
+        document.head.appendChild(styleTag);
+      }
+      styleTag.innerHTML = `
+        :root {
+          --primary-color: ${themeColor} !important;
+          --brand-primary: ${themeColor} !important;
+        }
+      `;
+    }
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('platinum_brand_color', themeColor);
+      }
+    } catch (e) {}
+  }, [themeColor]);
 
   // View state: 'landing' | 'admin' | 'client'
   const [currentView, setCurrentView] = useState('landing');
@@ -84,7 +118,11 @@ export default function App() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar style="auto" />
-        <AdminPortalView onBackToLanding={() => setCurrentView('landing')} />
+        <AdminPortalView
+          onBackToLanding={() => setCurrentView('landing')}
+          themeColor={themeColor}
+          onThemeChange={setThemeColor}
+        />
         <ChatbotPopup
           isOpen={isChatOpen}
           onToggle={setIsChatOpen}
