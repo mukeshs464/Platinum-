@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -735,16 +735,62 @@ export default function AdminPortalView({ onBackToLanding }) {
   const [primaryColor, setPrimaryColor] = useState('#0066FF');
   const [brandingSavedAlert, setBrandingSavedAlert] = useState(false);
 
-  // Other modules state
+  // ==========================================
+  // SUBSCRIPTIONS MODULE STATE
+  // ==========================================
   const [subscriptions, setSubscriptions] = useState(INITIAL_SUBSCRIPTIONS);
   const [subSearch, setSubSearch] = useState('');
-  const [subStatusFilter, setSubStatusFilter] = useState('All');
+  const [subStatusFilter, setSubStatusFilter] = useState('All Statuses');
+  const [subPlanFilter, setSubPlanFilter] = useState('All Plans');
+  const [subDateFilter, setSubDateFilter] = useState('All Time');
   const [showAddSubModal, setShowAddSubModal] = useState(false);
+  const [selectedSubModal, setSelectedSubModal] = useState(null);
+  const [editingSubModal, setEditingSubModal] = useState(null);
+  const [subActionMessage, setSubActionMessage] = useState(null);
 
+  // Subscription Form State
+  const [subFormClient, setSubFormClient] = useState('');
+  const [subFormContact, setSubFormContact] = useState('');
+  const [subFormPlan, setSubFormPlan] = useState('Gold');
+  const [subFormStartDate, setSubFormStartDate] = useState('');
+  const [subFormEndDate, setSubFormEndDate] = useState('');
+  const [subFormBilling, setSubFormBilling] = useState('Monthly');
+  const [subFormUsers, setSubFormUsers] = useState('');
+  const [subFormAmount, setSubFormAmount] = useState('');
+  const [subFormStatus, setSubFormStatus] = useState('Active');
+  const [subFormNotes, setSubFormNotes] = useState('');
+
+  // ==========================================
+  // LLM DATA IMPORT MODULE STATE
+  // ==========================================
   const [imports, setImports] = useState(INITIAL_IMPORTS);
   const [importSearch, setImportSearch] = useState('');
+  const [importTab, setImportTab] = useState('Import History');
+  const [importClientFilter, setImportClientFilter] = useState('All Clients');
+  const [importStatusFilter, setImportStatusFilter] = useState('All Statuses');
+  const [importDateFilter, setImportDateFilter] = useState('All Time');
   const [showImportModal, setShowImportModal] = useState(false);
   const [selectedImportModal, setSelectedImportModal] = useState(null);
+
+  // Import Form State
+  const [importFormClient, setImportFormClient] = useState('');
+  const [importFormSource, setImportFormSource] = useState('Client Upload');
+  const [importFormChunkSize, setImportFormChunkSize] = useState('512');
+  const [importFormOverlap, setImportFormOverlap] = useState('50');
+  const [importFormNotes, setImportFormNotes] = useState('');
+
+  // ==========================================
+  // REPORTS MODULE STATE
+  // ==========================================
+  const [reportTab, setReportTab] = useState('Overview');
+  const [reportClientFilter, setReportClientFilter] = useState('All Clients');
+  const [reportSubFilter, setReportSubFilter] = useState('All Subscriptions');
+  const [reportDateFrom, setReportDateFrom] = useState('01 Sep 2025');
+  const [reportDateTo, setReportDateTo] = useState('30 Sep 2025');
+  const [reportStatusFilter, setReportStatusFilter] = useState('All Statuses');
+  const [reportPlanFilter, setReportPlanFilter] = useState('All Plans');
+  const [reportGenerating, setReportGenerating] = useState(false);
+  const [reportGenerated, setReportGenerated] = useState(false);
 
   // Current growth dataset
   const currentGrowthData = GROWTH_DATA_MAP[selectedGrowthFilter] || GROWTH_DATA_MAP['Last 6 Months'];
@@ -2141,18 +2187,32 @@ export default function AdminPortalView({ onBackToLanding }) {
 
           {activeNav === 'Subscriptions' && (
             <View style={styles.tabContentContainer}>
+              {/* Breadcrumb */}
+              <View style={styles.breadcrumbRow}>
+                <Text style={styles.breadcrumbLink} onPress={() => setActiveNav('Dashboard')}>Dashboard</Text>
+                <Text style={styles.breadcrumbDivider}>›</Text>
+                <Text style={styles.breadcrumbActive}>Subscriptions</Text>
+              </View>
+
               <View style={styles.subScreenHeaderRow}>
                 <View>
                   <Text style={styles.greetingTitle}>Subscriptions Management</Text>
-                  <Text style={styles.greetingSubtitle}>Track client subscriptions, renewal dates, and billing statuses.</Text>
+                  <Text style={styles.greetingSubtitle}>Manage client subscriptions, monitor usage, renewals and status.</Text>
                 </View>
-                <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setShowAddSubModal(true)}>
+                <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setShowAddSubModal(true); }}>
                   <Feather name="plus" size={16} color="#FFF" style={{ marginRight: 6 }} />
                   <Text style={styles.primaryActionBtnText}>Add Subscription</Text>
                 </TouchableOpacity>
               </View>
 
-              {/* 4 KPI Summary Cards */}
+              {subActionMessage && (
+                <View style={{ backgroundColor: '#ECFDF5', borderRadius: 8, padding: 12, marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
+                  <Feather name="check-circle" size={16} color="#10B981" style={{ marginRight: 8 }} />
+                  <Text style={{ fontSize: 13, color: '#065F46', fontWeight: '600' }}>{subActionMessage}</Text>
+                </View>
+              )}
+
+              {/* KPI Summary Cards */}
               <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
                 <View style={styles.kpiCard}>
                   <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
@@ -2161,13 +2221,13 @@ export default function AdminPortalView({ onBackToLanding }) {
                   <View style={styles.kpiInfoCol}>
                     <Text style={styles.kpiCardLabel}>Total Subscriptions</Text>
                     <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>{subscriptions.length}</Text>
+                      <Text style={styles.kpiCardValue}>48</Text>
                       <View style={styles.kpiTrendBadge}>
                         <Feather name="arrow-up-right" size={12} color="#10B981" />
-                        <Text style={styles.kpiTrendText}>15%</Text>
+                        <Text style={styles.kpiTrendText}>+12%</Text>
                       </View>
                     </View>
-                    <Text style={styles.kpiCardSubtext}>Total registered</Text>
+                    <Text style={styles.kpiCardSubtext}>+5 new this month</Text>
                   </View>
                 </View>
 
@@ -2176,30 +2236,14 @@ export default function AdminPortalView({ onBackToLanding }) {
                     <MaterialCommunityIcons name="shield-check-outline" size={24} color="#10B981" />
                   </View>
                   <View style={styles.kpiInfoCol}>
-                    <Text style={styles.kpiCardLabel}>Active Subscriptions</Text>
+                    <Text style={styles.kpiCardLabel}>Active</Text>
                     <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>{subscriptions.filter(s => s.status === 'Active').length}</Text>
-                      <View style={styles.kpiTrendBadge}>
-                        <Text style={styles.kpiTrendText}>85.7%</Text>
+                      <Text style={styles.kpiCardValue}>42</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#ECFDF5' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#059669' }]}>87.5% of total</Text>
                       </View>
                     </View>
                     <Text style={styles.kpiCardSubtext}>Currently active</Text>
-                  </View>
-                </View>
-
-                <View style={styles.kpiCard}>
-                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF3C7' }]}>
-                    <MaterialCommunityIcons name="timer-sand" size={24} color="#F59E0B" />
-                  </View>
-                  <View style={styles.kpiInfoCol}>
-                    <Text style={styles.kpiCardLabel}>Expiring Soon</Text>
-                    <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>{subscriptions.filter(s => s.status === 'Expiring Soon').length}</Text>
-                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEF3C7' }]}>
-                        <Text style={[styles.kpiTrendText, { color: '#B45309' }]}>Alert</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.kpiCardSubtext}>Within 30 days</Text>
                   </View>
                 </View>
 
@@ -2210,116 +2254,298 @@ export default function AdminPortalView({ onBackToLanding }) {
                   <View style={styles.kpiInfoCol}>
                     <Text style={styles.kpiCardLabel}>Expired</Text>
                     <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>{subscriptions.filter(s => s.status === 'Expired').length}</Text>
+                      <Text style={styles.kpiCardValue}>3</Text>
                       <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEE2E2' }]}>
-                        <Text style={[styles.kpiTrendText, { color: '#DC2626' }]}>Renew</Text>
+                        <Text style={[styles.kpiTrendText, { color: '#DC2626' }]}>6.25% of total</Text>
                       </View>
                     </View>
                     <Text style={styles.kpiCardSubtext}>Needs renewal</Text>
                   </View>
                 </View>
+
+                <View style={styles.kpiCard}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF3C7' }]}>
+                    <MaterialCommunityIcons name="timer-sand" size={24} color="#F59E0B" />
+                  </View>
+                  <View style={styles.kpiInfoCol}>
+                    <Text style={styles.kpiCardLabel}>Expiring Soon</Text>
+                    <View style={styles.kpiValueRow}>
+                      <Text style={styles.kpiCardValue}>5</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEF3C7' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#B45309' }]}>In next 30 days</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.kpiCardSubtext}>
+                      <Text style={{ color: '#0066FF', textDecorationLine: 'underline' }}>View →</Text>
+                    </Text>
+                  </View>
+                </View>
               </View>
 
-              {/* Search & Filter Bar */}
-              <View style={[styles.actionFilterBar, { marginBottom: 16 }]}>
-                <View style={styles.searchBarBox}>
+              {/* Search + Filters Row */}
+              <View style={[styles.actionFilterBar, { marginBottom: 16, flexWrap: 'wrap', gap: 8 }]}>
+                <View style={[styles.searchBarBox, { flex: 1, minWidth: 200 }]}>
                   <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
                   <TextInput
-                    placeholder="Search by client name, subscription ID..."
+                    placeholder="Search by client name, plan, or subscription ID..."
                     placeholderTextColor="#94A3B8"
                     value={subSearch}
                     onChangeText={setSubSearch}
                     style={styles.innerSearch}
                   />
                 </View>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  {['All', 'Active', 'Expiring Soon', 'Expired'].map((st) => (
-                    <TouchableOpacity
-                      key={st}
-                      style={[styles.filterPillBtn, subStatusFilter === st && styles.filterPillBtnActive]}
-                      onPress={() => setSubStatusFilter(st)}
-                    >
-                      <Text style={[styles.filterPillBtnText, subStatusFilter === st && styles.filterPillBtnTextActive]}>{st}</Text>
+                <View style={styles.filterSelectBox}>
+                  <Text style={styles.filterSelectLabel}>Plan</Text>
+                  {['All Plans', 'Gold', 'Silver', 'Platinum', 'Enterprise'].map(p => (
+                    <TouchableOpacity key={p} onPress={() => setSubPlanFilter(p)}
+                      style={[styles.filterSelectOption, subPlanFilter === p && styles.filterSelectOptionActive]}>
+                      <Text style={[styles.filterSelectOptionText, subPlanFilter === p && { color: '#0066FF', fontWeight: '700' }]}>{p}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
+                <View style={styles.filterSelectBox}>
+                  <Text style={styles.filterSelectLabel}>Status</Text>
+                  {['All Statuses', 'Active', 'Expiring Soon', 'Expired'].map(s => (
+                    <TouchableOpacity key={s} onPress={() => setSubStatusFilter(s)}
+                      style={[styles.filterSelectOption, subStatusFilter === s && styles.filterSelectOptionActive]}>
+                      <Text style={[styles.filterSelectOptionText, subStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>{s}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <View style={styles.filterSelectBox}>
+                  <Text style={styles.filterSelectLabel}>Date Range</Text>
+                  {['All Time', 'This Month', 'Last 3 Months', 'This Year'].map(d => (
+                    <TouchableOpacity key={d} onPress={() => setSubDateFilter(d)}
+                      style={[styles.filterSelectOption, subDateFilter === d && styles.filterSelectOptionActive]}>
+                      <Text style={[styles.filterSelectOptionText, subDateFilter === d && { color: '#0066FF', fontWeight: '700' }]}>{d}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <TouchableOpacity style={styles.filterApplyBtn} onPress={() => notifyAction(setSubActionMessage, 'Filters applied successfully.')}>
+                  <Feather name="filter" size={14} color="#FFF" style={{ marginRight: 4 }} />
+                  <Text style={{ fontSize: 13, color: '#FFF', fontWeight: '600' }}>Filter</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setSubSearch(''); setSubPlanFilter('All Plans'); setSubStatusFilter('All Statuses'); setSubDateFilter('All Time'); }}>
+                  <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 4 }} />
+                  <Text style={{ fontSize: 13, color: '#64748B', fontWeight: '600' }}>Reset</Text>
+                </TouchableOpacity>
               </View>
 
-              {/* Subscriptions Table */}
+              {/* All Subscriptions Table */}
               <View style={styles.contentCard}>
-                <View style={styles.tableHeadBar}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <Text style={styles.cardHeaderTitle}>
+                    All Subscriptions ({subscriptions.filter(s => {
+                      const ms = subSearch.toLowerCase();
+                      const matchSearch = s.client.toLowerCase().includes(ms) || s.id.toLowerCase().includes(ms) || s.plan.toLowerCase().includes(ms);
+                      const matchStatus = subStatusFilter === 'All Statuses' || s.status === subStatusFilter;
+                      const matchPlan = subPlanFilter === 'All Plans' || s.plan === subPlanFilter;
+                      return matchSearch && matchStatus && matchPlan;
+                    }).length})
+                  </Text>
+                </View>
+
+                {/* Table Header */}
+                <View style={[styles.tableHeadBar, { backgroundColor: '#F8FAFC' }]}>
+                  <Text style={[styles.thColText, { flex: 0.4 }]}>#</Text>
                   <Text style={[styles.thColText, { flex: 1.2 }]}>Subscription ID</Text>
-                  <Text style={[styles.thColText, { flex: 1.8 }]}>Client Organization</Text>
-                  <Text style={[styles.thColText, { flex: 1.0 }]}>Plan</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>Start Date</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>End Date</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>Days Left</Text>
-                  <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
-                  <Text style={[styles.thColText, { flex: 1.1 }]}>Billing</Text>
-                  <Text style={[styles.thColText, { flex: 0.9, textAlign: 'right' }]}>Actions</Text>
+                  <Text style={[styles.thColText, { flex: 1.6 }]}>Client Name</Text>
+                  <Text style={[styles.thColText, { flex: 0.8 }]}>Plan</Text>
+                  <Text style={[styles.thColText, { flex: 1.1 }]}>Start Date</Text>
+                  <Text style={[styles.thColText, { flex: 1.1 }]}>End Date</Text>
+                  <Text style={[styles.thColText, { flex: 0.9 }]}>Status</Text>
+                  <Text style={[styles.thColText, { flex: 0.6 }]}>Users</Text>
+                  <Text style={[styles.thColText, { flex: 0.9 }]}>Amount</Text>
+                  <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Actions</Text>
                 </View>
 
                 {subscriptions
                   .filter(s => {
-                    const matchesSearch = s.client.toLowerCase().includes(subSearch.toLowerCase()) ||
-                      s.id.toLowerCase().includes(subSearch.toLowerCase());
-                    const matchesStatus = subStatusFilter === 'All' || s.status === subStatusFilter;
-                    return matchesSearch && matchesStatus;
+                    const ms = subSearch.toLowerCase();
+                    const matchSearch = s.client.toLowerCase().includes(ms) || s.id.toLowerCase().includes(ms) || s.plan.toLowerCase().includes(ms);
+                    const matchStatus = subStatusFilter === 'All Statuses' || s.status === subStatusFilter;
+                    const matchPlan = subPlanFilter === 'All Plans' || s.plan === subPlanFilter;
+                    return matchSearch && matchStatus && matchPlan;
                   })
-                  .map((sub) => (
-                    <View key={sub.id} style={styles.tableClickableRow}>
-                      <Text style={[styles.tdBoldIdText, { flex: 1.2 }]}>{sub.id}</Text>
-                      <Text style={[styles.companyNameCellText, { flex: 1.8 }]}>{sub.client}</Text>
-                      <Text style={[styles.tdPlanText, { flex: 1.0 }]}>{sub.plan}</Text>
-                      <Text style={[styles.tdDateText, { flex: 1.2 }]}>{sub.startDate}</Text>
-                      <Text style={[styles.tdDateText, { flex: 1.2 }]}>{sub.endDate}</Text>
-                      <View style={{ flex: 1.2 }}>
-                        <View style={sub.status === 'Active' ? styles.daysLeftGreenPill : sub.status === 'Expiring Soon' ? styles.daysLeftAmberPill : styles.daysLeftRedPill}>
-                          <Text style={sub.status === 'Active' ? styles.daysLeftGreenText : sub.status === 'Expiring Soon' ? styles.daysLeftAmberText : styles.daysLeftRedText}>
-                            {sub.daysLeft}
-                          </Text>
+                  .map((sub, idx) => {
+                    const planColors = { Gold: '#F59E0B', Silver: '#64748B', Platinum: '#7C3AED', Enterprise: '#0066FF' };
+                    const planBg = { Gold: '#FEF3C7', Silver: '#F1F5F9', Platinum: '#F5F3FF', Enterprise: '#EFF6FF' };
+                    return (
+                      <View key={sub.id} style={styles.tableClickableRow}>
+                        <Text style={[styles.tdNumberText, { flex: 0.4 }]}>{idx + 1}</Text>
+                        <Text style={[styles.tdBoldIdText, { flex: 1.2 }]}>{sub.id}</Text>
+                        <Text style={[styles.companyNameCellText, { flex: 1.6 }]}>{sub.client}</Text>
+                        <View style={{ flex: 0.8 }}>
+                          <View style={{ backgroundColor: planBg[sub.plan] || '#F1F5F9', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, alignSelf: 'flex-start' }}>
+                            <Text style={{ fontSize: 11.5, fontWeight: '700', color: planColors[sub.plan] || '#64748B' }}>{sub.plan}</Text>
+                          </View>
+                        </View>
+                        <Text style={[styles.tdDateText, { flex: 1.1 }]}>{sub.startDate}</Text>
+                        <Text style={[styles.tdDateText, { flex: 1.1 }]}>{sub.endDate}</Text>
+                        <View style={{ flex: 0.9 }}>
+                          <View style={sub.status === 'Active' ? styles.statusActivePill : sub.status === 'Expiring Soon' ? styles.statusExpiringPill : styles.statusExpiredPill}>
+                            <View style={sub.status === 'Active' ? styles.dotActiveGreen : sub.status === 'Expiring Soon' ? styles.dotAmber : styles.dotRed} />
+                            <Text style={sub.status === 'Active' ? styles.statusActiveText : sub.status === 'Expiring Soon' ? styles.statusExpiringText : styles.statusExpiredText}>
+                              {sub.status}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={[styles.tdNumberText, { flex: 0.6 }]}>{sub.users || 24}</Text>
+                        <Text style={[styles.tdBoldIdText, { flex: 0.9, color: '#0F172A' }]}>{sub.amount}</Text>
+                        <View style={{ flex: 1.0, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                          <TouchableOpacity style={styles.viewSmallBtn} onPress={() => setSelectedSubModal(sub)}>
+                            <Text style={styles.viewSmallBtnText}>View</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={[styles.viewSmallBtn, { backgroundColor: '#F1F5F9', borderColor: '#E2E8F0' }]} onPress={() => setEditingSubModal(sub)}>
+                            <Text style={[styles.viewSmallBtnText, { color: '#475569' }]}>Edit</Text>
+                          </TouchableOpacity>
+                          {sub.status === 'Expired' && (
+                            <TouchableOpacity style={[styles.viewSmallBtn, { backgroundColor: '#FEF3C7', borderColor: '#FCD34D' }]}
+                              onPress={() => notifyAction(setSubActionMessage, `Renewal initiated for ${sub.client}`)}>
+                              <Text style={[styles.viewSmallBtnText, { color: '#92400E' }]}>Renew</Text>
+                            </TouchableOpacity>
+                          )}
                         </View>
                       </View>
-                      <View style={{ flex: 1.0 }}>
-                        <View style={sub.status === 'Active' ? styles.statusActivePill : sub.status === 'Expiring Soon' ? styles.statusExpiringPill : styles.statusExpiredPill}>
-                          <View style={sub.status === 'Active' ? styles.dotActiveGreen : sub.status === 'Expiring Soon' ? styles.dotAmber : styles.dotRed} />
-                          <Text style={sub.status === 'Active' ? styles.statusActiveText : sub.status === 'Expiring Soon' ? styles.statusExpiringText : styles.statusExpiredText}>
-                            {sub.status}
-                          </Text>
+                    );
+                  })}
+              </View>
+
+              {/* View Subscription Detail Modal */}
+              {selectedSubModal && (
+                <View style={styles.modalOverlay}>
+                  <View style={[styles.modalBox, { maxWidth: 560 }]}>
+                    <View style={styles.modalHeader}>
+                      <Text style={styles.modalTitle}>Subscription Details</Text>
+                      <TouchableOpacity onPress={() => setSelectedSubModal(null)}>
+                        <Feather name="x" size={20} color="#64748B" />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ gap: 12, padding: 20 }}>
+                      {[
+                        ['Subscription ID', selectedSubModal.id],
+                        ['Client Name', selectedSubModal.client],
+                        ['Plan', selectedSubModal.plan],
+                        ['Start Date', selectedSubModal.startDate],
+                        ['End Date', selectedSubModal.endDate],
+                        ['Status', selectedSubModal.status],
+                        ['Users', String(selectedSubModal.users || 24)],
+                        ['Amount', selectedSubModal.amount],
+                      ].map(([label, val]) => (
+                        <View key={label} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' }}>
+                          <Text style={{ fontSize: 13, color: '#64748B', fontWeight: '500' }}>{label}</Text>
+                          <Text style={{ fontSize: 13, color: '#0F172A', fontWeight: '700' }}>{val}</Text>
                         </View>
-                      </View>
-                      <Text style={[styles.tdBoldIdText, { flex: 1.1 }]}>{sub.amount}</Text>
-                      <View style={{ flex: 0.9, alignItems: 'flex-end' }}>
-                        <TouchableOpacity
-                          style={styles.viewSmallBtn}
-                          onPress={() => alert(`Subscription ${sub.id} for ${sub.client} renewal initiated`)}
-                        >
-                          <Text style={styles.viewSmallBtnText}>{sub.status === 'Expired' ? 'Renew' : 'Manage'}</Text>
+                      ))}
+                      <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
+                        <TouchableOpacity style={[styles.modalSubmitBtn, { flex: 1 }]} onPress={() => { setEditingSubModal(selectedSubModal); setSelectedSubModal(null); }}>
+                          <Text style={styles.modalSubmitBtnText}>Edit Subscription</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.modalCancelBtn, { flex: 1 }]} onPress={() => setSelectedSubModal(null)}>
+                          <Text style={styles.modalCancelBtnText}>Close</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
-                  ))}
-              </View>
+                  </View>
+                </View>
+              )}
+
+              {/* Edit Subscription Modal */}
+              {editingSubModal && (
+                <View style={styles.modalOverlay}>
+                  <View style={[styles.modalBox, { maxWidth: 560 }]}>
+                    <View style={styles.modalHeader}>
+                      <Text style={styles.modalTitle}>Edit Subscription — {editingSubModal.id}</Text>
+                      <TouchableOpacity onPress={() => setEditingSubModal(null)}>
+                        <Feather name="x" size={20} color="#64748B" />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ padding: 20, gap: 14 }}>
+                      <View style={{ flexDirection: 'row', gap: 12 }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.modalSectionLabel}>Plan</Text>
+                          <View style={[styles.modalInput, { justifyContent: 'center' }]}>
+                            <Text style={{ color: '#0F172A', fontSize: 13 }}>{editingSubModal.plan}</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.modalSectionLabel}>Status</Text>
+                          <View style={[styles.modalInput, { justifyContent: 'center' }]}>
+                            <Text style={{ color: '#0F172A', fontSize: 13 }}>{editingSubModal.status}</Text>
+                          </View>
+                        </View>
+                      </View>
+                      <View style={{ flexDirection: 'row', gap: 12 }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.modalSectionLabel}>Start Date</Text>
+                          <View style={[styles.modalInput, { justifyContent: 'center' }]}>
+                            <Text style={{ color: '#0F172A', fontSize: 13 }}>{editingSubModal.startDate}</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.modalSectionLabel}>End Date</Text>
+                          <View style={[styles.modalInput, { justifyContent: 'center' }]}>
+                            <Text style={{ color: '#0F172A', fontSize: 13 }}>{editingSubModal.endDate}</Text>
+                          </View>
+                        </View>
+                      </View>
+                      <Text style={styles.modalSectionLabel}>Additional Notes</Text>
+                      <TextInput
+                        style={[styles.modalInput, { height: 72, textAlignVertical: 'top' }]}
+                        placeholder="Add notes about this edit..."
+                        placeholderTextColor="#94A3B8"
+                        multiline
+                      />
+                      <View style={styles.modalActions}>
+                        <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setEditingSubModal(null)}>
+                          <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.modalSubmitBtn} onPress={() => { notifyAction(setSubActionMessage, `Subscription ${editingSubModal.id} updated successfully.`); setEditingSubModal(null); }}>
+                          <Text style={styles.modalSubmitBtnText}>Save Changes</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )}
             </View>
           )}
 
           {/* ========================================================= */}
           {/* LLM DATA IMPORT TAB                                       */}
           {/* ========================================================= */}
+
+          {/* ========================================================= */}
+          {/* LLM DATA IMPORT TAB                                       */}
+          {/* ========================================================= */}
           {activeNav === 'LLM Data Import' && (
             <View style={styles.tabContentContainer}>
-              <View style={styles.subScreenHeaderRow}>
-                <View>
-                  <Text style={styles.greetingTitle}>LLM Data Import</Text>
-                  <Text style={styles.greetingSubtitle}>Multi-tenant document ingestion, chunking, and vector embedding status.</Text>
-                </View>
-                <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setShowImportModal(true)}>
-                  <Feather name="upload-cloud" size={16} color="#FFF" style={{ marginRight: 6 }} />
-                  <Text style={styles.primaryActionBtnText}>Import Data</Text>
-                </TouchableOpacity>
+              {/* Breadcrumb */}
+              <View style={styles.breadcrumbRow}>
+                <Text style={styles.breadcrumbLink} onPress={() => setActiveNav('Dashboard')}>Dashboard</Text>
+                <Text style={styles.breadcrumbDivider}>›</Text>
+                <Text style={styles.breadcrumbActive}>LLM Data Import</Text>
               </View>
 
-              {/* 4 KPI Summary Cards */}
+              <View style={styles.subScreenHeaderRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.greetingTitle}>LLM Data Import</Text>
+                  <Text style={styles.greetingSubtitle}>Monitor and manage data ingestion into the AI/LLM knowledge layer.</Text>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+                  <View style={{ backgroundColor: '#EFF6FF', borderRadius: 8, padding: 10, maxWidth: 320 }}>
+                    <Text style={{ fontSize: 11, color: '#1E40AF', lineHeight: 15 }}>
+                      ℹ️ Client documents are uploaded by each client through their portal. This page lets you monitor, manage and reprocess the imported data.
+                    </Text>
+                  </View>
+                  <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setShowImportModal(true)}>
+                    <Feather name="upload-cloud" size={16} color="#FFF" style={{ marginRight: 6 }} />
+                    <Text style={styles.primaryActionBtnText}>Import Data</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* KPI Cards */}
               <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
                 <View style={styles.kpiCard}>
                   <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
@@ -2331,42 +2557,42 @@ export default function AdminPortalView({ onBackToLanding }) {
                       <Text style={styles.kpiCardValue}>128</Text>
                       <View style={styles.kpiTrendBadge}>
                         <Feather name="arrow-up-right" size={12} color="#10B981" />
-                        <Text style={styles.kpiTrendText}>+14</Text>
+                        <Text style={styles.kpiTrendText}>+12%</Text>
                       </View>
                     </View>
-                    <Text style={styles.kpiCardSubtext}>This month</Text>
+                    <Text style={styles.kpiCardSubtext}>+14 this month</Text>
                   </View>
                 </View>
 
                 <View style={styles.kpiCard}>
                   <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
-                    <MaterialCommunityIcons name="check-all" size={24} color="#10B981" />
+                    <MaterialCommunityIcons name="check-circle-outline" size={24} color="#10B981" />
                   </View>
                   <View style={styles.kpiInfoCol}>
                     <Text style={styles.kpiCardLabel}>Completed</Text>
                     <View style={styles.kpiValueRow}>
                       <Text style={styles.kpiCardValue}>116</Text>
-                      <View style={styles.kpiTrendBadge}>
-                        <Text style={styles.kpiTrendText}>90.6%</Text>
+                      <View style={[styles.kpiTrendBadge, { backgroundColor: '#ECFDF5' }]}>
+                        <Text style={[styles.kpiTrendText, { color: '#059669' }]}>90.6% of total</Text>
                       </View>
                     </View>
-                    <Text style={styles.kpiCardSubtext}>Indexed into RAG</Text>
+                    <Text style={styles.kpiCardSubtext}>Indexed into knowledge base</Text>
                   </View>
                 </View>
 
                 <View style={styles.kpiCard}>
                   <View style={[styles.kpiIconSquare, { backgroundColor: '#FEF3C7' }]}>
-                    <MaterialCommunityIcons name="cog-sync-outline" size={24} color="#F59E0B" />
+                    <MaterialCommunityIcons name="timer-outline" size={24} color="#F59E0B" />
                   </View>
                   <View style={styles.kpiInfoCol}>
                     <Text style={styles.kpiCardLabel}>Processing</Text>
                     <View style={styles.kpiValueRow}>
                       <Text style={styles.kpiCardValue}>8</Text>
                       <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEF3C7' }]}>
-                        <Text style={[styles.kpiTrendText, { color: '#B45309' }]}>6.3%</Text>
+                        <Text style={[styles.kpiTrendText, { color: '#B45309' }]}>6.3% of total</Text>
                       </View>
                     </View>
-                    <Text style={styles.kpiCardSubtext}>Vectorizing chunks</Text>
+                    <Text style={styles.kpiCardSubtext}>Currently vectorizing</Text>
                   </View>
                 </View>
 
@@ -2379,17 +2605,27 @@ export default function AdminPortalView({ onBackToLanding }) {
                     <View style={styles.kpiValueRow}>
                       <Text style={styles.kpiCardValue}>4</Text>
                       <View style={[styles.kpiTrendBadge, { backgroundColor: '#FEE2E2' }]}>
-                        <Text style={[styles.kpiTrendText, { color: '#DC2626' }]}>Retry</Text>
+                        <Text style={[styles.kpiTrendText, { color: '#DC2626' }]}>3.1% of total</Text>
                       </View>
                     </View>
-                    <Text style={styles.kpiCardSubtext}>Schema mismatch</Text>
+                    <Text style={styles.kpiCardSubtext}>Needs reprocessing</Text>
                   </View>
                 </View>
               </View>
 
-              {/* Search Bar */}
-              <View style={[styles.actionFilterBar, { marginBottom: 16 }]}>
-                <View style={[styles.searchBarBox, { flex: 1 }]}>
+              {/* Tabs */}
+              <View style={styles.moduleTabBar}>
+                {['Import History', 'Data Sources', 'Failed Imports', 'Processing Queue', 'Settings'].map(tab => (
+                  <TouchableOpacity key={tab} style={[styles.moduleTab, importTab === tab && styles.moduleTabActive]}
+                    onPress={() => setImportTab(tab)}>
+                    <Text style={[styles.moduleTabText, importTab === tab && styles.moduleTabTextActive]}>{tab}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Search + Filters */}
+              <View style={[styles.actionFilterBar, { marginBottom: 16, flexWrap: 'wrap', gap: 8 }]}>
+                <View style={[styles.searchBarBox, { flex: 1, minWidth: 200 }]}>
                   <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
                   <TextInput
                     placeholder="Search by client, file name, or import ID..."
@@ -2399,32 +2635,89 @@ export default function AdminPortalView({ onBackToLanding }) {
                     style={styles.innerSearch}
                   />
                 </View>
+                <View style={styles.filterSelectBox}>
+                  <Text style={styles.filterSelectLabel}>Client</Text>
+                  {['All Clients', 'TechNova Solutions', 'AutoDrive Ltd', 'HealthPlus', 'EduSmart Learning'].map(c => (
+                    <TouchableOpacity key={c} onPress={() => setImportClientFilter(c)}
+                      style={[styles.filterSelectOption, importClientFilter === c && styles.filterSelectOptionActive]}>
+                      <Text style={[styles.filterSelectOptionText, importClientFilter === c && { color: '#0066FF', fontWeight: '700' }]}>{c}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <View style={styles.filterSelectBox}>
+                  <Text style={styles.filterSelectLabel}>Status</Text>
+                  {['All Statuses', 'Completed', 'Processing', 'Failed'].map(s => (
+                    <TouchableOpacity key={s} onPress={() => setImportStatusFilter(s)}
+                      style={[styles.filterSelectOption, importStatusFilter === s && styles.filterSelectOptionActive]}>
+                      <Text style={[styles.filterSelectOptionText, importStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>{s}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <View style={styles.filterSelectBox}>
+                  <Text style={styles.filterSelectLabel}>Date Range</Text>
+                  {['All Time', 'Today', 'This Week', 'This Month'].map(d => (
+                    <TouchableOpacity key={d} onPress={() => setImportDateFilter(d)}
+                      style={[styles.filterSelectOption, importDateFilter === d && styles.filterSelectOptionActive]}>
+                      <Text style={[styles.filterSelectOptionText, importDateFilter === d && { color: '#0066FF', fontWeight: '700' }]}>{d}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <TouchableOpacity style={styles.filterApplyBtn} onPress={() => {}}>
+                  <Feather name="filter" size={14} color="#FFF" style={{ marginRight: 4 }} />
+                  <Text style={{ fontSize: 13, color: '#FFF', fontWeight: '600' }}>Filter</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setImportSearch(''); setImportClientFilter('All Clients'); setImportStatusFilter('All Statuses'); setImportDateFilter('All Time'); }}>
+                  <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 4 }} />
+                  <Text style={{ fontSize: 13, color: '#64748B', fontWeight: '600' }}>Reset</Text>
+                </TouchableOpacity>
               </View>
 
-              {/* Imports Monitoring Table */}
-              <View style={styles.contentCard}>
-                <View style={styles.tableHeadBar}>
-                  <Text style={[styles.thColText, { flex: 1.4 }]}>Import ID</Text>
-                  <Text style={[styles.thColText, { flex: 1.6 }]}>Client Organization</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>Data Source</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>Files & Types</Text>
-                  <Text style={[styles.thColText, { flex: 1.4 }]}>Imported On</Text>
-                  <Text style={[styles.thColText, { flex: 1.0 }]}>Chunks</Text>
-                  <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
-                  <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Action</Text>
-                </View>
+              {/* Table + Detail Panel Row */}
+              <View style={{ flexDirection: 'row', gap: 16 }}>
+                {/* Import History Table */}
+                <View style={[styles.contentCard, { flex: selectedImportModal ? 1.4 : 1 }]}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                    <Text style={styles.cardHeaderTitle}>Import History (128)</Text>
+                    <Text style={{ fontSize: 12, color: '#64748B' }}>Showing 1 to 10 of 128 imports</Text>
+                  </View>
 
-                {imports
-                  .filter(imp => imp.client.toLowerCase().includes(importSearch.toLowerCase()) || imp.id.toLowerCase().includes(importSearch.toLowerCase()))
-                  .map((item) => (
-                    <View key={item.id} style={styles.tableClickableRow}>
-                      <Text style={[styles.tdBoldIdText, { flex: 1.4 }]}>{item.id}</Text>
-                      <Text style={[styles.companyNameCellText, { flex: 1.6 }]}>{item.client}</Text>
-                      <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{item.source}</Text>
-                      <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{item.files} files ({item.fileTypes})</Text>
-                      <Text style={[styles.tdDateText, { flex: 1.4 }]}>{item.date}</Text>
-                      <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{item.chunks}</Text>
-                      <View style={{ flex: 1.0 }}>
+                  <View style={[styles.tableHeadBar, { backgroundColor: '#F8FAFC' }]}>
+                    <Text style={[styles.thColText, { flex: 0.4 }]}>#</Text>
+                    <Text style={[styles.thColText, { flex: 1.4 }]}>Import ID</Text>
+                    <Text style={[styles.thColText, { flex: 1.4 }]}>Client</Text>
+                    <Text style={[styles.thColText, { flex: 1.0 }]}>Data Source</Text>
+                    <Text style={[styles.thColText, { flex: 0.5 }]}>Files</Text>
+                    <Text style={[styles.thColText, { flex: 1.4 }]}>Imported On</Text>
+                    <Text style={[styles.thColText, { flex: 0.8 }]}>Status</Text>
+                    <Text style={[styles.thColText, { flex: 0.7, textAlign: 'right' }]}>Actions</Text>
+                  </View>
+
+                  {[
+                    { id: 'IMP-20250908-001', client: 'TechNova Solutions', source: 'Client Upload', files: 5, date: '08 Sep 2025\n10:15 AM', status: 'Completed' },
+                    { id: 'IMP-20250907-003', client: 'AutoDrive Ltd', source: 'Client Upload', files: 8, date: '07 Sep 2025\n04:30 PM', status: 'Completed' },
+                    { id: 'IMP-20250907-015', client: 'HealthPlus', source: 'Client Upload', files: 6, date: '06 Sep 2025\n11:22 AM', status: 'Failed' },
+                    { id: 'IMP-20250906-011', client: 'EduSmart Learning', source: 'Client Upload', files: 12, date: '06 Sep 2025\n02:10 PM', status: 'Processing' },
+                    { id: 'IMP-20250906-008', client: 'RetailCorp', source: 'API Import', files: 3, date: '05 Sep 2025\n08:45 AM', status: 'Completed' },
+                    { id: 'IMP-20250904-006', client: 'GreenEnergy Inc', source: 'Client Upload', files: 7, date: '04 Sep 2025\n05:15 PM', status: 'Completed' },
+                    { id: 'IMP-20250903-003', client: 'FinSecure Bank', source: 'API Import', files: 10, date: '03 Sep 2025\n09:30 AM', status: 'Completed' },
+                    { id: 'IMP-20250902-004', client: 'LogiTrans Global', source: 'Client Upload', files: 4, date: '02 Sep 2025\n11:05 AM', status: 'Failed' },
+                    { id: 'IMP-20250901-002', client: 'CloudNest', source: 'Client Upload', files: 9, date: '01 Sep 2025\n05:40 PM', status: 'Completed' },
+                    { id: 'IMP-20250831-001', client: 'InnoTech Systems', source: 'Manual Import', files: 5, date: '31 Aug 2025\n10:25 AM', status: 'Completed' },
+                  ].filter(item => {
+                    const ms = importSearch.toLowerCase();
+                    const matchSearch = item.client.toLowerCase().includes(ms) || item.id.toLowerCase().includes(ms) || item.source.toLowerCase().includes(ms);
+                    const matchStatus = importStatusFilter === 'All Statuses' || item.status === importStatusFilter;
+                    const matchClient = importClientFilter === 'All Clients' || item.client === importClientFilter;
+                    return matchSearch && matchStatus && matchClient;
+                  }).map((item, idx) => (
+                    <View key={item.id} style={[styles.tableClickableRow, selectedImportModal?.id === item.id && { backgroundColor: '#EFF6FF' }]}>
+                      <Text style={[styles.tdNumberText, { flex: 0.4 }]}>{idx + 1}</Text>
+                      <Text style={[styles.tdBoldIdText, { flex: 1.4, fontSize: 11 }]}>{item.id}</Text>
+                      <Text style={[styles.companyNameCellText, { flex: 1.4, fontSize: 12 }]}>{item.client}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{item.source}</Text>
+                      <Text style={[styles.tdNumberText, { flex: 0.5 }]}>{item.files}</Text>
+                      <Text style={[styles.tdDateText, { flex: 1.4, fontSize: 11 }]}>{item.date}</Text>
+                      <View style={{ flex: 0.8 }}>
                         <View style={item.status === 'Completed' ? styles.statusActivePill : item.status === 'Processing' ? styles.statusExpiringPill : styles.statusExpiredPill}>
                           <View style={item.status === 'Completed' ? styles.dotActiveGreen : item.status === 'Processing' ? styles.dotAmber : styles.dotRed} />
                           <Text style={item.status === 'Completed' ? styles.statusActiveText : item.status === 'Processing' ? styles.statusExpiringText : styles.statusExpiredText}>
@@ -2432,199 +2725,590 @@ export default function AdminPortalView({ onBackToLanding }) {
                           </Text>
                         </View>
                       </View>
-                      <View style={{ flex: 1.0, alignItems: 'flex-end' }}>
-                        <TouchableOpacity
-                          style={styles.viewSmallBtn}
-                          onPress={() => setSelectedImportModal(item)}
-                        >
+                      <View style={{ flex: 0.7, flexDirection: 'row', justifyContent: 'flex-end', gap: 4 }}>
+                        <TouchableOpacity style={styles.viewSmallBtn} onPress={() => setSelectedImportModal(selectedImportModal?.id === item.id ? null : item)}>
                           <Text style={styles.viewSmallBtnText}>View</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
                   ))}
+
+                  {/* Pagination */}
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#F1F5F9' }}>
+                    <TouchableOpacity style={[styles.filterResetBtn, { paddingHorizontal: 12 }]}>
+                      <Text style={{ fontSize: 12, color: '#64748B' }}>‹ Prev</Text>
+                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', gap: 4 }}>
+                      {[1, 2, 3, 4, 5].map(p => (
+                        <View key={p} style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: p === 1 ? '#0066FF' : '#F1F5F9', justifyContent: 'center', alignItems: 'center' }}>
+                          <Text style={{ fontSize: 12, color: p === 1 ? '#FFF' : '#64748B', fontWeight: '600' }}>{p}</Text>
+                        </View>
+                      ))}
+                      <Text style={{ fontSize: 12, color: '#64748B', alignSelf: 'center' }}>... 13</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Text style={{ fontSize: 12, color: '#64748B' }}>10 per page</Text>
+                      <TouchableOpacity style={[styles.filterApplyBtn, { paddingHorizontal: 12 }]}>
+                        <Text style={{ fontSize: 12, color: '#FFF' }}>Next ›</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Import Details Side Panel */}
+                {selectedImportModal && (
+                  <View style={{ width: 300, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', padding: 16, alignSelf: 'flex-start' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: '#0F172A' }}>Import Details</Text>
+                      <TouchableOpacity onPress={() => setSelectedImportModal(null)}>
+                        <Feather name="x" size={16} color="#64748B" />
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ fontSize: 12, fontWeight: '700', color: '#0F172A' }}>{selectedImportModal.id}</Text>
+                      <View style={selectedImportModal.status === 'Completed' ? styles.statusActivePill : selectedImportModal.status === 'Processing' ? styles.statusExpiringPill : styles.statusExpiredPill}>
+                        <View style={selectedImportModal.status === 'Completed' ? styles.dotActiveGreen : selectedImportModal.status === 'Processing' ? styles.dotAmber : styles.dotRed} />
+                        <Text style={selectedImportModal.status === 'Completed' ? styles.statusActiveText : selectedImportModal.status === 'Processing' ? styles.statusExpiringText : styles.statusExpiredText}>{selectedImportModal.status}</Text>
+                      </View>
+                    </View>
+
+                    {[
+                      ['Client', selectedImportModal.client],
+                      ['Data Source', selectedImportModal.source],
+                      ['Imported On', selectedImportModal.date],
+                      ['Files Processed', String(selectedImportModal.files)],
+                      ['Total Size', '12.4 MB'],
+                      ['Processed Records', '1,245'],
+                      ['Duration', '3 min 12 sec'],
+                    ].map(([label, val]) => (
+                      <View key={label} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#F8FAFC' }}>
+                        <Text style={{ fontSize: 11.5, color: '#64748B' }}>{label}</Text>
+                        <Text style={{ fontSize: 11.5, color: '#0F172A', fontWeight: '600', maxWidth: 140, textAlign: 'right' }}>{val}</Text>
+                      </View>
+                    ))}
+
+                    <Text style={{ fontSize: 12, fontWeight: '700', color: '#0F172A', marginTop: 12, marginBottom: 8 }}>Files ({selectedImportModal.files})</Text>
+                    {['hr_policy.pdf', 'leave_policy.docx', 'employee_handbook.pdf', 'faq_company.csv', 'benefits_guide.pdf'].slice(0, selectedImportModal.files).map((f, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 4 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <MaterialCommunityIcons name="file-document-outline" size={14} color="#0066FF" />
+                          <Text style={{ fontSize: 11, color: '#475569', maxWidth: 140 }} numberOfLines={1}>{f}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                          <Text style={{ fontSize: 10, color: '#64748B' }}>{(Math.random() * 2 + 1).toFixed(1)} MB</Text>
+                          <View style={styles.statusActivePill}>
+                            <View style={styles.dotActiveGreen} />
+                            <Text style={styles.statusActiveText}>Processed</Text>
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+
+                    <View style={{ flexDirection: 'row', gap: 8, marginTop: 14 }}>
+                      <TouchableOpacity style={[styles.filterResetBtn, { flex: 1, justifyContent: 'center' }]}>
+                        <Feather name="download" size={13} color="#64748B" style={{ marginRight: 4 }} />
+                        <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '600' }}>Download Report</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[styles.filterApplyBtn, { flex: 1, justifyContent: 'center' }]}>
+                        <Feather name="refresh-cw" size={13} color="#FFF" style={{ marginRight: 4 }} />
+                        <Text style={{ fontSize: 11, color: '#FFF', fontWeight: '600' }}>Reprocess</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
               </View>
             </View>
           )}
+
+
 
           {/* ========================================================= */}
           {/* REPORTS & PLATFORM ANALYTICS TAB                          */}
           {/* ========================================================= */}
           {activeNav === 'Reports' && (
             <View style={styles.tabContentContainer}>
+              {/* Breadcrumb */}
+              <View style={styles.breadcrumbRow}>
+                <Text style={styles.breadcrumbLink} onPress={() => setActiveNav('Dashboard')}>Dashboard</Text>
+                <Text style={styles.breadcrumbDivider}>›</Text>
+                <Text style={styles.breadcrumbActive}>Reports</Text>
+              </View>
+
+              {/* Header */}
               <View style={styles.subScreenHeaderRow}>
                 <View>
-                  <Text style={styles.greetingTitle}>Reports & Platform Analytics</Text>
-                  <Text style={styles.greetingSubtitle}>Cross-tenant AI query usage, latency benchmarks, and revenue metrics.</Text>
+                  <Text style={styles.greetingTitle}>Reports</Text>
+                  <Text style={styles.greetingSubtitle}>Comprehensive platform analytics, client usage reports, and operational metrics.</Text>
                 </View>
-                <TouchableOpacity style={styles.timeFilterPill} onPress={() => alert('Exporting platform analytics report (PDF/CSV)...')}>
-                  <Feather name="download" size={14} color="#0066FF" style={{ marginRight: 6 }} />
-                  <Text style={[styles.timeFilterPillText, { color: '#0066FF' }]}>Export Report</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* 4 KPI Summary Cards */}
-              <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
-                <View style={styles.kpiCard}>
-                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
-                    <MaterialCommunityIcons name="message-text-outline" size={24} color="#0066FF" />
+                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, gap: 8 }}>
+                    <Feather name="calendar" size={14} color="#64748B" />
+                    <Text style={{ fontSize: 13, color: '#0F172A', fontWeight: '500' }}>01 Sep 2025 — 30 Sep 2025</Text>
+                    <Feather name="chevron-down" size={14} color="#64748B" />
                   </View>
-                  <View style={styles.kpiInfoCol}>
-                    <Text style={styles.kpiCardLabel}>Total Questions</Text>
-                    <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>1,24,532</Text>
-                      <View style={styles.kpiTrendBadge}>
-                        <Feather name="arrow-up-right" size={12} color="#10B981" />
-                        <Text style={styles.kpiTrendText}>18%</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.kpiCardSubtext}>Across all clients</Text>
-                  </View>
-                </View>
-
-                <View style={styles.kpiCard}>
-                  <View style={[styles.kpiIconSquare, { backgroundColor: '#F5F3FF' }]}>
-                    <MaterialCommunityIcons name="account-group-outline" size={24} color="#7C3AED" />
-                  </View>
-                  <View style={styles.kpiInfoCol}>
-                    <Text style={styles.kpiCardLabel}>Active Users</Text>
-                    <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>2,356</Text>
-                      <View style={styles.kpiTrendBadge}>
-                        <Feather name="arrow-up-right" size={12} color="#10B981" />
-                        <Text style={styles.kpiTrendText}>12%</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.kpiCardSubtext}>Active employees</Text>
-                  </View>
-                </View>
-
-                <View style={styles.kpiCard}>
-                  <View style={[styles.kpiIconSquare, { backgroundColor: '#E0F2FE' }]}>
-                    <MaterialCommunityIcons name="speedometer" size={24} color="#0284C7" />
-                  </View>
-                  <View style={styles.kpiInfoCol}>
-                    <Text style={styles.kpiCardLabel}>Avg Response</Text>
-                    <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>2.1s</Text>
-                      <View style={styles.kpiTrendBadge}>
-                        <Feather name="arrow-down-right" size={12} color="#10B981" />
-                        <Text style={styles.kpiTrendText}>-28%</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.kpiCardSubtext}>Sub-second retrieval</Text>
-                  </View>
-                </View>
-
-                <View style={styles.kpiCard}>
-                  <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
-                    <MaterialCommunityIcons name="currency-inr" size={24} color="#10B981" />
-                  </View>
-                  <View style={styles.kpiInfoCol}>
-                    <Text style={styles.kpiCardLabel}>Revenue</Text>
-                    <View style={styles.kpiValueRow}>
-                      <Text style={styles.kpiCardValue}>₹12.49L</Text>
-                      <View style={styles.kpiTrendBadge}>
-                        <Feather name="arrow-up-right" size={12} color="#10B981" />
-                        <Text style={styles.kpiTrendText}>15%</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.kpiCardSubtext}>This period</Text>
-                  </View>
+                  <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setReportGenerating(true); setTimeout(() => { setReportGenerating(false); setReportGenerated(true); }, 800); }}>
+                    <Feather name="bar-chart-2" size={16} color="#FFF" style={{ marginRight: 6 }} />
+                    <Text style={styles.primaryActionBtnText}>{reportGenerating ? 'Generating...' : 'Generate Report'}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
 
-              {/* Middle Row: Questions Over Time & Usage Distribution */}
-              <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
-                <View style={[styles.contentCard, { flex: 1.2 }]}>
-                  <View style={styles.cardHeaderRow}>
-                    <Text style={styles.cardHeaderTitle}>Questions Volume Over Time</Text>
-                    <Text style={styles.kpiCardSubtext}>September 2026</Text>
-                  </View>
-
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: 180, paddingTop: 20 }}>
-                    {[
-                      { period: 'Sep 1-5', height: 42, count: '18.4k' },
-                      { period: 'Sep 6-10', height: 58, count: '24.1k' },
-                      { period: 'Sep 11-15', height: 74, count: '31.2k' },
-                      { period: 'Sep 16-20', height: 68, count: '28.9k' },
-                      { period: 'Sep 21-25', height: 86, count: '36.5k' },
-                      { period: 'Sep 26-30', height: 95, count: '41.2k' },
-                    ].map((bar, i) => (
-                      <View key={i} style={{ alignItems: 'center', flex: 1 }}>
-                        <Text style={{ fontSize: 10.5, color: '#64748B', fontWeight: '700', marginBottom: 6 }}>{bar.count}</Text>
-                        <View style={{ width: 34, height: `${bar.height}%`, backgroundColor: '#0066FF', borderRadius: 6, opacity: 0.85 + (i * 0.02) }} />
-                        <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '500', marginTop: 8 }}>{bar.period}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-
-                <View style={[styles.contentCard, { flex: 0.8 }]}>
-                  <View style={styles.cardHeaderRow}>
-                    <Text style={styles.cardHeaderTitle}>Client Usage Distribution</Text>
-                  </View>
-
-                  <View style={{ gap: 12, marginTop: 8 }}>
-                    {[
-                      { name: 'TechNova Solutions', percent: '28%', queries: '34.8k', color: '#0066FF' },
-                      { name: 'AutoDrive Ltd', percent: '22%', queries: '27.4k', color: '#7C3AED' },
-                      { name: 'HealthPlus', percent: '18%', queries: '22.4k', color: '#10B981' },
-                      { name: 'EduSmart Learning', percent: '15%', queries: '18.6k', color: '#F59E0B' },
-                      { name: 'Other Clients', percent: '17%', queries: '21.3k', color: '#64748B' },
-                    ].map((u, i) => (
-                      <View key={i}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                          <Text style={{ fontSize: 12.5, fontWeight: '600', color: '#0F172A' }}>{u.name}</Text>
-                          <Text style={{ fontSize: 12, fontWeight: '700', color: u.color }}>{u.percent} ({u.queries})</Text>
-                        </View>
-                        <View style={{ height: 6, backgroundColor: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
-                          <View style={{ width: u.percent, height: '100%', backgroundColor: u.color, borderRadius: 3 }} />
-                        </View>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              </View>
-
-              {/* Client SLA Performance Table */}
-              <View style={styles.contentCard}>
-                <View style={styles.cardHeaderRow}>
-                  <Text style={styles.cardHeaderTitle}>Client Performance & SLA Benchmarks</Text>
-                </View>
-
-                <View style={styles.tableHeadBar}>
-                  <Text style={[styles.thColText, { flex: 1.8 }]}>Client Organization</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>Questions Asked</Text>
-                  <Text style={[styles.thColText, { flex: 1.0 }]}>Active Users</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>Avg Latency</Text>
-                  <Text style={[styles.thColText, { flex: 1.2 }]}>SLA Compliance</Text>
-                  <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Health</Text>
-                </View>
-
-                {[
-                  { name: 'TechNova Solutions', questions: '25,430', users: '420', latency: '2.1s', sla: '99.98%', status: 'Optimal' },
-                  { name: 'AutoDrive Ltd', questions: '18,220', users: '310', latency: '2.4s', sla: '99.95%', status: 'Optimal' },
-                  { name: 'HealthPlus', questions: '15,100', users: '290', latency: '1.9s', sla: '100.0%', status: 'Optimal' },
-                  { name: 'EduSmart Learning', questions: '12,400', users: '210', latency: '2.8s', sla: '99.90%', status: 'Good' },
-                  { name: 'RetailCorp', questions: '9,850', users: '140', latency: '3.1s', sla: '99.85%', status: 'Attention' },
-                ].map((row, idx) => (
-                  <View key={idx} style={styles.tableClickableRow}>
-                    <Text style={[styles.companyNameCellText, { flex: 1.8 }]}>{row.name}</Text>
-                    <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.questions}</Text>
-                    <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{row.users}</Text>
-                    <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.latency}</Text>
-                    <Text style={[styles.tdPlanText, { flex: 1.2, color: '#10B981' }]}>{row.sla}</Text>
-                    <View style={{ flex: 1.0, alignItems: 'flex-end' }}>
-                      <View style={row.status === 'Optimal' ? styles.statusActivePill : styles.statusExpiringPill}>
-                        <View style={row.status === 'Optimal' ? styles.dotActiveGreen : styles.dotAmber} />
-                        <Text style={row.status === 'Optimal' ? styles.statusActiveText : styles.statusExpiringText}>{row.status}</Text>
-                      </View>
-                    </View>
-                  </View>
+              {/* Sub-tabs bar */}
+              <View style={styles.moduleTabBar}>
+                {['Overview', 'Client Reports', 'Usage Analytics', 'Subscription Reports', 'LLM Data Reports', 'Custom Reports'].map(tab => (
+                  <TouchableOpacity key={tab} style={[styles.moduleTab, reportTab === tab && styles.moduleTabActive]}
+                    onPress={() => setReportTab(tab)}>
+                    <Text style={[styles.moduleTabText, reportTab === tab && styles.moduleTabTextActive]}>{tab}</Text>
+                  </TouchableOpacity>
                 ))}
               </View>
+
+              {/* OVERVIEW TAB CONTENT */}
+              {reportTab === 'Overview' && (
+                <>
+                  {/* 5 KPI Summary Cards */}
+                  <View style={[styles.kpiRow, isMobile && styles.kpiRowMobile]}>
+                    <View style={styles.kpiCard}>
+                      <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF' }]}>
+                        <MaterialCommunityIcons name="message-text-outline" size={22} color="#0066FF" />
+                      </View>
+                      <View style={styles.kpiInfoCol}>
+                        <Text style={styles.kpiCardLabel}>Total Questions</Text>
+                        <View style={styles.kpiValueRow}>
+                          <Text style={styles.kpiCardValue}>1,24,532</Text>
+                          <View style={styles.kpiTrendBadge}>
+                            <Feather name="arrow-up-right" size={12} color="#10B981" />
+                            <Text style={styles.kpiTrendText}>18%</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.kpiCardSubtext}>vs previous period</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.kpiCard}>
+                      <View style={[styles.kpiIconSquare, { backgroundColor: '#F0FDF4' }]}>
+                        <MaterialCommunityIcons name="account-group-outline" size={22} color="#16A34A" />
+                      </View>
+                      <View style={styles.kpiInfoCol}>
+                        <Text style={styles.kpiCardLabel}>Active Clients</Text>
+                        <View style={styles.kpiValueRow}>
+                          <Text style={styles.kpiCardValue}>48</Text>
+                          <View style={styles.kpiTrendBadge}>
+                            <Feather name="arrow-up-right" size={12} color="#10B981" />
+                            <Text style={styles.kpiTrendText}>9%</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.kpiCardSubtext}>of 52 total clients</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.kpiCard}>
+                      <View style={[styles.kpiIconSquare, { backgroundColor: '#F5F3FF' }]}>
+                        <MaterialCommunityIcons name="account-multiple-outline" size={22} color="#7C3AED" />
+                      </View>
+                      <View style={styles.kpiInfoCol}>
+                        <Text style={styles.kpiCardLabel}>Total Users</Text>
+                        <View style={styles.kpiValueRow}>
+                          <Text style={styles.kpiCardValue}>2,356</Text>
+                          <View style={styles.kpiTrendBadge}>
+                            <Feather name="arrow-up-right" size={12} color="#10B981" />
+                            <Text style={styles.kpiTrendText}>12%</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.kpiCardSubtext}>across all clients</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.kpiCard}>
+                      <View style={[styles.kpiIconSquare, { backgroundColor: '#E0F2FE' }]}>
+                        <MaterialCommunityIcons name="speedometer" size={22} color="#0284C7" />
+                      </View>
+                      <View style={styles.kpiInfoCol}>
+                        <Text style={styles.kpiCardLabel}>Avg. Response Time</Text>
+                        <View style={styles.kpiValueRow}>
+                          <Text style={styles.kpiCardValue}>2.3 sec</Text>
+                          <View style={styles.kpiTrendBadge}>
+                            <Feather name="arrow-down-right" size={12} color="#10B981" />
+                            <Text style={styles.kpiTrendText}>28%</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.kpiCardSubtext}>vs previous period</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.kpiCard}>
+                      <View style={[styles.kpiIconSquare, { backgroundColor: '#ECFDF5' }]}>
+                        <MaterialCommunityIcons name="currency-inr" size={22} color="#10B981" />
+                      </View>
+                      <View style={styles.kpiInfoCol}>
+                        <Text style={styles.kpiCardLabel}>Subscription Revenue</Text>
+                        <View style={styles.kpiValueRow}>
+                          <Text style={styles.kpiCardValue}>₹12,49,000</Text>
+                          <View style={styles.kpiTrendBadge}>
+                            <Feather name="arrow-up-right" size={12} color="#10B981" />
+                            <Text style={styles.kpiTrendText}>15%</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.kpiCardSubtext}>this period</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Charts Row 1 */}
+                  <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile]}>
+                    {/* Questions Over Time Line Graph */}
+                    <View style={[styles.contentCard, { flex: 1.2 }]}>
+                      <View style={styles.cardHeaderRow}>
+                        <Text style={styles.cardHeaderTitle}>Questions Over Time</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <Text style={{ fontSize: 12, color: '#64748B' }}>Questions Asked</Text>
+                          <Feather name="chevron-down" size={14} color="#64748B" />
+                        </View>
+                      </View>
+
+                      {/* SVG Line Graph */}
+                      <View style={{ height: 160, width: '100%', marginTop: 10 }}>
+                        <svg width="100%" height="100%" viewBox="0 0 450 140" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+                          <defs>
+                            <linearGradient id="qOverTimeGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#0066FF" stopOpacity="0.3" />
+                              <stop offset="100%" stopColor="#0066FF" stopOpacity="0.0" />
+                            </linearGradient>
+                          </defs>
+                          {/* Gridlines */}
+                          {[20, 50, 80, 110].map((y, i) => (
+                            <line key={i} x1="30" y1={y} x2="440" y2={y} stroke="#F1F5F9" strokeWidth="1" strokeDasharray="4 4" />
+                          ))}
+                          {/* Area Fill */}
+                          <path d="M 30,95 L 30,90 Q 75,70 100,80 T 170,60 T 240,40 T 310,48 T 380,30 L 430,15 L 430,120 L 30,120 Z" fill="url(#qOverTimeGrad)" />
+                          {/* Line */}
+                          <path d="M 30,90 Q 75,70 100,80 T 170,60 T 240,40 T 310,48 T 380,30 L 430,15" fill="none" stroke="#0066FF" strokeWidth="3" strokeLinecap="round" />
+                          {/* Data points */}
+                          {[[30,90],[100,80],[170,60],[240,40],[310,48],[380,30],[430,15]].map(([cx, cy], i) => (
+                            <circle key={i} cx={cx} cy={cy} r="4" fill="#0066FF" stroke="#FFF" strokeWidth="2" />
+                          ))}
+                        </svg>
+                      </View>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, marginTop: 4 }}>
+                        {['1 Sep', '5 Sep', '10 Sep', '15 Sep', '20 Sep', '25 Sep', '30 Sep'].map((lbl, idx) => (
+                          <Text key={idx} style={{ fontSize: 10.5, color: '#94A3B8', fontWeight: '500' }}>{lbl}</Text>
+                        ))}
+                      </View>
+                    </View>
+
+                    {/* Client Usage Distribution */}
+                    <View style={[styles.contentCard, { flex: 0.9 }]}>
+                      <View style={styles.cardHeaderRow}>
+                        <Text style={styles.cardHeaderTitle}>Client Usage Distribution</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, gap: 16 }}>
+                        {/* Donut graphic */}
+                        <View style={{ width: 110, height: 110, borderRadius: 55, borderWidth: 14, borderColor: '#0066FF', justifyContent: 'center', alignItems: 'center', borderRightColor: '#7C3AED', borderBottomColor: '#10B981', borderLeftColor: '#F59E0B' }}>
+                          <Text style={{ fontSize: 13, fontWeight: '800', color: '#0F172A' }}>1,24,532</Text>
+                          <Text style={{ fontSize: 9.5, color: '#64748B', fontWeight: '600' }}>Questions</Text>
+                        </View>
+                        <View style={{ gap: 6, flex: 1 }}>
+                          {[
+                            { label: 'TechNova Solutions', val: '28%', color: '#0066FF' },
+                            { label: 'AutoDrive Ltd', val: '22%', color: '#7C3AED' },
+                            { label: 'HealthPlus', val: '18%', color: '#10B981' },
+                            { label: 'EduSmart Learning', val: '15%', color: '#F59E0B' },
+                            { label: 'RetailCorp', val: '10%', color: '#EC4899' },
+                            { label: 'Others', val: '7%', color: '#64748B' },
+                          ].map((item, i) => (
+                            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: item.color }} />
+                                <Text style={{ fontSize: 11, color: '#475569', fontWeight: '500' }} numberOfLines={1}>{item.label}</Text>
+                              </View>
+                              <Text style={{ fontSize: 11, color: '#0F172A', fontWeight: '700' }}>{item.val}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Plan-wise Usage Bar Chart */}
+                    <View style={[styles.contentCard, { flex: 0.9 }]}>
+                      <View style={styles.cardHeaderRow}>
+                        <Text style={styles.cardHeaderTitle}>Plan-wise Usage</Text>
+                        <Text style={{ fontSize: 11, color: '#64748B' }}>Questions Asked</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', height: 140, marginTop: 12 }}>
+                        {[
+                          { plan: 'Gold', val: '58,230', height: 85, color: '#0066FF' },
+                          { plan: 'Silver', val: '34,450', height: 55, color: '#0066FF' },
+                          { plan: 'Platinum', val: '24,120', height: 40, color: '#0066FF' },
+                          { plan: 'Custom', val: '7,732', height: 18, color: '#0066FF' },
+                        ].map((b, i) => (
+                          <View key={i} style={{ alignItems: 'center', flex: 1 }}>
+                            <Text style={{ fontSize: 10, color: '#475569', fontWeight: '700', marginBottom: 4 }}>{b.val}</Text>
+                            <View style={{ width: 28, height: `${b.height}%`, backgroundColor: b.color, borderRadius: 4, opacity: 0.8 + (i * 0.05) }} />
+                            <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '600', marginTop: 6 }}>{b.plan}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Charts Row 2 */}
+                  <View style={[styles.middleGridRow, isMobile && styles.middleGridRowMobile, { marginTop: 16 }]}>
+                    {/* Subscription Status Donut */}
+                    <View style={[styles.contentCard, { flex: 0.9 }]}>
+                      <View style={styles.cardHeaderRow}>
+                        <Text style={styles.cardHeaderTitle}>Subscription Status</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 14, gap: 16 }}>
+                        <View style={{ width: 100, height: 100, borderRadius: 50, borderWidth: 12, borderColor: '#10B981', justifyContent: 'center', alignItems: 'center', borderRightColor: '#F59E0B', borderBottomColor: '#EF4444' }}>
+                          <Text style={{ fontSize: 15, fontWeight: '800', color: '#0F172A' }}>52</Text>
+                          <Text style={{ fontSize: 9, color: '#64748B', fontWeight: '600' }}>Total Clients</Text>
+                        </View>
+                        <View style={{ gap: 10, flex: 1 }}>
+                          {[
+                            { label: 'Active', count: '48 (92%)', color: '#10B981' },
+                            { label: 'Expiring Soon', count: '3 (6%)', color: '#F59E0B' },
+                            { label: 'Expired', count: '1 (2%)', color: '#EF4444' },
+                          ].map((st, i) => (
+                            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: st.color }} />
+                                <Text style={{ fontSize: 12, color: '#475569', fontWeight: '500' }}>{st.label}</Text>
+                              </View>
+                              <Text style={{ fontSize: 12, color: '#0F172A', fontWeight: '700' }}>{st.count}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Response Time Distribution */}
+                    <View style={[styles.contentCard, { flex: 1.1 }]}>
+                      <View style={styles.cardHeaderRow}>
+                        <Text style={styles.cardHeaderTitle}>Response Time Distribution</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', height: 140, marginTop: 12 }}>
+                        {[
+                          { range: '< 1s', val: '35,420', height: 90, color: '#7C3AED' },
+                          { range: '1-2s', val: '28,310', height: 72, color: '#7C3AED' },
+                          { range: '2-5s', val: '19,620', height: 48, color: '#7C3AED' },
+                          { range: '5-10s', val: '8,450', height: 22, color: '#7C3AED' },
+                          { range: '> 10s', val: '3,732', height: 10, color: '#7C3AED' },
+                        ].map((b, i) => (
+                          <View key={i} style={{ alignItems: 'center', flex: 1 }}>
+                            <Text style={{ fontSize: 9.5, color: '#475569', fontWeight: '700', marginBottom: 4 }}>{b.val}</Text>
+                            <View style={{ width: 26, height: `${b.height}%`, backgroundColor: b.color, borderRadius: 4, opacity: 0.75 + (i * 0.05) }} />
+                            <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '600', marginTop: 6 }}>{b.range}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+
+                    {/* Top Clients by Active Users */}
+                    <View style={[styles.contentCard, { flex: 1.0 }]}>
+                      <View style={styles.cardHeaderRow}>
+                        <Text style={styles.cardHeaderTitle}>Top Clients by Active Users</Text>
+                        <Text style={{ fontSize: 11, color: '#64748B' }}>Active Users</Text>
+                      </View>
+                      <View style={{ gap: 10, marginTop: 10 }}>
+                        {[
+                          { name: 'TechNova Solutions', users: '420', pct: 90 },
+                          { name: 'AutoDrive Ltd', users: '310', pct: 68 },
+                          { name: 'HealthPlus', users: '290', pct: 62 },
+                          { name: 'EduSmart Learning', users: '210', pct: 45 },
+                          { name: 'RetailCorp', users: '180', pct: 38 },
+                        ].map((c, i) => (
+                          <View key={i}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
+                              <Text style={{ fontSize: 11.5, color: '#0F172A', fontWeight: '600' }}>{c.name}</Text>
+                              <Text style={{ fontSize: 11.5, color: '#0066FF', fontWeight: '700' }}>{c.users}</Text>
+                            </View>
+                            <View style={{ height: 6, backgroundColor: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
+                              <View style={{ width: `${c.pct}%`, height: '100%', backgroundColor: '#0066FF', borderRadius: 3 }} />
+                            </View>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Bottom Table: Recent Activity Overview */}
+                  <View style={[styles.contentCard, { marginTop: 16 }]}>
+                    <View style={styles.cardHeaderRow}>
+                      <Text style={styles.cardHeaderTitle}>Recent Activity Overview</Text>
+                      <Text style={{ fontSize: 12, color: '#64748B' }}>Showing 1 to 5 of 52 clients</Text>
+                    </View>
+
+                    <View style={[styles.tableHeadBar, { backgroundColor: '#F8FAFC' }]}>
+                      <Text style={[styles.thColText, { flex: 0.4 }]}>#</Text>
+                      <Text style={[styles.thColText, { flex: 1.8 }]}>Client Name</Text>
+                      <Text style={[styles.thColText, { flex: 1.2 }]}>Questions Asked</Text>
+                      <Text style={[styles.thColText, { flex: 1.0 }]}>Active Users</Text>
+                      <Text style={[styles.thColText, { flex: 1.2 }]}>Avg Response Time</Text>
+                      <Text style={[styles.thColText, { flex: 1.2 }]}>Subscription Plan</Text>
+                      <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                      <Text style={[styles.thColText, { flex: 1.5 }]}>Last Activity</Text>
+                      <Text style={[styles.thColText, { flex: 0.8, textAlign: 'right' }]}>Actions</Text>
+                    </View>
+
+                    {[
+                      { id: 1, name: 'TechNova Solutions', questions: '28,450', users: 420, latency: '2.1 sec', plan: 'Gold', status: 'Active', time: '08 Sep 2025, 10:24 AM' },
+                      { id: 2, name: 'AutoDrive Ltd', questions: '18,230', users: 310, latency: '2.5 sec', plan: 'Silver', status: 'Active', time: '08 Sep 2025, 09:18 AM' },
+                      { id: 3, name: 'HealthPlus', questions: '15,620', users: 200, latency: '2.8 sec', plan: 'Platinum', status: 'Active', time: '07 Sep 2025, 05:42 PM' },
+                      { id: 4, name: 'EduSmart Learning', questions: '12,450', users: 210, latency: '3.1 sec', plan: 'Gold', status: 'Expiring Soon', time: '07 Sep 2025, 11:30 AM' },
+                      { id: 5, name: 'RetailCorp', questions: '9,780', users: 180, latency: '2.9 sec', plan: 'Silver', status: 'Active', time: '06 Sep 2025, 02:15 PM' },
+                    ].map((row) => (
+                      <View key={row.id} style={styles.tableClickableRow}>
+                        <Text style={[styles.tdNumberText, { flex: 0.4 }]}>{row.id}</Text>
+                        <Text style={[styles.companyNameCellText, { flex: 1.8 }]}>{row.name}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.questions}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.0 }]}>{row.users}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.latency}</Text>
+                        <Text style={[styles.tdPlanText, { flex: 1.2 }]}>{row.plan}</Text>
+                        <View style={{ flex: 1.0 }}>
+                          <View style={row.status === 'Active' ? styles.statusActivePill : styles.statusExpiringPill}>
+                            <View style={row.status === 'Active' ? styles.dotActiveGreen : styles.dotAmber} />
+                            <Text style={row.status === 'Active' ? styles.statusActiveText : styles.statusExpiringText}>{row.status}</Text>
+                          </View>
+                        </View>
+                        <Text style={[styles.tdDateText, { flex: 1.5 }]}>{row.time}</Text>
+                        <View style={{ flex: 0.8, alignItems: 'flex-end' }}>
+                          <TouchableOpacity style={styles.viewSmallBtn} onPress={() => alert(`Detailed operational report for ${row.name}`)}>
+                            <Text style={styles.viewSmallBtnText}>View</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))}
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#F1F5F9' }}>
+                      <Text style={{ fontSize: 12, color: '#64748B' }}>Showing 1 to 5 of 52 clients</Text>
+                      <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                        <TouchableOpacity style={[styles.filterResetBtn, { paddingHorizontal: 10 }]}><Text style={{ fontSize: 11 }}>‹</Text></TouchableOpacity>
+                        {[1, 2, 3, 4, 5].map(p => (
+                          <View key={p} style={{ width: 24, height: 24, borderRadius: 4, backgroundColor: p === 1 ? '#0066FF' : '#F1F5F9', justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 11, color: p === 1 ? '#FFF' : '#64748B', fontWeight: '600' }}>{p}</Text>
+                          </View>
+                        ))}
+                        <Text style={{ fontSize: 11, color: '#64748B' }}>... 11</Text>
+                        <TouchableOpacity style={[styles.filterApplyBtn, { paddingHorizontal: 10 }]}><Text style={{ fontSize: 11, color: '#FFF' }}>›</Text></TouchableOpacity>
+                      </View>
+                      <Text style={{ fontSize: 12, color: '#64748B' }}>5 per page</Text>
+                    </View>
+                  </View>
+                </>
+              )}
+
+              {/* CLIENT REPORTS TAB CONTENT */}
+              {reportTab === 'Client Reports' && (
+                <View style={{ gap: 16 }}>
+                  {/* Filters Bar */}
+                  <View style={[styles.contentCard, { gap: 14 }]}>
+                    <Text style={styles.cardHeaderTitle}>Filter Client Reports</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+                      <View style={{ flex: 1, minWidth: 160 }}>
+                        <Text style={styles.modalSectionLabel}>Client</Text>
+                        <View style={styles.modalInput}>
+                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportClientFilter}</Text>
+                        </View>
+                      </View>
+                      <View style={{ flex: 1, minWidth: 160 }}>
+                        <Text style={styles.modalSectionLabel}>Subscription Plan</Text>
+                        <View style={styles.modalInput}>
+                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportPlanFilter}</Text>
+                        </View>
+                      </View>
+                      <View style={{ flex: 1, minWidth: 160 }}>
+                        <Text style={styles.modalSectionLabel}>Date Range</Text>
+                        <View style={styles.modalInput}>
+                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportDateFrom} - {reportDateTo}</Text>
+                        </View>
+                      </View>
+                      <View style={{ flex: 1, minWidth: 160 }}>
+                        <Text style={styles.modalSectionLabel}>Status</Text>
+                        <View style={styles.modalInput}>
+                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportStatusFilter}</Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }}>
+                      <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setReportClientFilter('All Clients'); setReportPlanFilter('All Plans'); setReportStatusFilter('All Statuses'); }}>
+                        <Text style={{ fontSize: 13, color: '#64748B' }}>Reset</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setReportGenerated(true)}>
+                        <Feather name="play" size={14} color="#FFF" style={{ marginRight: 6 }} />
+                        <Text style={styles.primaryActionBtnText}>Generate / View Report</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Generated Client Report Data Table */}
+                  <View style={styles.contentCard}>
+                    <View style={styles.cardHeaderRow}>
+                      <Text style={styles.cardHeaderTitle}>Client Operational & Subscription Report</Text>
+                      <TouchableOpacity style={styles.filterResetBtn} onPress={() => alert('Exporting Client Report CSV...')}>
+                        <Feather name="download" size={13} color="#0066FF" style={{ marginRight: 4 }} />
+                        <Text style={{ fontSize: 12, color: '#0066FF', fontWeight: '600' }}>Export CSV</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={[styles.tableHeadBar, { backgroundColor: '#F8FAFC' }]}>
+                      <Text style={[styles.thColText, { flex: 1.6 }]}>Client Organization</Text>
+                      <Text style={[styles.thColText, { flex: 1.0 }]}>Subscription</Text>
+                      <Text style={[styles.thColText, { flex: 1.1 }]}>Users Limit</Text>
+                      <Text style={[styles.thColText, { flex: 1.2 }]}>Documents Uploaded</Text>
+                      <Text style={[styles.thColText, { flex: 1.2 }]}>Total Queries</Text>
+                      <Text style={[styles.thColText, { flex: 1.1 }]}>Avg Latency</Text>
+                      <Text style={[styles.thColText, { flex: 1.0 }]}>Status</Text>
+                      <Text style={[styles.thColText, { flex: 1.0, textAlign: 'right' }]}>Actions</Text>
+                    </View>
+
+                    {[
+                      { name: 'TechNova Solutions', sub: 'Gold Plan', users: '420 / 500', docs: '128 docs', queries: '28,450', latency: '2.1s', status: 'Active' },
+                      { name: 'AutoDrive Ltd', sub: 'Silver Plan', users: '310 / 350', docs: '85 docs', queries: '18,230', latency: '2.5s', status: 'Active' },
+                      { name: 'HealthPlus', sub: 'Platinum Plan', users: '200 / 1000', docs: '240 docs', queries: '15,620', latency: '2.8s', status: 'Active' },
+                      { name: 'EduSmart Learning', sub: 'Gold Plan', users: '210 / 500', docs: '92 docs', queries: '12,450', latency: '3.1s', status: 'Expiring Soon' },
+                      { name: 'RetailCorp', sub: 'Silver Plan', users: '180 / 350', docs: '64 docs', queries: '9,780', latency: '2.9s', status: 'Active' },
+                    ].map((row, idx) => (
+                      <View key={idx} style={styles.tableClickableRow}>
+                        <Text style={[styles.companyNameCellText, { flex: 1.6 }]}>{row.name}</Text>
+                        <Text style={[styles.tdPlanText, { flex: 1.0 }]}>{row.sub}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.1 }]}>{row.users}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.docs}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.2 }]}>{row.queries}</Text>
+                        <Text style={[styles.tdNumberText, { flex: 1.1 }]}>{row.latency}</Text>
+                        <View style={{ flex: 1.0 }}>
+                          <View style={row.status === 'Active' ? styles.statusActivePill : styles.statusExpiringPill}>
+                            <View style={row.status === 'Active' ? styles.dotActiveGreen : styles.dotAmber} />
+                            <Text style={row.status === 'Active' ? styles.statusActiveText : styles.statusExpiringText}>{row.status}</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 1.0, alignItems: 'flex-end' }}>
+                          <TouchableOpacity style={styles.viewSmallBtn} onPress={() => alert(`Full report generated for ${row.name}`)}>
+                            <Text style={styles.viewSmallBtnText}>Full Report</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              )}
+
+              {/* OTHER SUB-TABS PLACEHOLDER (Usage, Subscription, LLM Data, Custom Reports) */}
+              {(reportTab === 'Usage Analytics' || reportTab === 'Subscription Reports' || reportTab === 'LLM Data Reports' || reportTab === 'Custom Reports') && (
+                <View style={[styles.contentCard, { alignItems: 'center', paddingVertical: 40 }]}>
+                  <MaterialCommunityIcons name="chart-box-outline" size={48} color="#94A3B8" style={{ marginBottom: 12 }} />
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: '#0F172A' }}>{reportTab}</Text>
+                  <Text style={{ fontSize: 13, color: '#64748B', marginTop: 4, textAlign: 'center', maxWidth: 400 }}>
+                    Detailed dimensional analytics for {reportTab.toLowerCase()}. Use the date picker above or generate custom query breakdowns.
+                  </Text>
+                  <TouchableOpacity style={[styles.primaryActionBtn, { marginTop: 16 }]} onPress={() => alert(`Generating ${reportTab}...`)}>
+                    <Text style={styles.primaryActionBtnText}>Export {reportTab} (PDF)</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           )}
+
 
           {/* ========================================================= */}
           {/* MASTER SETTINGS TAB                                       */}
@@ -5042,7 +5726,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 12.5,
     color: '#0F172A',
-    outline: 'none',
+    outlineStyle: 'none',
     width: '100%',
   },
   filterActionButton: {
@@ -5202,7 +5886,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: 11.5,
     color: '#334155',
-    outline: 'none',
+    outlineStyle: 'none',
   },
   planNameColumnText: {
     fontSize: 13.5,
@@ -5346,7 +6030,7 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     color: '#0F172A',
     backgroundColor: '#FFFFFF',
-    outline: 'none',
+    outlineStyle: 'none',
     width: '100%',
   },
   prefToggleRow: {
@@ -5714,7 +6398,7 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     color: '#0F172A',
     backgroundColor: '#FFFFFF',
-    outline: 'none',
+    outlineStyle: 'none',
     width: '100%',
   },
   modalActions: {
@@ -5992,3 +6676,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+
