@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -791,6 +791,23 @@ export default function AdminPortalView({ onBackToLanding }) {
   const [reportPlanFilter, setReportPlanFilter] = useState('All Plans');
   const [reportGenerating, setReportGenerating] = useState(false);
   const [reportGenerated, setReportGenerated] = useState(false);
+
+  // Dropdown open toggles for filter bars
+  const [subPlanOpen, setSubPlanOpen] = useState(false);
+  const [subStatusOpen, setSubStatusOpen] = useState(false);
+  const [subDateOpen, setSubDateOpen] = useState(false);
+
+  const [impClientOpen, setImpClientOpen] = useState(false);
+  const [impStatusOpen, setImpStatusOpen] = useState(false);
+  const [impDateOpen, setImpDateOpen] = useState(false);
+
+  const [repTopDateOpen, setRepTopDateOpen] = useState(false);
+  const [repTopDateRange, setRepTopDateRange] = useState('01 Sep 2025 — 30 Sep 2025');
+  const [repClientOpen, setRepClientOpen] = useState(false);
+  const [repPlanOpen, setRepPlanOpen] = useState(false);
+  const [repStatusOpen, setRepStatusOpen] = useState(false);
+  const [repDateRangeOpen, setRepDateRangeOpen] = useState(false);
+
 
   // Current growth dataset
   const currentGrowthData = GROWTH_DATA_MAP[selectedGrowthFilter] || GROWTH_DATA_MAP['Last 6 Months'];
@@ -2282,9 +2299,10 @@ export default function AdminPortalView({ onBackToLanding }) {
                 </View>
               </View>
 
-              {/* Search + Filters Row */}
-              <View style={[styles.actionFilterBar, { marginBottom: 16, flexWrap: 'wrap', gap: 8 }]}>
-                <View style={[styles.searchBarBox, { flex: 1, minWidth: 200 }]}>
+              {/* Search + Filters Row (Matching Image media_1789816227394.png) */}
+              <View style={[styles.actionFilterBar, { zIndex: 120, flexWrap: 'wrap', gap: 12 }]}>
+                {/* Search Box */}
+                <View style={[styles.searchBarBox, { flex: 1, minWidth: 220 }]}>
                   <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
                   <TextInput
                     placeholder="Search by client name, plan, or subscription ID..."
@@ -2294,42 +2312,133 @@ export default function AdminPortalView({ onBackToLanding }) {
                     style={styles.innerSearch}
                   />
                 </View>
-                <View style={styles.filterSelectBox}>
-                  <Text style={styles.filterSelectLabel}>Plan</Text>
-                  {['All Plans', 'Gold', 'Silver', 'Platinum', 'Enterprise'].map(p => (
-                    <TouchableOpacity key={p} onPress={() => setSubPlanFilter(p)}
-                      style={[styles.filterSelectOption, subPlanFilter === p && styles.filterSelectOptionActive]}>
-                      <Text style={[styles.filterSelectOptionText, subPlanFilter === p && { color: '#0066FF', fontWeight: '700' }]}>{p}</Text>
+
+                {/* Plan Dropdown */}
+                <View style={styles.filterFieldGroup}>
+                  <Text style={styles.filterFieldLabel}>Plan</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={styles.filterDropdownBtn}
+                      onPress={() => {
+                        setSubPlanOpen(!subPlanOpen);
+                        setSubStatusOpen(false);
+                        setSubDateOpen(false);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.filterDropdownText}>{subPlanFilter}</Text>
+                      <Feather name="chevron-down" size={13} color="#64748B" />
                     </TouchableOpacity>
-                  ))}
+                    {subPlanOpen && (
+                      <View style={styles.filterDropdownMenu}>
+                        {['All Plans', 'Gold', 'Silver', 'Platinum', 'Enterprise'].map((p) => (
+                          <TouchableOpacity
+                            key={p}
+                            style={[styles.dropdownMenuItem, subPlanFilter === p && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setSubPlanFilter(p);
+                              setSubPlanOpen(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, subPlanFilter === p && { color: '#0066FF', fontWeight: '700' }]}>
+                              {p}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 </View>
-                <View style={styles.filterSelectBox}>
-                  <Text style={styles.filterSelectLabel}>Status</Text>
-                  {['All Statuses', 'Active', 'Expiring Soon', 'Expired'].map(s => (
-                    <TouchableOpacity key={s} onPress={() => setSubStatusFilter(s)}
-                      style={[styles.filterSelectOption, subStatusFilter === s && styles.filterSelectOptionActive]}>
-                      <Text style={[styles.filterSelectOptionText, subStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>{s}</Text>
+
+                {/* Status Dropdown */}
+                <View style={styles.filterFieldGroup}>
+                  <Text style={styles.filterFieldLabel}>Status</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={styles.filterDropdownBtn}
+                      onPress={() => {
+                        setSubStatusOpen(!subStatusOpen);
+                        setSubPlanOpen(false);
+                        setSubDateOpen(false);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.filterDropdownText}>{subStatusFilter}</Text>
+                      <Feather name="chevron-down" size={13} color="#64748B" />
                     </TouchableOpacity>
-                  ))}
+                    {subStatusOpen && (
+                      <View style={styles.filterDropdownMenu}>
+                        {['All Statuses', 'Active', 'Expiring Soon', 'Expired'].map((s) => (
+                          <TouchableOpacity
+                            key={s}
+                            style={[styles.dropdownMenuItem, subStatusFilter === s && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setSubStatusFilter(s);
+                              setSubStatusOpen(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, subStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>
+                              {s}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 </View>
-                <View style={styles.filterSelectBox}>
-                  <Text style={styles.filterSelectLabel}>Date Range</Text>
-                  {['All Time', 'This Month', 'Last 3 Months', 'This Year'].map(d => (
-                    <TouchableOpacity key={d} onPress={() => setSubDateFilter(d)}
-                      style={[styles.filterSelectOption, subDateFilter === d && styles.filterSelectOptionActive]}>
-                      <Text style={[styles.filterSelectOptionText, subDateFilter === d && { color: '#0066FF', fontWeight: '700' }]}>{d}</Text>
+
+                {/* Date Range Dropdown */}
+                <View style={styles.filterFieldGroup}>
+                  <Text style={styles.filterFieldLabel}>Date Range</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={styles.filterDropdownBtn}
+                      onPress={() => {
+                        setSubDateOpen(!subDateOpen);
+                        setSubPlanOpen(false);
+                        setSubStatusOpen(false);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Feather name="calendar" size={12} color="#64748B" style={{ marginRight: 6 }} />
+                        <Text style={styles.filterDropdownText}>{subDateFilter}</Text>
+                      </View>
+                      <Feather name="chevron-down" size={13} color="#64748B" />
                     </TouchableOpacity>
-                  ))}
+                    {subDateOpen && (
+                      <View style={styles.filterDropdownMenu}>
+                        {['All Time', 'This Month', 'Last 3 Months', 'This Year'].map((d) => (
+                          <TouchableOpacity
+                            key={d}
+                            style={[styles.dropdownMenuItem, subDateFilter === d && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setSubDateFilter(d);
+                              setSubDateOpen(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, subDateFilter === d && { color: '#0066FF', fontWeight: '700' }]}>
+                              {d}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 </View>
+
+                {/* Filter and Reset Buttons */}
                 <TouchableOpacity style={styles.filterApplyBtn} onPress={() => notifyAction(setSubActionMessage, 'Filters applied successfully.')}>
-                  <Feather name="filter" size={14} color="#FFF" style={{ marginRight: 4 }} />
-                  <Text style={{ fontSize: 13, color: '#FFF', fontWeight: '600' }}>Filter</Text>
+                  <Feather name="filter" size={14} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.filterApplyBtnText}>Filter</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setSubSearch(''); setSubPlanFilter('All Plans'); setSubStatusFilter('All Statuses'); setSubDateFilter('All Time'); }}>
-                  <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 4 }} />
-                  <Text style={{ fontSize: 13, color: '#64748B', fontWeight: '600' }}>Reset</Text>
+                  <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 6 }} />
+                  <Text style={styles.filterResetBtnText}>Reset</Text>
                 </TouchableOpacity>
               </View>
+
 
               {/* All Subscriptions Table */}
               <View style={styles.contentCard}>
@@ -2410,6 +2519,23 @@ export default function AdminPortalView({ onBackToLanding }) {
                     );
                   })}
               </View>
+
+              {/* Plans vs Subscriptions Explanation Card (Matching Image media_1789816227394.png) */}
+              <View style={styles.plansVsSubBanner}>
+                <View style={styles.plansVsSubBannerInner}>
+                  <Text style={styles.plansVsSubTitle}>Plans vs Subscriptions</Text>
+                  <Text style={styles.plansVsSubDesc}>
+                    <Text style={{ fontWeight: '700' }}>Plans</Text> are the products you create (e.g., Gold, Silver, Platinum).{'\n'}
+                    <Text style={{ fontWeight: '700' }}>Subscriptions</Text> are the actual assignments of a plan to a client with a start date, end date, status, number of users, etc.
+                  </Text>
+                  <View style={styles.plansVsSubExampleBox}>
+                    <Text style={styles.plansVsSubExampleTitle}>Example:</Text>
+                    <Text style={styles.plansVsSubExampleBullet}>• <Text style={{ fontWeight: '600' }}>Plan:</Text> Gold (₹9,999/month)</Text>
+                    <Text style={styles.plansVsSubExampleBullet}>• <Text style={{ fontWeight: '600' }}>Subscription:</Text> TechNova Solutions uses Gold from 12 Dec 2024 to 12 Dec 2025 (24 users)</Text>
+                  </View>
+                </View>
+              </View>
+
 
               {/* View Subscription Detail Modal */}
               {selectedSubModal && (
@@ -2623,9 +2749,10 @@ export default function AdminPortalView({ onBackToLanding }) {
                 ))}
               </View>
 
-              {/* Search + Filters */}
-              <View style={[styles.actionFilterBar, { marginBottom: 16, flexWrap: 'wrap', gap: 8 }]}>
-                <View style={[styles.searchBarBox, { flex: 1, minWidth: 200 }]}>
+              {/* Search + Filters (Matching Image media_1789816257604.png) */}
+              <View style={[styles.actionFilterBar, { zIndex: 110, flexWrap: 'wrap', gap: 12 }]}>
+                {/* Search Box */}
+                <View style={[styles.searchBarBox, { flex: 1, minWidth: 220 }]}>
                   <Feather name="search" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
                   <TextInput
                     placeholder="Search by client, file name, or import ID..."
@@ -2635,42 +2762,133 @@ export default function AdminPortalView({ onBackToLanding }) {
                     style={styles.innerSearch}
                   />
                 </View>
-                <View style={styles.filterSelectBox}>
-                  <Text style={styles.filterSelectLabel}>Client</Text>
-                  {['All Clients', 'TechNova Solutions', 'AutoDrive Ltd', 'HealthPlus', 'EduSmart Learning'].map(c => (
-                    <TouchableOpacity key={c} onPress={() => setImportClientFilter(c)}
-                      style={[styles.filterSelectOption, importClientFilter === c && styles.filterSelectOptionActive]}>
-                      <Text style={[styles.filterSelectOptionText, importClientFilter === c && { color: '#0066FF', fontWeight: '700' }]}>{c}</Text>
+
+                {/* Client Dropdown */}
+                <View style={styles.filterFieldGroup}>
+                  <Text style={styles.filterFieldLabel}>Client</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={styles.filterDropdownBtn}
+                      onPress={() => {
+                        setImpClientOpen(!impClientOpen);
+                        setImpStatusOpen(false);
+                        setImpDateOpen(false);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.filterDropdownText}>{importClientFilter}</Text>
+                      <Feather name="chevron-down" size={13} color="#64748B" />
                     </TouchableOpacity>
-                  ))}
+                    {impClientOpen && (
+                      <View style={styles.filterDropdownMenu}>
+                        {['All Clients', 'TechNova Solutions', 'AutoDrive Ltd', 'HealthPlus', 'EduSmart Learning', 'RetailCorp', 'GreenEnergy Inc', 'FinSecure Bank'].map((c) => (
+                          <TouchableOpacity
+                            key={c}
+                            style={[styles.dropdownMenuItem, importClientFilter === c && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setImportClientFilter(c);
+                              setImpClientOpen(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, importClientFilter === c && { color: '#0066FF', fontWeight: '700' }]}>
+                              {c}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 </View>
-                <View style={styles.filterSelectBox}>
-                  <Text style={styles.filterSelectLabel}>Status</Text>
-                  {['All Statuses', 'Completed', 'Processing', 'Failed'].map(s => (
-                    <TouchableOpacity key={s} onPress={() => setImportStatusFilter(s)}
-                      style={[styles.filterSelectOption, importStatusFilter === s && styles.filterSelectOptionActive]}>
-                      <Text style={[styles.filterSelectOptionText, importStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>{s}</Text>
+
+                {/* Status Dropdown */}
+                <View style={styles.filterFieldGroup}>
+                  <Text style={styles.filterFieldLabel}>Status</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={styles.filterDropdownBtn}
+                      onPress={() => {
+                        setImpStatusOpen(!impStatusOpen);
+                        setImpClientOpen(false);
+                        setImpDateOpen(false);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.filterDropdownText}>{importStatusFilter}</Text>
+                      <Feather name="chevron-down" size={13} color="#64748B" />
                     </TouchableOpacity>
-                  ))}
+                    {impStatusOpen && (
+                      <View style={styles.filterDropdownMenu}>
+                        {['All Statuses', 'Completed', 'Processing', 'Failed'].map((s) => (
+                          <TouchableOpacity
+                            key={s}
+                            style={[styles.dropdownMenuItem, importStatusFilter === s && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setImportStatusFilter(s);
+                              setImpStatusOpen(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, importStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>
+                              {s}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 </View>
-                <View style={styles.filterSelectBox}>
-                  <Text style={styles.filterSelectLabel}>Date Range</Text>
-                  {['All Time', 'Today', 'This Week', 'This Month'].map(d => (
-                    <TouchableOpacity key={d} onPress={() => setImportDateFilter(d)}
-                      style={[styles.filterSelectOption, importDateFilter === d && styles.filterSelectOptionActive]}>
-                      <Text style={[styles.filterSelectOptionText, importDateFilter === d && { color: '#0066FF', fontWeight: '700' }]}>{d}</Text>
+
+                {/* Date Range Dropdown */}
+                <View style={styles.filterFieldGroup}>
+                  <Text style={styles.filterFieldLabel}>Date Range</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={styles.filterDropdownBtn}
+                      onPress={() => {
+                        setImpDateOpen(!impDateOpen);
+                        setImpClientOpen(false);
+                        setImpStatusOpen(false);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Feather name="calendar" size={12} color="#64748B" style={{ marginRight: 6 }} />
+                        <Text style={styles.filterDropdownText}>{importDateFilter}</Text>
+                      </View>
+                      <Feather name="chevron-down" size={13} color="#64748B" />
                     </TouchableOpacity>
-                  ))}
+                    {impDateOpen && (
+                      <View style={styles.filterDropdownMenu}>
+                        {['All Time', 'Today', 'This Week', 'This Month'].map((d) => (
+                          <TouchableOpacity
+                            key={d}
+                            style={[styles.dropdownMenuItem, importDateFilter === d && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setImportDateFilter(d);
+                              setImpDateOpen(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, importDateFilter === d && { color: '#0066FF', fontWeight: '700' }]}>
+                              {d}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 </View>
+
+                {/* Filter and Reset Buttons */}
                 <TouchableOpacity style={styles.filterApplyBtn} onPress={() => {}}>
-                  <Feather name="filter" size={14} color="#FFF" style={{ marginRight: 4 }} />
-                  <Text style={{ fontSize: 13, color: '#FFF', fontWeight: '600' }}>Filter</Text>
+                  <Feather name="filter" size={14} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.filterApplyBtnText}>Filter</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setImportSearch(''); setImportClientFilter('All Clients'); setImportStatusFilter('All Statuses'); setImportDateFilter('All Time'); }}>
-                  <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 4 }} />
-                  <Text style={{ fontSize: 13, color: '#64748B', fontWeight: '600' }}>Reset</Text>
+                  <Feather name="rotate-ccw" size={14} color="#64748B" style={{ marginRight: 6 }} />
+                  <Text style={styles.filterResetBtnText}>Reset</Text>
                 </TouchableOpacity>
               </View>
+
 
               {/* Table + Detail Panel Row */}
               <View style={{ flexDirection: 'row', gap: 16 }}>
@@ -2841,11 +3059,33 @@ export default function AdminPortalView({ onBackToLanding }) {
                   <Text style={styles.greetingTitle}>Reports</Text>
                   <Text style={styles.greetingSubtitle}>Comprehensive platform analytics, client usage reports, and operational metrics.</Text>
                 </View>
-                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, gap: 8 }}>
-                    <Feather name="calendar" size={14} color="#64748B" />
-                    <Text style={{ fontSize: 13, color: '#0F172A', fontWeight: '500' }}>01 Sep 2025 — 30 Sep 2025</Text>
-                    <Feather name="chevron-down" size={14} color="#64748B" />
+                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', zIndex: 130 }}>
+                  <View style={{ position: 'relative' }}>
+                    <TouchableOpacity
+                      style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 12, height: 38, gap: 8 }}
+                      onPress={() => setShowRepTopDateDropdown(!showRepTopDateDropdown)}
+                      activeOpacity={0.8}
+                    >
+                      <Feather name="calendar" size={14} color="#64748B" />
+                      <Text style={{ fontSize: 13, color: '#0F172A', fontWeight: '500' }}>{repTopDateRange}</Text>
+                      <Feather name="chevron-down" size={14} color="#64748B" />
+                    </TouchableOpacity>
+                    {showRepTopDateDropdown && (
+                      <View style={[styles.filterDropdownMenu, { right: 0, left: 'auto', minWidth: 210 }]}>
+                        {['01 Sep 2025 — 30 Sep 2025', 'Last 30 Days', 'Last Quarter', 'Year to Date', 'Custom Range'].map((r) => (
+                          <TouchableOpacity
+                            key={r}
+                            style={[styles.dropdownMenuItem, repTopDateRange === r && { backgroundColor: '#EFF6FF' }]}
+                            onPress={() => {
+                              setRepTopDateRange(r);
+                              setShowRepTopDateDropdown(false);
+                            }}
+                          >
+                            <Text style={[styles.dropdownMenuItemText, repTopDateRange === r && { color: '#0066FF', fontWeight: '700' }]}>{r}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
                   </View>
                   <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setReportGenerating(true); setTimeout(() => { setReportGenerating(false); setReportGenerated(true); }, 800); }}>
                     <Feather name="bar-chart-2" size={16} color="#FFF" style={{ marginRight: 6 }} />
@@ -3044,7 +3284,7 @@ export default function AdminPortalView({ onBackToLanding }) {
                         ].map((b, i) => (
                           <View key={i} style={{ alignItems: 'center', flex: 1 }}>
                             <Text style={{ fontSize: 10, color: '#475569', fontWeight: '700', marginBottom: 4 }}>{b.val}</Text>
-                            <View style={{ width: 28, height: `${b.height}%`, backgroundColor: b.color, borderRadius: 4, opacity: 0.8 + (i * 0.05) }} />
+                            <View style={{ width: 28, height: Math.round(b.height * 1.4), backgroundColor: b.color, borderRadius: 4, opacity: 0.8 + (i * 0.05) }} />
                             <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '600', marginTop: 6 }}>{b.plan}</Text>
                           </View>
                         ))}
@@ -3097,7 +3337,7 @@ export default function AdminPortalView({ onBackToLanding }) {
                         ].map((b, i) => (
                           <View key={i} style={{ alignItems: 'center', flex: 1 }}>
                             <Text style={{ fontSize: 9.5, color: '#475569', fontWeight: '700', marginBottom: 4 }}>{b.val}</Text>
-                            <View style={{ width: 26, height: `${b.height}%`, backgroundColor: b.color, borderRadius: 4, opacity: 0.75 + (i * 0.05) }} />
+                            <View style={{ width: 26, height: Math.round(b.height * 1.4), backgroundColor: b.color, borderRadius: 4, opacity: 0.75 + (i * 0.05) }} />
                             <Text style={{ fontSize: 11, color: '#64748B', fontWeight: '600', marginTop: 6 }}>{b.range}</Text>
                           </View>
                         ))}
@@ -3123,8 +3363,9 @@ export default function AdminPortalView({ onBackToLanding }) {
                               <Text style={{ fontSize: 11.5, color: '#0F172A', fontWeight: '600' }}>{c.name}</Text>
                               <Text style={{ fontSize: 11.5, color: '#0066FF', fontWeight: '700' }}>{c.users}</Text>
                             </View>
-                            <View style={{ height: 6, backgroundColor: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
-                              <View style={{ width: `${c.pct}%`, height: '100%', backgroundColor: '#0066FF', borderRadius: 3 }} />
+                            <View style={{ height: 6, backgroundColor: '#F1F5F9', borderRadius: 3, overflow: 'hidden', flexDirection: 'row' }}>
+                              <View style={{ flex: c.pct, height: 6, backgroundColor: '#0066FF', borderRadius: 3 }} />
+                              <View style={{ flex: 100 - c.pct }} />
                             </View>
                           </View>
                         ))}
@@ -3202,44 +3443,172 @@ export default function AdminPortalView({ onBackToLanding }) {
               {reportTab === 'Client Reports' && (
                 <View style={{ gap: 16 }}>
                   {/* Filters Bar */}
-                  <View style={[styles.contentCard, { gap: 14 }]}>
+                  <View style={[styles.contentCard, { gap: 14, zIndex: 120 }]}>
                     <Text style={styles.cardHeaderTitle}>Filter Client Reports</Text>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-                      <View style={{ flex: 1, minWidth: 160 }}>
-                        <Text style={styles.modalSectionLabel}>Client</Text>
-                        <View style={styles.modalInput}>
-                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportClientFilter}</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
+                      {/* Client Dropdown */}
+                      <View style={[styles.filterFieldGroup, { flex: 1, minWidth: 160 }]}>
+                        <Text style={styles.filterFieldLabel}>Client</Text>
+                        <View style={{ position: 'relative' }}>
+                          <TouchableOpacity
+                            style={styles.filterDropdownBtn}
+                            onPress={() => {
+                              setRepClientOpen(!repClientOpen);
+                              setRepPlanOpen(false);
+                              setRepStatusOpen(false);
+                              setRepDateRangeOpen(false);
+                            }}
+                            activeOpacity={0.8}
+                          >
+                            <Text style={styles.filterDropdownText}>{reportClientFilter}</Text>
+                            <Feather name="chevron-down" size={13} color="#64748B" />
+                          </TouchableOpacity>
+                          {repClientOpen && (
+                            <View style={styles.filterDropdownMenu}>
+                              {['All Clients', 'TechNova Solutions', 'AutoDrive Ltd', 'HealthPlus', 'EduSmart Learning', 'RetailCorp'].map((c) => (
+                                <TouchableOpacity
+                                  key={c}
+                                  style={[styles.dropdownMenuItem, reportClientFilter === c && { backgroundColor: '#EFF6FF' }]}
+                                  onPress={() => {
+                                    setReportClientFilter(c);
+                                    setRepClientOpen(false);
+                                  }}
+                                >
+                                  <Text style={[styles.dropdownMenuItemText, reportClientFilter === c && { color: '#0066FF', fontWeight: '700' }]}>{c}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          )}
                         </View>
                       </View>
-                      <View style={{ flex: 1, minWidth: 160 }}>
-                        <Text style={styles.modalSectionLabel}>Subscription Plan</Text>
-                        <View style={styles.modalInput}>
-                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportPlanFilter}</Text>
+
+                      {/* Subscription Plan Dropdown */}
+                      <View style={[styles.filterFieldGroup, { flex: 1, minWidth: 160 }]}>
+                        <Text style={styles.filterFieldLabel}>Subscription Plan</Text>
+                        <View style={{ position: 'relative' }}>
+                          <TouchableOpacity
+                            style={styles.filterDropdownBtn}
+                            onPress={() => {
+                              setRepPlanOpen(!repPlanOpen);
+                              setRepClientOpen(false);
+                              setRepStatusOpen(false);
+                              setRepDateRangeOpen(false);
+                            }}
+                            activeOpacity={0.8}
+                          >
+                            <Text style={styles.filterDropdownText}>{reportPlanFilter}</Text>
+                            <Feather name="chevron-down" size={13} color="#64748B" />
+                          </TouchableOpacity>
+                          {repPlanOpen && (
+                            <View style={styles.filterDropdownMenu}>
+                              {['All Plans', 'Gold', 'Silver', 'Platinum', 'Enterprise'].map((p) => (
+                                <TouchableOpacity
+                                  key={p}
+                                  style={[styles.dropdownMenuItem, reportPlanFilter === p && { backgroundColor: '#EFF6FF' }]}
+                                  onPress={() => {
+                                    setReportPlanFilter(p);
+                                    setRepPlanOpen(false);
+                                  }}
+                                >
+                                  <Text style={[styles.dropdownMenuItemText, reportPlanFilter === p && { color: '#0066FF', fontWeight: '700' }]}>{p}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          )}
                         </View>
                       </View>
-                      <View style={{ flex: 1, minWidth: 160 }}>
-                        <Text style={styles.modalSectionLabel}>Date Range</Text>
-                        <View style={styles.modalInput}>
-                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportDateFrom} - {reportDateTo}</Text>
+
+                      {/* Date Range Dropdown */}
+                      <View style={[styles.filterFieldGroup, { flex: 1, minWidth: 160 }]}>
+                        <Text style={styles.filterFieldLabel}>Date Range</Text>
+                        <View style={{ position: 'relative' }}>
+                          <TouchableOpacity
+                            style={styles.filterDropdownBtn}
+                            onPress={() => {
+                              setRepDateRangeOpen(!repDateRangeOpen);
+                              setRepClientOpen(false);
+                              setRepPlanOpen(false);
+                              setRepStatusOpen(false);
+                            }}
+                            activeOpacity={0.8}
+                          >
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                              <Feather name="calendar" size={12} color="#64748B" style={{ marginRight: 6 }} />
+                              <Text style={styles.filterDropdownText}>{reportDateFrom} — {reportDateTo}</Text>
+                            </View>
+                            <Feather name="chevron-down" size={13} color="#64748B" />
+                          </TouchableOpacity>
+                          {repDateRangeOpen && (
+                            <View style={styles.filterDropdownMenu}>
+                              {['01 Sep 2025 — 30 Sep 2025', 'This Month', 'Last 3 Months', 'Year to Date'].map((d) => (
+                                <TouchableOpacity
+                                  key={d}
+                                  style={[styles.dropdownMenuItem, `${reportDateFrom} — ${reportDateTo}` === d && { backgroundColor: '#EFF6FF' }]}
+                                  onPress={() => {
+                                    if (d.includes('—')) {
+                                      const parts = d.split(' — ');
+                                      setReportDateFrom(parts[0]);
+                                      setReportDateTo(parts[1]);
+                                    }
+                                    setRepDateRangeOpen(false);
+                                  }}
+                                >
+                                  <Text style={styles.dropdownMenuItemText}>{d}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          )}
                         </View>
                       </View>
-                      <View style={{ flex: 1, minWidth: 160 }}>
-                        <Text style={styles.modalSectionLabel}>Status</Text>
-                        <View style={styles.modalInput}>
-                          <Text style={{ color: '#0F172A', fontSize: 13 }}>{reportStatusFilter}</Text>
+
+                      {/* Status Dropdown */}
+                      <View style={[styles.filterFieldGroup, { flex: 1, minWidth: 160 }]}>
+                        <Text style={styles.filterFieldLabel}>Status</Text>
+                        <View style={{ position: 'relative' }}>
+                          <TouchableOpacity
+                            style={styles.filterDropdownBtn}
+                            onPress={() => {
+                              setRepStatusOpen(!repStatusOpen);
+                              setRepClientOpen(false);
+                              setRepPlanOpen(false);
+                              setRepDateRangeOpen(false);
+                            }}
+                            activeOpacity={0.8}
+                          >
+                            <Text style={styles.filterDropdownText}>{reportStatusFilter}</Text>
+                            <Feather name="chevron-down" size={13} color="#64748B" />
+                          </TouchableOpacity>
+                          {repStatusOpen && (
+                            <View style={styles.filterDropdownMenu}>
+                              {['All Statuses', 'Active', 'Expiring Soon', 'Expired'].map((s) => (
+                                <TouchableOpacity
+                                  key={s}
+                                  style={[styles.dropdownMenuItem, reportStatusFilter === s && { backgroundColor: '#EFF6FF' }]}
+                                  onPress={() => {
+                                    setReportStatusFilter(s);
+                                    setRepStatusOpen(false);
+                                  }}
+                                >
+                                  <Text style={[styles.dropdownMenuItemText, reportStatusFilter === s && { color: '#0066FF', fontWeight: '700' }]}>{s}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          )}
                         </View>
                       </View>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }}>
-                      <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setReportClientFilter('All Clients'); setReportPlanFilter('All Plans'); setReportStatusFilter('All Statuses'); }}>
-                        <Text style={{ fontSize: 13, color: '#64748B' }}>Reset</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setReportGenerated(true)}>
-                        <Feather name="play" size={14} color="#FFF" style={{ marginRight: 6 }} />
-                        <Text style={styles.primaryActionBtnText}>Generate / View Report</Text>
-                      </TouchableOpacity>
+
+                      <View style={{ flexDirection: 'row', gap: 10 }}>
+                        <TouchableOpacity style={styles.filterResetBtn} onPress={() => { setReportClientFilter('All Clients'); setReportPlanFilter('All Plans'); setReportStatusFilter('All Statuses'); }}>
+                          <Text style={styles.filterResetBtnText}>Reset</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.primaryActionBtn} onPress={() => setReportGenerated(true)}>
+                          <Feather name="play" size={14} color="#FFF" style={{ marginRight: 6 }} />
+                          <Text style={styles.primaryActionBtnText}>Generate / View Report</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
+
 
                   {/* Generated Client Report Data Table */}
                   <View style={styles.contentCard}>
@@ -4925,6 +5294,338 @@ export default function AdminPortalView({ onBackToLanding }) {
           </View>
         </Modal>
       )}
+
+      {/* 10. ADD SUBSCRIPTION MODAL (Exact Matching Image media_1789816227394.png) */}
+      {showAddSubModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalBox, { maxWidth: 780, width: '92%' }]}>
+              {/* Header */}
+              <View style={styles.modalHeader}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF', width: 38, height: 38, borderRadius: 8 }]}>
+                    <MaterialCommunityIcons name="file-document-edit-outline" size={20} color="#0066FF" />
+                  </View>
+                  <View>
+                    <Text style={styles.modalTitle}>Add Subscription</Text>
+                    <Text style={styles.modalSubtitle}>Assign a subscription plan to a client.</Text>
+                  </View>
+                </View>
+                <TouchableOpacity onPress={() => setShowAddSubModal(false)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              {/* Body: Two Columns */}
+              <ScrollView style={{ maxHeight: 520, paddingVertical: 10 }}>
+                <View style={{ flexDirection: isMobile ? 'column' : 'row', gap: 24 }}>
+                  {/* Left Column: Client & Plan Info */}
+                  <View style={{ flex: 1, gap: 14 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A', borderBottomWidth: 1, borderBottomColor: '#F1F5F9', paddingBottom: 6 }}>
+                      Client Information
+                    </Text>
+
+                    <View>
+                      <Text style={styles.formLabel}>Client Name *</Text>
+                      <View style={{ position: 'relative' }}>
+                        <TextInput
+                          style={styles.modalInput}
+                          placeholder="Select or enter client name"
+                          value={subFormClient}
+                          onChangeText={setSubFormClient}
+                        />
+                      </View>
+                    </View>
+
+                    <View>
+                      <Text style={styles.formLabel}>Contact Person (Optional)</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        placeholder="Enter contact person name"
+                        value={subFormContact}
+                        onChangeText={setSubFormContact}
+                      />
+                    </View>
+
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A', borderBottomWidth: 1, borderBottomColor: '#F1F5F9', paddingBottom: 6, marginTop: 8 }}>
+                      Plan Information
+                    </Text>
+
+                    <View>
+                      <Text style={styles.formLabel}>Select Plan *</Text>
+                      <View style={{ flexDirection: 'row', gap: 8 }}>
+                        {['Gold', 'Silver', 'Platinum', 'Enterprise'].map(pln => (
+                          <TouchableOpacity
+                            key={pln}
+                            style={[
+                              styles.filterDropdownBtn,
+                              { flex: 1, minWidth: 60, justifyContent: 'center' },
+                              subFormPlan === pln && { borderColor: '#0066FF', backgroundColor: '#EFF6FF' }
+                            ]}
+                            onPress={() => setSubFormPlan(pln)}
+                          >
+                            <Text style={[styles.filterDropdownText, subFormPlan === pln && { color: '#0066FF', fontWeight: '700' }]}>{pln}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.formLabel}>Start Date *</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 10, height: 40 }}>
+                          <TextInput
+                            style={{ flex: 1, fontSize: 13, color: '#0F172A' }}
+                            placeholder="DD MMM YYYY"
+                            value={subFormStartDate || '12 Dec 2024'}
+                            onChangeText={setSubFormStartDate}
+                          />
+                          <Feather name="calendar" size={14} color="#64748B" />
+                        </View>
+                      </View>
+
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.formLabel}>End Date *</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, paddingHorizontal: 10, height: 40 }}>
+                          <TextInput
+                            style={{ flex: 1, fontSize: 13, color: '#0F172A' }}
+                            placeholder="DD MMM YYYY"
+                            value={subFormEndDate || '12 Dec 2025'}
+                            onChangeText={setSubFormEndDate}
+                          />
+                          <Feather name="calendar" size={14} color="#64748B" />
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Right Column: Subscription Details */}
+                  <View style={{ flex: 1, gap: 14 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#0F172A', borderBottomWidth: 1, borderBottomColor: '#F1F5F9', paddingBottom: 6 }}>
+                      Subscription Details
+                    </Text>
+
+                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.formLabel}>Billing Cycle *</Text>
+                        <View style={{ flexDirection: 'row', gap: 6 }}>
+                          {['Monthly', 'Quarterly', 'Annual'].map(b => (
+                            <TouchableOpacity
+                              key={b}
+                              style={[
+                                styles.filterDropdownBtn,
+                                { flex: 1, minWidth: 50, paddingHorizontal: 6, justifyContent: 'center' },
+                                subFormBilling === b && { borderColor: '#0066FF', backgroundColor: '#EFF6FF' }
+                              ]}
+                              onPress={() => setSubFormBilling(b)}
+                            >
+                              <Text style={[styles.filterDropdownText, { fontSize: 11 }, subFormBilling === b && { color: '#0066FF', fontWeight: '700' }]}>{b}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.formLabel}>Users *</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          placeholder="e.g. 24"
+                          keyboardType="numeric"
+                          value={subFormUsers || '24'}
+                          onChangeText={setSubFormUsers}
+                        />
+                      </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.formLabel}>Amount (₹) *</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          placeholder="₹ 9,999/month"
+                          value={subFormAmount || '₹9,999/month'}
+                          onChangeText={setSubFormAmount}
+                        />
+                      </View>
+
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.formLabel}>Status *</Text>
+                        <View style={{ flexDirection: 'row', gap: 6 }}>
+                          {['Active', 'Expiring Soon'].map(st => (
+                            <TouchableOpacity
+                              key={st}
+                              style={[
+                                styles.filterDropdownBtn,
+                                { flex: 1, minWidth: 60, paddingHorizontal: 6, justifyContent: 'center' },
+                                subFormStatus === st && { borderColor: '#0066FF', backgroundColor: '#EFF6FF' }
+                              ]}
+                              onPress={() => setSubFormStatus(st)}
+                            >
+                              <Text style={[styles.filterDropdownText, { fontSize: 11 }, subFormStatus === st && { color: '#0066FF', fontWeight: '700' }]}>{st}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+                    </View>
+
+                    <View>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.formLabel}>Additional Notes</Text>
+                        <Text style={{ fontSize: 11, color: '#94A3B8' }}>{subFormNotes.length}/500</Text>
+                      </View>
+                      <TextInput
+                        style={[styles.modalInput, { height: 70, textAlignVertical: 'top' }]}
+                        placeholder="Enter any additional notes..."
+                        placeholderTextColor="#94A3B8"
+                        multiline
+                        maxLength={500}
+                        value={subFormNotes}
+                        onChangeText={setSubFormNotes}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </ScrollView>
+
+              {/* Actions Footer */}
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowAddSubModal(false)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    const newSub = {
+                      id: `SUB-00${subscriptions.length + 1}`,
+                      client: subFormClient.trim() || 'New Enterprise Client',
+                      plan: subFormPlan,
+                      startDate: subFormStartDate || '12 Dec 2024',
+                      endDate: subFormEndDate || '12 Dec 2025',
+                      daysLeft: '365 days',
+                      status: subFormStatus,
+                      amount: subFormAmount || '₹9,999/month',
+                      users: parseInt(subFormUsers) || 24,
+                    };
+                    setSubscriptions([newSub, ...subscriptions]);
+                    setShowAddSubModal(false);
+                    notifyAction(setSubActionMessage, `Subscription created for ${newSub.client}!`);
+                  }}
+                >
+                  <Feather name="file-plus" size={15} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.modalSubmitBtnText}>Create Subscription</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {/* 11. IMPORT KNOWLEDGE DATA MODAL */}
+      {showImportModal && (
+        <Modal visible={true} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalBox, { maxWidth: 640, width: '92%' }]}>
+              <View style={styles.modalHeader}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <View style={[styles.kpiIconSquare, { backgroundColor: '#EFF6FF', width: 38, height: 38, borderRadius: 8 }]}>
+                    <Feather name="upload-cloud" size={20} color="#0066FF" />
+                  </View>
+                  <View>
+                    <Text style={styles.modalTitle}>Import Knowledge Data</Text>
+                    <Text style={styles.modalSubtitle}>Ingest multi-tenant documents into the AI knowledge layer.</Text>
+                  </View>
+                </View>
+                <TouchableOpacity onPress={() => setShowImportModal(false)}>
+                  <Feather name="x" size={20} color="#64748B" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={{ maxHeight: 480, paddingVertical: 10 }}>
+                <View style={{ gap: 14 }}>
+                  <View>
+                    <Text style={styles.formLabel}>Target Client / Organization *</Text>
+                    <TextInput
+                      style={styles.modalInput}
+                      placeholder="Select or enter client name"
+                      value={importFormClient}
+                      onChangeText={setImportFormClient}
+                    />
+                  </View>
+
+                  <View style={{ flexDirection: 'row', gap: 12 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.formLabel}>Data Source *</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        value={importFormSource}
+                        onChangeText={setImportFormSource}
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.formLabel}>Chunk Size (Tokens)</Text>
+                      <TextInput
+                        style={styles.modalInput}
+                        keyboardType="numeric"
+                        value={importFormChunkSize}
+                        onChangeText={setImportFormChunkSize}
+                      />
+                    </View>
+                  </View>
+
+                  {/* File Upload Drop Area */}
+                  <View>
+                    <Text style={styles.formLabel}>Upload Document Files *</Text>
+                    <View style={{ borderWidth: 2, borderColor: '#CBD5E1', borderStyle: 'dashed', borderRadius: 10, padding: 24, alignItems: 'center', backgroundColor: '#F8FAFC' }}>
+                      <Feather name="upload-cloud" size={32} color="#0066FF" style={{ marginBottom: 8 }} />
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: '#0F172A' }}>Click to browse or drag and drop files here</Text>
+                      <Text style={{ fontSize: 11.5, color: '#64748B', marginTop: 4 }}>PDF, DOCX, TXT, CSV, JSON (Up to 50MB per file)</Text>
+                    </View>
+                  </View>
+
+                  <View>
+                    <Text style={styles.formLabel}>Ingestion Notes</Text>
+                    <TextInput
+                      style={[styles.modalInput, { height: 60, textAlignVertical: 'top' }]}
+                      placeholder="Optional notes or description for this data import batch..."
+                      multiline
+                      value={importFormNotes}
+                      onChangeText={setImportFormNotes}
+                    />
+                  </View>
+                </View>
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancelBtn} onPress={() => setShowImportModal(false)}>
+                  <Text style={styles.modalCancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalSubmitBtn}
+                  onPress={() => {
+                    const newImp = {
+                      id: `IMP-20250908-0${imports.length + 1}`,
+                      client: importFormClient.trim() || 'TechNova Solutions',
+                      source: importFormSource,
+                      files: 4,
+                      fileTypes: 'PDF, DOCX',
+                      date: '08 Sep 2025\n02:30 PM',
+                      status: 'Processing',
+                      chunks: '512 chunks',
+                    };
+                    setImports([newImp, ...imports]);
+                    setShowImportModal(false);
+                    alert(`Import batch ${newImp.id} initiated for ${newImp.client}!`);
+                  }}
+                >
+                  <Feather name="zap" size={15} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.modalSubmitBtnText}>Start Ingestion</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
     </View>
   );
 }
@@ -6675,6 +7376,152 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+
+  // Module Tab Bar Styles (LLM Data Import, Reports)
+  moduleTabBar: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    marginBottom: 20,
+    gap: 4,
+    width: '100%',
+  },
+  moduleTab: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+    marginBottom: -1,
+  },
+  moduleTabActive: {
+    borderBottomColor: '#0066FF',
+  },
+  moduleTabText: {
+    fontSize: 13.5,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  moduleTabTextActive: {
+    color: '#0066FF',
+    fontWeight: '700',
+  },
+
+  // Filter Group & Dropdown Styles (Subscriptions, LLM Data Import, Reports)
+  filterFieldGroup: {
+    flexDirection: 'column',
+    gap: 4,
+  },
+  filterFieldLabel: {
+    fontSize: 11.5,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  filterDropdownBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 38,
+    minWidth: 130,
+  },
+  filterDropdownText: {
+    fontSize: 12.5,
+    fontWeight: '500',
+    color: '#0F172A',
+    marginRight: 6,
+  },
+  filterDropdownMenu: {
+    position: 'absolute',
+    top: 42,
+    left: 0,
+    minWidth: 160,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 12,
+    zIndex: 1000,
+  },
+  filterApplyBtn: {
+    backgroundColor: '#0066FF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    height: 38,
+    borderRadius: 8,
+  },
+  filterApplyBtnText: {
+    fontSize: 13,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  filterResetBtn: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    height: 38,
+    borderRadius: 8,
+  },
+  filterResetBtnText: {
+    fontSize: 13,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+
+  // Plans vs Subscriptions Banner Card
+  plansVsSubBanner: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 18,
+    marginTop: 20,
+  },
+  plansVsSubBannerInner: {
+    gap: 10,
+  },
+  plansVsSubTitle: {
+    fontSize: 14.5,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  plansVsSubDesc: {
+    fontSize: 12.5,
+    color: '#475569',
+    lineHeight: 18,
+  },
+  plansVsSubExampleBox: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    padding: 12,
+    gap: 4,
+  },
+  plansVsSubExampleTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 2,
+  },
+  plansVsSubExampleBullet: {
+    fontSize: 12,
+    color: '#334155',
+    lineHeight: 17,
+  },
 });
+
 
 
