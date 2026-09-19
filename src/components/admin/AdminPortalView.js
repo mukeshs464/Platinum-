@@ -2477,7 +2477,14 @@ export default function AdminPortalView({ onBackToLanding, themeColor: initialTh
                   <Text style={styles.greetingTitle}>Subscriptions Management</Text>
                   <Text style={styles.greetingSubtitle}>Manage client subscriptions, monitor usage, renewals and status.</Text>
                 </View>
-                <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setShowAddSubModal(true); }}>
+                <TouchableOpacity
+                  style={styles.primaryActionBtn}
+                  onPress={() => {
+                    if (!subFormClient && clients.length > 0) setSubFormClient(clients[0].name);
+                    if (!subFormPlan && plans.length > 0) setSubFormPlan(plans[0].name);
+                    setShowAddSubModal(true);
+                  }}
+                >
                   <Feather name="plus" size={16} color="#FFF" style={{ marginRight: 6 }} />
                   <Text style={styles.primaryActionBtnText}>Add Subscription</Text>
                 </TouchableOpacity>
@@ -5633,7 +5640,7 @@ export default function AdminPortalView({ onBackToLanding, themeColor: initialTh
                     <View style={{ flex: 1 }}>
                       <Text style={styles.formLabel}>Client Name *</Text>
                       <select
-                        style={[styles.modalSelect, { height: 42, fontSize: 13.5 }]}
+                        style={{ ...styles.modalSelect, height: 42, fontSize: 13.5 }}
                         value={subFormClient || activeClient?.name || ''}
                         onChange={(e) => setSubFormClient(e.target.value)}
                       >
@@ -5649,7 +5656,7 @@ export default function AdminPortalView({ onBackToLanding, themeColor: initialTh
                     <View style={{ flex: 1 }}>
                       <Text style={styles.formLabel}>Plan Name *</Text>
                       <select
-                        style={[styles.modalSelect, { height: 42, fontSize: 13.5 }]}
+                        style={{ ...styles.modalSelect, height: 42, fontSize: 13.5 }}
                         value={subFormPlan || activePlan?.name || ''}
                         onChange={(e) => setSubFormPlan(e.target.value)}
                       >
